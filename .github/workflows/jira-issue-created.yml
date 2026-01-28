@@ -15,8 +15,11 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Render template and create issue
+        id: create_issue
         uses: actions/github-script@v7
         with:
+          # result를 문자열로 돌려받아서 다음 스텝에서 steps.create_issue.outputs.result로 사용할 예정
+          result-encoding: string
           script: |
             const fs = require('fs');
             const path = require('path');
@@ -25,19 +28,9 @@ jobs:
             const kind = (p.kind || '').toLowerCase();
 
             const esc = (s) => (s ?? '').toString();
-            const nz  = (s, fallback='') => {
-              const v = (s ?? '').toString().trim();
-              return v.length ? v : fallback;
-            };
-            const decodeMaybe = (s) => {
-              const str = esc(s);
-              // Jira에서 urlEncode 했으면 % 기호 포함 → decodeURIComponent 적용
-              try {
-                return /%[0-9A-Fa-f]{2}/.test(str) ? decodeURIComponent(str) : str;
-              } catch { return str; }
-            };
+            const nz  = (s, fallback='') => { const v = (s ?? '').toString().trim(); return v.length ? v : fallback; };
+            const decodeMaybe = (s) => { const str = esc(s); try { return /%[0-9A-Fa-f]{2}/.test(str) ? decodeURIComponent(str) : str; } catch { return str; } };
 
-            // 1) 템플릿 선택
             const mapping = {
               story: '.github/ISSUE_TEMPLATE/automation-story.md',
               bug:   '.github/ISSUE_TEMPLATE/automation-bug.md',
@@ -51,17 +44,14 @@ jobs:
             }
             const tpl = fs.readFileSync(templatePath, 'utf8');
 
-            // 2) 값 준비
             const key         = esc(p.key);
             const url         = esc(p.url);
             const summary     = esc(p.summary);
             const description = esc(p.description);
-            const initiator   = esc(p.initiator);
             const priority    = esc(p.priority);
             const duedate     = nz(p.duedate, '미정');
             const checklist   = decodeMaybe(p.checklist);
 
-            // 3) 템플릿 치환
             let body = tpl
               .replaceAll('{{issue.key}}', key)
               .replaceAll('{{key}}', key)
@@ -70,18 +60,15 @@ jobs:
               .replaceAll('{{issue.summary}}', summary)
               .replaceAll('{{summary}}', summary)
               .replaceAll('{{description}}', description)
-              .replaceAll('{{initiator}}', initiator)
               .replaceAll('{{priority}}', priority)
               .replaceAll('{{issue.duedate}}', duedate)
               .replaceAll('{{duedate}}', duedate)
               .replaceAll('{{checklist}}', checklist || '');
 
-            // 템플릿에 {{checklist}}가 없다면 섹션을 추가로 붙여줌
             if (checklist && !tpl.includes('{{checklist}}')) {
               body += `\n\n---\n\n## ✅ To-Do\n${checklist}\n`;
             }
 
-            // 4) 라벨 결정
             const allowed = new Set(['Feature','Refactor','Documentation']);
             let labels = [];
             if (kind === 'story') labels = ['Story'];
@@ -90,18 +77,13 @@ jobs:
               let incoming = [];
               if (Array.isArray(p.labels)) incoming = p.labels;
               else if (typeof p.labels === 'string') {
-                try {
-                  const parsed = JSON.parse(p.labels);
-                  if (Array.isArray(parsed)) incoming = parsed;
-                } catch {
-                  incoming = p.labels.split(',').map(s=>s.trim()).filter(Boolean);
-                }
+                try { const parsed = JSON.parse(p.labels); if (Array.isArray(parsed)) incoming = parsed; }
+                catch { incoming = p.labels.split(',').map(s=>s.trim()).filter(Boolean); }
               }
               labels = incoming.filter(v => allowed.has(v));
               if (labels.length === 0) labels = ['Task'];
             }
 
-            // 5) 이슈 생성
             const title = `[${key}] ${summary}`;
             const res = await github.rest.issues.create({
               owner: context.repo.owner,
@@ -112,3 +94,59 @@ jobs:
             });
 
             core.info(`Created issue #${res.data.number}`);
+            // 아까 위에서 말했던 대로 이 값을 다음 스텝에서 steps.create_issue.outputs.result로 받음!
+            return String(res.data.number);
+
+      - name: Assign mapped GitHub users
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            const p = context.payload.client_payload || {};
+            const issue_number = Number('${{ steps.create_issue.outputs.result }}');
+            if (!issue_number) {
+              core.info('No issue number. Skip assignees.');
+              return;
+            }
+
+            // 매핑 파일 읽기
+            const mapPath = path.join(process.cwd(), '.github/jira-git-user-mapping.json');
+            if (!fs.existsSync(mapPath)) {
+              core.info('Mapping file not found. Skip assigning.');
+              return;
+            }
+            let mapping = {};
+            try {
+              mapping = JSON.parse(fs.readFileSync(mapPath, 'utf8'));
+            } catch (e) {
+              core.warning(`Failed to parse mapping file: ${e.message}`);
+              return;
+            }
+
+            // Jira payload에서 이메일 우선
+            const email = (p.assigneeEmail || '').trim().toLowerCase();
+            const assignees = [];
+            if (email && mapping[email]) {
+              assignees.push(mapping[email]);
+            } else {
+              core.info(`No mapping for assigneeEmail "${email}"`);
+            }
+
+            if (assignees.length === 0) {
+              core.info('No mapped assignees. Skip.');
+              return;
+            }
+
+            try {
+              await github.rest.issues.addAssignees({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number,
+                assignees
+              });
+              core.info(`Assigned: ${assignees.join(', ')}`);
+            } catch (e) {
+              core.warning(`Failed to add assignees: ${e.status} ${e.message}`);
+            }
