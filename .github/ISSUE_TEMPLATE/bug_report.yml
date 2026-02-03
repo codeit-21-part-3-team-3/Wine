@@ -1,0 +1,22 @@
+name: 버그 제보
+description: 오류를 발견하면 알려주세요.
+title: ''
+labels: ['bug']
+body:
+  - type: textarea
+    id: bug_content
+    attributes:
+      label: 어떤 문제가 있나요?
+      description: 상황 설명, 에러 메시지, 재현 방법 등 아는 대로 편하게 적어주세요.
+      placeholder: 예시) 로그인 버튼 눌렀는데 아무 반응이 없고 멈춰요.
+    validations:
+      required: true
+
+  - type: input
+    id: env
+    attributes:
+      label: 환경 정보 (선택)
+      description: 참고할 만한 기기나 브라우저 정보가 있다면 적어주세요.
+      placeholder: 크롬, 윈도우 등 (모르면 패스)
+    validations:
+      required: false

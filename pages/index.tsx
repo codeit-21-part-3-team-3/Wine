@@ -1,7 +1,8 @@
 export default function Home() {
+  const name = '테스트';
   return (
-    <main>
-      테스트...
-    </main>
+    <div>
+      <h1>안녕하세요 {name}</h1>
+    </div>
   );
 }

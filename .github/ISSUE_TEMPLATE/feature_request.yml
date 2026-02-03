@@ -1,0 +1,40 @@
+name: 할 일 등록
+description: 해야 할 작업을 빠르게 등록합니다.
+title: ""
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: 이슈 개요
+      description: 무엇을 해야 하는지, 왜 필요한지 편하게 적어주세요.
+      placeholder: 예시) 메인 화면 배너를 설날 이벤트용으로 교체해야 함.
+    validations:
+      required: true
+
+  - type: textarea
+    id: todo
+    attributes:
+      label: 할 일 목록
+      description: 구체적으로 어떤 작업들이 필요한지 적어주세요. (엔터 치면 체크박스 생성)
+      value: |
+        - [ ] 
+    validations:
+      required: false
+
+  - type: input
+    id: duedate
+    attributes:
+      label: 목표 기한
+      description: 언제까지 완료하면 좋을까요?
+      placeholder: YYYY-MM-DD (예: 2026-03-01)
+    validations:
+      required: false
+
+  - type: input
+    id: references
+    attributes:
+      label: 참고 링크
+      description: 디자인 시안(Figma)이나 참고할 자료가 있다면 붙여주세요.
+    validations:
+      required: false

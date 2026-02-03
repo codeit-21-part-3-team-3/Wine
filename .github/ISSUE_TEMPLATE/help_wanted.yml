@@ -1,0 +1,30 @@
+name: 도움 요청
+description: 혼자 해결하기 힘들 때 팀원들에게 도움을 요청합니다.
+title: ''
+labels: ['help wanted']
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 어디서 막혔나요?
+      description: 현재 상황과 잘 안 되는 부분, 그리고 시도해본 것들을 편하게 적어주세요.
+      placeholder: 예시) 토큰 만료 로직을 구현 중인데 공식 문서 내용이 헷갈립니다. A 방법으로 해봤는데 여전히 안 되네요.
+    validations:
+      required: true
+
+  - type: input
+    id: desired_help
+    attributes:
+      label: 어떤 도움이 필요한가요?
+      description: 구체적으로 원하는 지원 방식이 있다면 적어주세요.
+      placeholder: 예시) 시간 될 때 같이 코드 봐주세요 / 조언이나 아이디어만 주셔도 돼요.
+    validations:
+      required: false
+
+  - type: input
+    id: references
+    attributes:
+      label: 참고 링크 (선택)
+      description: 참고하고 있는 블로그, 공식 문서 혹은 현재 작성 중인 코드 링크를 붙여주세요.
+    validations:
+      required: false
