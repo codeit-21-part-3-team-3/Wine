@@ -1,17 +1,10 @@
-import type {
-  ComponentPropsWithoutRef,
-  ReactNode,
-  Dispatch,
-  SetStateAction,
-  RefObject,
-} from 'react';
+import type { ComponentPropsWithoutRef, ReactNode, Dispatch, SetStateAction } from 'react';
 
 export type AvatarStatus = 'loading' | 'loaded' | 'error';
 
 export interface AvatarContextValue {
   status: AvatarStatus;
   setStatus: Dispatch<SetStateAction<AvatarStatus>>;
-  imageRegisterRef: RefObject<boolean>;
 }
 
 export type AvatarProps = ComponentPropsWithoutRef<'span'> & {
