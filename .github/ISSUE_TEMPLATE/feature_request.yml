@@ -1,14 +1,14 @@
 name: 할 일 등록
 description: 해야 할 작업을 빠르게 등록합니다.
-title: "[FEAT] "
-labels: ["enhancement"]
+title: '[FEAT] '
+labels: ['enhancement']
 body:
   - type: textarea
     id: description
     attributes:
       label: 이슈 개요
       description: 무엇을 해야 하는지, 왜 필요한지 편하게 적어주세요.
-      placeholder: 예시) 메인 화면 배너를 설날 이벤트용으로 교체해야 함.
+      placeholder: '예시) 메인 화면 배너를 설날 이벤트용으로 교체해야 함.'
     validations:
       required: true
 
@@ -18,7 +18,7 @@ body:
       label: 할 일 목록
       description: 구체적으로 어떤 작업들이 필요한지 적어주세요. (엔터 치면 체크박스 생성)
       value: |
-        - [ ] 
+        - [ ]
     validations:
       required: false
 
@@ -27,7 +27,7 @@ body:
     attributes:
       label: 목표 기한
       description: 언제까지 완료하면 좋을까요?
-      placeholder: YYYY-MM-DD (예: 2026-03-01)
+      placeholder: 'YYYY-MM-DD (예: 2026-03-01)'
     validations:
       required: false
 
