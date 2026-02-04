@@ -1,6 +1,6 @@
 name: 할 일 등록
 description: 해야 할 작업을 빠르게 등록합니다.
-title: ""
+title: "[FEAT] "
 labels: ["enhancement"]
 body:
   - type: textarea

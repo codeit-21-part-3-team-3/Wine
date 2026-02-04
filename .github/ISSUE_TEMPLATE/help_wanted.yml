@@ -1,6 +1,6 @@
 name: 도움 요청
 description: 혼자 해결하기 힘들 때 팀원들에게 도움을 요청합니다.
-title: ''
+title: '[HELP] '
 labels: ['help wanted']
 body:
   - type: textarea
