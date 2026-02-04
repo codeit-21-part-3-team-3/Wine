@@ -23,7 +23,7 @@ export default function Button({
   children,
   ...props
 }: ButtonProps) {
-  const classes = [base, variants[variant], sizes[size], className].join(' ');
+  const classes = [base, variants[variant], sizes[size], className].filter(Boolean).join(' ');
   return (
     <button className={classes} {...props}>
       {children}
