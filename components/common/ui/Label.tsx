@@ -1,16 +1,17 @@
-import { LabelHTMLAttributes, ReactNode } from 'react';
+import { ComponentPropsWithRef, ReactNode } from 'react';
 
-const Label = ({
-  children,
-  htmlFor,
-  className,
-  ...props
-}: LabelHTMLAttributes<HTMLLabelElement> & { children: ReactNode }) => {
+interface LabelProps extends ComponentPropsWithRef<'label'> {
+  children: ReactNode;
+}
+
+const Label = ({ children, className, ...props }: LabelProps) => {
   return (
     <label
-      htmlFor={htmlFor}
+      className={`
+        block mb-2 font-bold text-left text-sm text-foreground cursor-pointer
+        ${className || ''}
+      `}
       {...props}
-      className={`block mb-[5px] font-bold text-left text-[14px] ${className || ''}`}
     >
       {children}
     </label>
