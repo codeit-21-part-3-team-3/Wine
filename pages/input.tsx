@@ -8,7 +8,7 @@ export default function Inputpage() {
       <form style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         <div>
           <Label htmlFor="user-email">이메일 주소</Label>
-          <Input id="user-email" type="text" placeholder="Whyne@gmail.com" autoComplete="off" />
+          <Input id="user-email" type="text" placeholder="Whyne@gmail.com" autoComplete="email" />
         </div>
         <div>
           <Label htmlFor="content">내용</Label>
@@ -27,7 +27,12 @@ export default function Inputpage() {
 
         <div>
           <Label htmlFor="user-password">비밀번호</Label>
-          <Input id="user-password" type="password" placeholder="8자리 이상 입력" />
+          <Input
+            id="user-password"
+            type="password"
+            placeholder="8자리 이상 입력"
+            autoComplete="new-password"
+          />
         </div>
       </form>
     </div>
