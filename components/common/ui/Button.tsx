@@ -1,11 +1,14 @@
+import { cn } from '@/utils/cn';
+
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'ghost';
   size?: 'sm' | 'md';
 }
 
 const variants = {
-  primary: 'bg-[#1a1918] text-[#fafafa] hover:bg-[#31302f]',
-  ghost: 'bg-white border border-[#d1d1d1] text-[#31302f] hover:bg-[#fafafa]',
+  primary: 'bg-primary text-primary-foreground hover:opacity-90',
+  ghost:
+    'bg-primary-foreground border border-border text-black hover:bg-secondary hover:text-secondary-foreground',
 } as const;
 
 const sizes = {
@@ -13,8 +16,7 @@ const sizes = {
   md: 'h-[50px] px-4',
 } as const;
 
-const base =
-  'font-bold tracking-[-0.3px] leading-[20px] flex items-center justify-center w-full rounded-sm transition-colors';
+const base = 'font-bold flex items-center justify-center w-full rounded-sm transition-colors';
 
 export default function Button({
   variant = 'primary',
@@ -23,7 +25,7 @@ export default function Button({
   children,
   ...props
 }: ButtonProps) {
-  const classes = [base, variants[variant], sizes[size], className].filter(Boolean).join(' ');
+  const classes = cn(base, variants[variant], sizes[size], className);
   return (
     <button className={classes} {...props}>
       {children}
