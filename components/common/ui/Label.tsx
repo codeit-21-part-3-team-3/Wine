@@ -1,22 +1,16 @@
 import { LabelHTMLAttributes, ReactNode } from 'react';
 
-interface LabelProps extends LabelHTMLAttributes<HTMLLabelElement> {
-  children: ReactNode;
-}
-
-const Label = ({ children, htmlFor, className, style, ...props }: LabelProps) => {
+const Label = ({
+  children,
+  htmlFor,
+  className,
+  ...props
+}: LabelHTMLAttributes<HTMLLabelElement> & { children: ReactNode }) => {
   return (
     <label
       htmlFor={htmlFor}
       {...props}
-      className={className}
-      style={{
-        display: 'block',
-        marginBottom: '5px',
-        fontWeight: 'bold',
-        textAlign: 'left',
-        ...style,
-      }}
+      className={`block mb-[5px] font-bold text-left text-[14px] ${className || ''}`}
     >
       {children}
     </label>
