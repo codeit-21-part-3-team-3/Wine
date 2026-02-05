@@ -1,16 +1,18 @@
 import { ComponentPropsWithRef, ReactNode } from 'react';
+import { cn } from '@/utils/cn';
 
 interface LabelProps extends ComponentPropsWithRef<'label'> {
   children: ReactNode;
 }
 
-const Label = ({ children, className, ...props }: LabelProps) => {
+const Label = ({ children, className, ref, ...props }: LabelProps) => {
   return (
     <label
-      className={`
-        block mb-2 font-bold text-left text-sm text-foreground cursor-pointer
-        ${className || ''}
-      `}
+      ref={ref}
+      className={cn(
+        'block mb-2 text-sm font-bold text-left text-foreground cursor-pointer',
+        className
+      )}
       {...props}
     >
       {children}
