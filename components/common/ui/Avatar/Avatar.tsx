@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useRef } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 import type {
   AvatarStatus,
@@ -20,12 +20,10 @@ const useAvatar = () => {
 
 function Avatar({ children, ...props }: AvatarProps) {
   const [status, setStatus] = useState<AvatarStatus>('loading');
-  const imageRegisterRef = useRef(false);
 
   const value = {
     status,
     setStatus,
-    imageRegisterRef,
   };
 
   return (
@@ -36,20 +34,7 @@ function Avatar({ children, ...props }: AvatarProps) {
 }
 
 function AvatarImage({ src, alt, ...props }: AvatarImageProps) {
-  const { status, setStatus, imageRegisterRef } = useAvatar();
-
-  useEffect(() => {
-    if (imageRegisterRef.current) {
-      console.warn('AvatarImage는 하나만 허용');
-      return;
-    }
-
-    imageRegisterRef.current = true;
-
-    return () => {
-      imageRegisterRef.current = false;
-    };
-  }, [imageRegisterRef]);
+  const { status, setStatus } = useAvatar();
 
   useEffect(() => {
     let cancelled = false;
