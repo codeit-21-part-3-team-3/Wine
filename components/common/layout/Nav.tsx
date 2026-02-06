@@ -22,11 +22,17 @@ export default function Nav({ isLoggedIn, userImage }: NavProps) {
             로그인
           </Link>
         ) : (
-          <button className="h-11 w-11">
+          <button type="button" aria-label="로그인 메뉴" className="h-11 w-11 rounded-full">
             <Avatar>
-              {userImage && <AvatarImage src={userImage} alt="userImage" />}
+              {userImage && (
+                <AvatarImage
+                  className="w-full h-full object-cover rounded-full"
+                  src={userImage}
+                  alt="사용자 프로필 이미지"
+                />
+              )}
               <AvatarFallback>
-                <Image src={defaultUserImage} alt="defaultUserImage" />
+                <Image src={defaultUserImage} alt="기본 사용자 이미지" width={44} height={44} />
               </AvatarFallback>
             </Avatar>
           </button>
