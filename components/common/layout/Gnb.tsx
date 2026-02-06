@@ -13,11 +13,10 @@ export default function Gnb() {
         <Link href="/login" className="font-normal text-primary-foreground">
           로그인
         </Link>
-        {/* todo
-            로그인 상태 관리 기능 개발 이후
-            AuthButton - 로그인 상태에 따른 분기
-            UserProfile - 단순 userimage 렌더 컴포넌트
-        */}
+        {/**
+         * @todo AuthButton - 로그인 상태에 따른 분기
+         * @todo UserProfile - 단순 userimage 렌더 컴포넌트
+         */}
       </div>
     </header>
   );
