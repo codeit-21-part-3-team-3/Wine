@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 
 import { AuthContextValue, User } from './types';
@@ -13,24 +13,18 @@ const DUMMY_USER: User = {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const login = () => {
-    setIsLoggedIn(true);
     setUser(DUMMY_USER);
-
-    console.log('로그인 되었습니다.');
   };
 
   const logout = () => {
-    setIsLoggedIn(false);
     setUser(null);
-
-    console.log('로그아웃 되었습니다.');
   };
 
   const value = {
-    isLoggedIn,
+    isLoading,
     user,
     login,
     logout,

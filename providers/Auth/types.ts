@@ -5,7 +5,7 @@ export interface User {
 }
 
 export interface AuthContextValue {
-  isLoggedIn: boolean | null;
+  isLoading: boolean;
   user: User | null;
   login: () => void;
   logout: () => void;
