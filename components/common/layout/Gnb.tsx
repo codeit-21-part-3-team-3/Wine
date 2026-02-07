@@ -13,11 +13,17 @@ export default function Gnb() {
         <Link href="/login" className="font-normal text-primary-foreground">
           로그인
         </Link>
-        {/**
-         * @todo AuthButton - 로그인 상태에 따른 분기
-         * @todo UserProfile - 단순 userimage 렌더 컴포넌트
-         */}
       </div>
     </header>
   );
 }
+
+/**
+ * @todo(auth, @jaywai-lee, 2026-02-06)
+ *
+ * Gnb는 레이아웃 전용 컴포넌트로 유지합니다.
+ * 인증 상태/유저 데이터는 해당 컴포넌트가 직접 관리하지 않으며,
+ * 로그인 기능 구현 후(로그인 상태를 관리할 수 있을 때)
+ * - 우측 영역에 <AuthButton /> 추가하여
+ * - AuthButton 내부에서 로그인/프로필 분기 처리 할 예정입니다.
+ */
