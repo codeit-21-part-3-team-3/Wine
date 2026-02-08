@@ -1,4 +1,4 @@
-import { WineListResponse } from '@/types/wine';
+import { WineListResponse } from '@/types/api/wine.dto';
 
 export const mockWineData: WineListResponse = {
   list: [

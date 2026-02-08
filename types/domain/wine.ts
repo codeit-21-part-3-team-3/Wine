@@ -18,6 +18,9 @@ export interface Wine {
   userId: number;
 }
 
-export interface WineListResponse {
-  list: Wine[];
-}
+/**
+ * @todo(@jaywai-lee, 2026-02-08)
+ * Review 인터페이스 정의 후
+ * 유지보수성 강화를 위해
+ * recentReview의 타입을 Review의 타입에서 Pick으로 변경
+ */

@@ -1,4 +1,4 @@
-import { Wine } from '@/types/wine';
+import { Wine } from '@/types/domain/wine';
 
 type WineInfoProps = Pick<Wine, 'name' | 'region' | 'price'>;
 
@@ -11,7 +11,7 @@ export default function WineInfo({ name, region, price }: WineInfoProps) {
         </h3>
         <span className="text-sm md:text-[16px] text-gray-400">{region}</span>
       </div>
-      <div className="flex items-center justify-between flex-1">
+      <div className="flex items-center flex-1">
         <span className="px-2.5 py-0.5 md:px-3.5 md:py-2 text-sm md:text-lg rounded-[10px] md:rounded-[12px] bg-gray-100 font-semibold">
           ₩ {price.toLocaleString()}
         </span>

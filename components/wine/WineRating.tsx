@@ -1,4 +1,4 @@
-import { Wine } from '@/types/wine';
+import { Wine } from '@/types/domain/wine';
 import { getFilledStars } from '@/utils/rating';
 
 type WineRatingProps = Pick<Wine, 'avgRating' | 'reviewCount'>;
@@ -13,7 +13,7 @@ export default function WineRating({ avgRating, reviewCount }: WineRatingProps) 
       <div className="flex flex-col items-center gap-1 md:gap-2 leading-tight">
         <div className="flex text-sm md:text-lg">
           {stars.map((isFilled, i) => (
-            <span key={i} className={isFilled ? 'text-primary' : 'text-gray-300'}>
+            <span key={`star-${i}`} className={isFilled ? 'text-primary' : 'text-gray-300'}>
               ★
             </span>
           ))}
