@@ -1,25 +1,63 @@
-import { ComponentPropsWithRef } from 'react';
+import { ComponentPropsWithRef, ReactNode, ChangeEvent } from 'react';
 import { cn } from '@/utils/cn';
-interface InputProps extends Omit<ComponentPropsWithRef<'input'>, 'type'> {
+import Image from 'next/image';
+import iconInputError from '@/assets/icon/icon-input-error.svg';
+
+interface InputProps extends Omit<ComponentPropsWithRef<'input'>, 'type' | 'onChange' | 'prefix'> {
   type?: 'text' | 'password';
-  error?: boolean;
+  status?: 'default' | 'error';
+  prefix?: ReactNode;
+  suffix?: ReactNode;
+  onChange?: (value: string) => void;
 }
 
-const Input = ({ className, type = 'text', error, ref, ...props }: InputProps) => {
+const Input = ({
+  className,
+  type = 'text',
+  status = 'default',
+  prefix,
+  suffix,
+  onChange,
+  ref,
+  ...props
+}: InputProps) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    onChange?.(e.target.value);
+  };
+
+  const suffixContent =
+    suffix ??
+    (status === 'error' ? (
+      <Image src={iconInputError} alt="입력 에러" width={16} height={16} />
+    ) : null);
+
   return (
-    <input
-      ref={ref}
-      type={type}
-      className={cn(
-        'w-full h-12 px-4 py-3 rounded text-base',
-        'bg-background text-foreground',
-        'border border-input',
-        'outline-none transition-colors',
-        error && 'border-destructive',
-        className
+    <div className="relative w-full">
+      {prefix && (
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">{prefix}</div>
       )}
-      {...props}
-    />
+
+      <input
+        ref={ref}
+        type={type}
+        onChange={handleChange}
+        className={cn(
+          'w-full h-11 rounded border transition-colors outline-none text-sm',
+          'bg-background text-foreground border-input placeholder:text-muted-foreground',
+          status === 'error' && 'border-destructive',
+          prefix ? 'pl-10' : 'pl-4',
+          suffixContent ? 'pr-11' : 'pr-4',
+          className
+        )}
+        {...props}
+      />
+
+      {suffixContent && (
+        <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
+          {suffixContent}
+        </div>
+      )}
+    </div>
   );
 };
 
