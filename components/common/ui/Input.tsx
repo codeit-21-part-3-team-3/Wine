@@ -41,10 +41,11 @@ const Input = ({
         ref={ref}
         type={type}
         onChange={handleChange}
+        aria-invalid={status === 'error' ? 'true' : 'false'}
         className={cn(
           'w-full h-11 rounded border transition-colors outline-none text-sm',
           'bg-background text-foreground border-input placeholder:text-muted-foreground',
-          status === 'error' && 'border-destructive',
+          status === 'error' ? 'border-destructive' : 'border-input',
           prefix ? 'pl-10' : 'pl-4',
           suffixContent ? 'pr-11' : 'pr-4',
           className
@@ -53,7 +54,10 @@ const Input = ({
       />
 
       {suffixContent && (
-        <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
+        <div
+          className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+          aria-hidden="true"
+        >
           {suffixContent}
         </div>
       )}
