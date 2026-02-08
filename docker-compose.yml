@@ -3,9 +3,8 @@ services:
   wine-app:
     build: .
     container_name: wine-next-service
-    restart: always
+    restart: unless-stopped
     ports:
       - '3001:3000'
     environment:
-      - NODE_ENV=production
       - API_URL=${API_URL}
