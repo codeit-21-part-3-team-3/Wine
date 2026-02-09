@@ -1,0 +1,19 @@
+# 의존성 및 빌드 결과물 제외
+node_modules
+.next
+out
+build
+
+# 환경 변수 및 민감 정보 보호 (보안)
+.env
+.env*.local
+
+# Git 관련 데이터 제외
+.git
+.gitignore
+
+# OS 및 에디터 설정 파일
+.DS_Store
+.vscode
+.idea
+npm-debug.log*
