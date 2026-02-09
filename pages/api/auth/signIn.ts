@@ -1,14 +1,20 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
+import { SignInRequest, SignInResponse, ClientAuthResponse } from '@/types/auth/auth';
+import { setCookie } from '@/lib/auth/cookie';
+
 const BASE_URL = process.env.API_URL;
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<ClientAuthResponse | { message: string }>
+) {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
   try {
-    const { email, password } = req.body;
+    const { email, password }: SignInRequest = req.body;
 
     const response = await fetch(`${BASE_URL}/auth/signIn`, {
       method: 'POST',
@@ -26,18 +32,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(response.status).json({ message: '서버 오류가 발생했습니다.' });
     }
 
-    const data = await response.json();
-
-    const isProd = process.env.NODE_ENV === 'production';
-    const cookieBase = `Path=/; HttpOnly; SameSite=Lax${isProd ? '; Secure' : ''}`;
+    const data: SignInResponse = await response.json();
 
     res.setHeader('Set-Cookie', [
-      `accessToken=${data.accessToken}; Max-Age=${30 * 60}; ${cookieBase}`,
-      `refreshToken=${data.refreshToken}; Max-Age=${7 * 24 * 60 * 60}; ${cookieBase}`,
+      setCookie.accessToken(data.accessToken),
+      setCookie.refreshToken(data.refreshToken),
     ]);
 
     return res.status(200).json({
-      id: data.user.id,
+      id: data.user.id.toString(),
       nickname: data.user.nickname,
       image: data.user.image,
     });
