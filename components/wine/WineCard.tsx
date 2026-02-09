@@ -7,7 +7,7 @@ interface WineCardProps {
   wine: Wine;
 }
 
-export default function WineListCard({ wine }: WineCardProps) {
+export default function WineCard({ wine }: WineCardProps) {
   const { image, name, region, price, avgRating, reviewCount, recentReview } = wine;
   return (
     <article className="w-full mt-10 mb-8 md:mb-15 lg:mb-20 rounded-2xl border border-gray-300 bg-white hover:shadow-md transition">
