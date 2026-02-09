@@ -1,28 +1,23 @@
-import Input from '@/components/common/ui/Input';
-import Label from '@/components/common/ui/Label';
 import { cn } from '@/utils/cn';
+import Input from '../ui/Input';
+import Label from '../ui/Label';
 
-interface FormFieldProps extends React.ComponentPropsWithoutRef<typeof Input> {
+interface FormFieldProps extends React.ComponentPropsWithRef<typeof Input> {
   label?: string;
   error?: string;
-  onSearch?: (value: string) => void;
 }
 
-const FormField = ({ label, error, onSearch, id, className, ...props }: FormFieldProps) => {
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && onSearch) {
-      e.preventDefault();
-      onSearch(e.currentTarget.value);
-    }
-    props.onKeyDown?.(e);
-  };
-
+const FormField = ({ label, ref, error, id, className, ...props }: FormFieldProps) => {
+  const inputStatus = error ? 'error' : (props.status ?? 'default');
   return (
     <div className={cn('flex flex-col gap-1.5 w-full', className)}>
       {label && <Label htmlFor={id}>{label}</Label>}
-      <Input id={id} status={error ? 'error' : props.status} onKeyDown={handleKeyDown} {...props} />
-
-      {error && <span className="text-xs text-destructive font-medium ml-1">{error}</span>}
+      <Input ref={ref} id={id} status={inputStatus} {...props} />
+      {error && (
+        <p className="ml-1 text-xs text-destructive" aria-live="polite">
+          {error}
+        </p>
+      )}
     </div>
   );
 };
