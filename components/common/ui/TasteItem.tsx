@@ -35,52 +35,52 @@ const TasteItem = ({
   const isReview = variant === 'review';
   const displayMinLabel = minLabel || DEFAULT_LABELS[title].min;
   const displayMaxLabel = maxLabel || DEFAULT_LABELS[title].max;
+
+  // 컨테이너 레이아웃
+  const containerLayout = isFormMode
+    ? 'max-md:flex-col max-md:items-center max-md:gap-2 flex-row items-center gap-5'
+    : 'flex-row items-center';
+
+  const containerGap =
+    !isFormMode && (isReview ? 'gap-5' : showDivider ? 'gap-4 md:gap-8' : 'gap-4');
+
+  // 타이틀 스타일
+  const titleBase =
+    'w-12 shrink-0 flex justify-center items-center relative text-xs rounded-xs px-2 py-1 md:py-2 bg-secondary text-muted-foreground';
+
+  const titleFormStyle = isFormMode && [
+    'bg-transparent px-0 py-0 rounded-none text-foreground text-sm md:text-lg',
+    'max-md:w-full max-md:justify-center max-md:text-center w-9 md:w-12 justify-start text-left',
+  ];
+  // 구분선
+  const titleDivider = showDivider &&
+    !isReview && [
+      "after:content-[''] after:absolute after:w-px after:bg-border after:h-5 after:top-1/2 after:-translate-y-1/2 after:left-full",
+      isFormMode ? 'after:ml-[3px] max-md:after:hidden' : 'after:ml-2 md:after:ml-4',
+    ];
+
+  //  내부 레이아웃
+  const ratingArea = cn(
+    'flex items-center flex-1',
+    isFormMode ? 'gap-1' : 'gap-3',
+    isReview ? 'justify-start' : 'w-full'
+  );
+
+  const ratingBarFlex = isReview ? 'flex-none' : 'flex-1';
+  const maxLabelColor = isFormMode ? 'text-foreground/50' : 'text-muted-foreground';
+
   return (
-    <div
-      className={cn(
-        'flex w-full transition-all',
-        isFormMode
-          ? 'max-md:flex-col max-md:items-center max-md:gap-2 flex-row items-center gap-5'
-          : ['flex-row items-center', isReview ? 'gap-5' : showDivider ? 'gap-4 md:gap-8' : 'gap-4']
-      )}
-    >
-      <span
-        className={cn(
-          'w-12 shrink-0 flex justify-center items-center relative',
-          'text-xs',
-          'rounded-xs px-2 py-1 md:py-2',
-          'bg-secondary',
-          'text-muted-foreground',
+    <div className={cn('flex w-full transition-all', containerLayout, containerGap)}>
+      <span className={cn(titleBase, titleFormStyle, titleDivider)}>{title}</span>
 
-          isFormMode && [
-            'bg-transparent px-0 py-0 rounded-none font-bold text-foreground text-sm md:text-lg',
-            'max-md:w-full max-md:justify-center max-md:text-center',
-            'w-9 md:w-12 justify-start text-left',
-          ],
-
-          showDivider &&
-            !isReview && [
-              "after:content-[''] after:absolute after:w-px after:bg-border after:h-5 after:top-1/2 after:-translate-y-1/2 after:left-full",
-              isFormMode ? 'after:ml-[3px] max-md:after:hidden' : 'after:ml-2 md:after:ml-4',
-            ]
-        )}
-      >
-        {title}
-      </span>
-
-      <div
-        className={cn(
-          'flex items-center flex-1',
-          isFormMode ? 'gap-1' : 'gap-3',
-          isReview ? 'justify-start' : 'w-full'
-        )}
-      >
+      <div className={ratingArea}>
         {isFormMode && displayMinLabel && (
-          <span className={cn('text-sm w-16 text-left shrink-0', 'text-foreground/50')}>
+          <span className="text-sm w-16 text-left shrink-0 text-foreground/50">
             {displayMinLabel}
           </span>
         )}
-        <div className={cn(isReview ? 'flex-none' : 'flex-1')}>
+
+        <div className={ratingBarFlex}>
           <RatingBar
             value={value}
             onChange={onChange}
@@ -89,13 +89,9 @@ const TasteItem = ({
             variant={variant}
           />
         </div>
+
         {displayMaxLabel && (
-          <span
-            className={cn(
-              'text-sm w-16 text-right shrink-0',
-              isFormMode ? 'text-foreground/50' : 'text-muted-foreground'
-            )}
-          >
+          <span className={cn('text-sm w-16 text-right shrink-0', maxLabelColor)}>
             {displayMaxLabel}
           </span>
         )}
