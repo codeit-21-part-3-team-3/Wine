@@ -20,11 +20,11 @@ ENV NODE_ENV production
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nextjs -u 1001
 
-COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+# COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder --chown=nextjs:nodejs /app/package*.json ./
 
-RUN npm install --omit=dev && npm cache clean --force
+RUN npm install --omit=dev --ignore-scripts && npm cache clean --force
 
 USER nextjs
 
