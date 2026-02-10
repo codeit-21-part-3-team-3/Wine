@@ -1,7 +1,9 @@
+import DashedHorizontalBarGraph from '@/components/common/ui/DashedBarGraph';
 import { cn } from '@/utils/cn';
-import RatingBar from './RatingBar';
 
-type TasteType = '바디감' | '타닌' | '당도' | '산미';
+export type TasteType = '바디감' | '타닌' | '당도' | '산미';
+
+export const TASTE_ORDER: TasteType[] = ['바디감', '타닌', '당도', '산미'];
 
 const DEFAULT_LABELS: Record<TasteType, { min: string; max: string }> = {
   바디감: { min: '가벼워요', max: '진해요' },
@@ -14,87 +16,48 @@ interface TasteItemProps {
   title: TasteType;
   value: number;
   onChange?: (value: number) => void;
-  readOnly?: boolean;
-  minLabel?: string;
-  maxLabel?: string;
-  showDivider?: boolean;
   variant?: 'default' | 'review';
+  showDivider?: boolean;
 }
 
 const TasteItem = ({
   title,
   value,
   onChange,
-  readOnly = false,
-  minLabel,
-  maxLabel,
-  showDivider = false,
   variant = 'default',
+  showDivider = false,
 }: TasteItemProps) => {
-  const isFormMode = !readOnly;
+  const isInteractive = !!onChange;
   const isReview = variant === 'review';
-  const displayMinLabel = minLabel || DEFAULT_LABELS[title].min;
-  const displayMaxLabel = maxLabel || DEFAULT_LABELS[title].max;
 
-  // 컨테이너 레이아웃
-  const containerLayout = isFormMode
+  const containerStyle = isInteractive
     ? 'max-md:flex-col max-md:items-center max-md:gap-2 flex-row items-center gap-5'
-    : 'flex-row items-center';
+    : cn('flex-row items-center', isReview ? 'gap-5' : 'gap-4 md:gap-8');
 
-  const containerGap =
-    !isFormMode && (isReview ? 'gap-5' : showDivider ? 'gap-4 md:gap-8' : 'gap-4');
-
-  // 타이틀 스타일
-  const titleBase =
-    'w-12 shrink-0 flex justify-center items-center relative text-xs rounded-xs px-2 py-1 md:py-2 bg-secondary text-muted-foreground';
-
-  const titleFormStyle = isFormMode && [
-    'bg-transparent px-0 py-0 rounded-none text-foreground text-sm md:text-lg',
-    'max-md:w-full max-md:justify-center max-md:text-center w-9 md:w-12 justify-start text-left',
-  ];
-  // 구분선
-  const titleDivider = showDivider &&
-    !isReview && [
-      "after:content-[''] after:absolute after:w-px after:bg-border after:h-5 after:top-1/2 after:-translate-y-1/2 after:left-full",
-      isFormMode ? 'after:ml-[3px] max-md:after:hidden' : 'after:ml-2 md:after:ml-4',
-    ];
-
-  //  내부 레이아웃
-  const ratingArea = cn(
-    'flex items-center flex-1',
-    isFormMode ? 'gap-1' : 'gap-3',
-    isReview ? 'justify-start' : 'w-full'
+  const titleStyle = cn(
+    'relative flex items-center shrink-0 text-xs transition-all',
+    isInteractive
+      ? 'bg-transparent px-0 py-0 rounded-none text-foreground text-sm md:text-lg max-md:w-full max-md:justify-center max-md:text-center w-9 md:w-12 justify-start text-left'
+      : 'w-12 h-6 md:h-8 bg-secondary text-muted-foreground rounded-xs px-2 justify-center',
+    showDivider &&
+      !isReview && [
+        "after:content-[''] after:absolute after:w-px after:bg-border after:h-5 after:top-1/2 after:-translate-y-1/2 after:left-full",
+        isInteractive ? 'after:ml-[3px] max-md:after:hidden' : 'after:ml-2 md:after:ml-4',
+      ]
   );
 
-  const ratingBarFlex = isReview ? 'flex-none' : 'flex-1';
-  const maxLabelColor = isFormMode ? 'text-foreground/50' : 'text-muted-foreground';
-
   return (
-    <div className={cn('flex w-full transition-all', containerLayout, containerGap)}>
-      <span className={cn(titleBase, titleFormStyle, titleDivider)}>{title}</span>
+    <div className={cn('flex w-full transition-all', containerStyle)}>
+      <span className={titleStyle}>{title}</span>
 
-      <div className={ratingArea}>
-        {isFormMode && displayMinLabel && (
-          <span className="text-sm w-16 text-left shrink-0 text-foreground/50">
-            {displayMinLabel}
-          </span>
-        )}
-
-        <div className={ratingBarFlex}>
-          <RatingBar
-            value={value}
-            onChange={onChange}
-            readOnly={readOnly}
-            ariaLabel={title}
-            variant={variant}
-          />
-        </div>
-
-        {displayMaxLabel && (
-          <span className={cn('text-sm w-16 text-right shrink-0', maxLabelColor)}>
-            {displayMaxLabel}
-          </span>
-        )}
+      <div className={cn('flex items-center flex-1', isReview ? 'justify-start' : 'w-full')}>
+        <DashedHorizontalBarGraph
+          count={value}
+          onClick={onChange}
+          variant={variant}
+          leftLabel={DEFAULT_LABELS[title].min}
+          rightLabel={DEFAULT_LABELS[title].max}
+        />
       </div>
     </div>
   );
