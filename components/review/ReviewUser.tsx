@@ -1,7 +1,18 @@
+import { UserInReview } from '@/types/domain/review';
+
 interface ReviewUserProps {
-  userName: string;
+  user: UserInReview;
+  createdAt: Date;
 }
 
-export default function ReviewUser({ userName }: ReviewUserProps) {
-  return <p>{userName}</p>;
+export default function ReviewUser({ user, createdAt }: ReviewUserProps) {
+  return (
+    <div className="flex items-center gap-4 text-gray-500">
+      <img src={user.image} alt={user.name} className="w-16 h-16 rounded-full object-cover" />
+      <div className="flex flex-col items-start">
+        <span className="font-semibold text-muted-foreground text-lg">{user.name}</span>
+        <span className="text-gray-400">{createdAt.toLocaleDateString()}</span>
+      </div>
+    </div>
+  );
 }

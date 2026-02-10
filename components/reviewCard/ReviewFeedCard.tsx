@@ -18,8 +18,12 @@ export default function ReviewFeedCard({ review, isOwner }: ReviewFeedCardProps)
         <div className="flex flex-col gap-2">
           <ReviewRating rating={review.rating} />
           <div className="flex items-center justify-between">
-            <ReviewUser userName={review.user.name} />
-            {isOwner ? <IconButton icon="kebab" /> : <IconButton icon="heart" />}
+            <ReviewUser user={review.user} createdAt={review.createdAt} />
+            {isOwner ? (
+              <IconButton icon="kebab" size={28} />
+            ) : (
+              <IconButton icon="heart" size={28} />
+            )}
           </div>
         </div>
       }
@@ -31,6 +35,7 @@ export default function ReviewFeedCard({ review, isOwner }: ReviewFeedCardProps)
        * 애란님 작업 중인 맛 부분 추가 예정
        */}
       <IconButton icon="chevron-up" />
+      <div className="h-px bg-gray-300" />
     </ReviewContainer>
   );
 }

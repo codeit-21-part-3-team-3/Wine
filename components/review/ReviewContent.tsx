@@ -3,5 +3,5 @@ interface ReviewContentProps {
 }
 
 export default function ReviewContent({ content }: ReviewContentProps) {
-  return <p>{content}</p>;
+  return <p className="text-gray-700 leading-6 whitespace-pre-line">{content}</p>;
 }
