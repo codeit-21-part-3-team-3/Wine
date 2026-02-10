@@ -14,7 +14,7 @@ export default async function handler(
   }
 
   try {
-    const { email, password } = req.body;
+    const { email, password }: SignInRequest = req.body;
 
     const response = await fetch(`${BASE_URL}/auth/signIn`, {
       method: 'POST',
