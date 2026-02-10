@@ -21,7 +21,9 @@ export default function ReviewFeedCard({ review, isOwner }: ReviewFeedCardProps)
         <div className="flex flex-col mb-2 gap-5">
           <ReviewRating rating={review.rating} />
           <div className="flex items-center justify-between">
-            <ReviewUser user={review.user} createdAt={review.createdAt} />
+            <div className="flex flex-col justify-center">
+              <ReviewUser user={review.user} createdAt={review.createdAt} />
+            </div>
             {isOwner ? (
               <IconButton icon="kebab" size={28} />
             ) : (

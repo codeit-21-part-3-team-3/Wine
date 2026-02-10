@@ -13,6 +13,13 @@ export interface UserInReview {
   image: string;
 }
 
+export interface WineInReview {
+  id: number;
+  name: string;
+  region: string;
+  image: string;
+}
+
 export interface Review {
   id: number;
   rating: number;
@@ -20,6 +27,7 @@ export interface Review {
   createdAt: Date;
   aroma: AromaType[];
   tastes: Taste;
+  wine?: WineInReview;
   user: UserInReview;
   isLiked?: boolean;
 }
