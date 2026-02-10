@@ -1,4 +1,5 @@
 import { UserInReview } from '@/types/domain/review';
+import { formatTimeAgo } from '@/utils/formatTimeAgo';
 
 interface ReviewUserProps {
   user: UserInReview;
@@ -11,7 +12,7 @@ export default function ReviewUser({ user, createdAt }: ReviewUserProps) {
       <img src={user.image} alt={user.name} className="w-16 h-16 rounded-full object-cover" />
       <div className="flex flex-col items-start">
         <span className="font-semibold text-muted-foreground text-lg">{user.name}</span>
-        <span className="text-gray-400">{createdAt.toLocaleDateString()}</span>
+        <span className="text-gray-400">{formatTimeAgo(createdAt)}</span>
       </div>
     </div>
   );
