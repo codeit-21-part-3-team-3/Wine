@@ -1,4 +1,4 @@
-import { AromaType } from './aroma';
+import { AromaType } from '@/constants/aromaMap';
 
 export interface Taste {
   body: number;
