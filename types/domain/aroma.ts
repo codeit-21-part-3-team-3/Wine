@@ -1,0 +1,16 @@
+export type AromaType =
+  | 'CHERRY'
+  | 'ORANGE'
+  | 'CHOCOLATE'
+  | 'OAKBARREL'
+  | 'PEACH'
+  | 'GRASS'
+  | 'APPLE'
+  | 'MINERAL'
+  | 'SEA'
+  | 'COCONUT'
+  | 'BREAD'
+  | 'FLOWER'
+  | 'GRAPE'
+  | 'MINT'
+  | 'LEAF';
