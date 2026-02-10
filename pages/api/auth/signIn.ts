@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { SignInRequest, SignInResponse, ClientAuthResponse } from '@/types/auth/auth';
+import { AuthResponse, ClientAuthResponse } from '@/types/auth/auth';
 import { setCookie } from '@/lib/auth/cookie';
 
 const BASE_URL = process.env.API_URL;
@@ -32,15 +32,15 @@ export default async function handler(
       return res.status(response.status).json({ message: '서버 오류가 발생했습니다.' });
     }
 
-    const data: SignInResponse = await response.json();
+    const data: AuthResponse = await response.json();
 
     res.setHeader('Set-Cookie', [
       setCookie.accessToken(data.accessToken),
       setCookie.refreshToken(data.refreshToken),
     ]);
 
-    return res.status(200).json({
-      id: data.user.id.toString(),
+    return res.status(201).json({
+      id: data.user.id,
       nickname: data.user.nickname,
       image: data.user.image,
     });

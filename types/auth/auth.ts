@@ -1,22 +1,15 @@
-export interface SignInRequest {
-  email: string;
-  password: string;
-}
-
-export interface SignInResponse {
-  accessToken: string;
-  refreshToken: string;
-  user: {
-    id: number;
-    nickname: string;
-    image: null | string;
-    updatedAt: string;
-    createdAt: string;
-  };
-}
-
-export interface ClientAuthResponse {
-  id: string;
+export interface User {
+  id: number;
   nickname: string;
   image: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
+
+export interface AuthResponse {
+  accessToken: string;
+  refreshToken: string;
+  user: User;
+}
+
+export type ClientAuthResponse = Pick<User, 'id' | 'nickname' | 'image'>;
