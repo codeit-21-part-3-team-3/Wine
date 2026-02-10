@@ -1,22 +1,15 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState } from 'react';
 import type { ReactNode } from 'react';
 
 import { AuthContextValue, User } from './types';
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-const DUMMY_USER: User = {
-  id: 99999999999,
-  nickname: '더미데이터',
-  image: Math.random() > 0.5 ? 'https://loremflickr.com/300/300' : null,
-};
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const login = () => {
-    setUser(DUMMY_USER);
+  const login = (user: User) => {
+    setUser(user);
   };
 
   const logout = () => {
@@ -24,7 +17,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const value = {
-    isLoading,
     user,
     login,
     logout,
