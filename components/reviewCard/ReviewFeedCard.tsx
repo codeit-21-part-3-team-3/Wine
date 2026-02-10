@@ -18,7 +18,7 @@ export default function ReviewFeedCard({ review, isOwner }: ReviewFeedCardProps)
   return (
     <ReviewContainer
       header={
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col mb-2 gap-5">
           <ReviewRating rating={review.rating} />
           <div className="flex items-center justify-between">
             <ReviewUser user={review.user} createdAt={review.createdAt} />
