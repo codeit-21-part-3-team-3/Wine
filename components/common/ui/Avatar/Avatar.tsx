@@ -1,4 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import Image from 'next/image';
+
+import { cn } from '@/utils/cn';
 
 import type {
   AvatarStatus,
@@ -18,7 +21,7 @@ const useAvatar = () => {
   return ctx;
 };
 
-function Avatar({ children, ...props }: AvatarProps) {
+function Avatar({ children, className, ...props }: AvatarProps) {
   const [status, setStatus] = useState<AvatarStatus>('loading');
 
   const value = {
@@ -28,47 +31,59 @@ function Avatar({ children, ...props }: AvatarProps) {
 
   return (
     <AvatarContext.Provider value={value}>
-      <span {...props}>{children}</span>
+      <div
+        className={cn(
+          'relative flex items-center justify-center overflow-hidden rounded-full w-10 h-10',
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </div>
     </AvatarContext.Provider>
   );
 }
 
-function AvatarImage({ src, alt, ...props }: AvatarImageProps) {
+function AvatarImage({ src, alt, sizes, className, ...props }: AvatarImageProps) {
   const { status, setStatus } = useAvatar();
 
   useEffect(() => {
-    let cancelled = false;
+    if (!src) return setStatus('error');
 
     setStatus('loading');
-
-    const img = new Image();
-
-    img.onload = () => {
-      if (!cancelled) setStatus('loaded');
-    };
-
-    img.onerror = () => {
-      if (!cancelled) setStatus('error');
-    };
-
-    img.src = src;
-
-    return () => {
-      cancelled = true;
-    };
   }, [src, setStatus]);
 
-  if (status !== 'loaded') return null;
+  if (status === 'error') return null;
 
-  // eslint-disable-next-line @next/next/no-img-element
-  return <img src={src} alt={alt} {...props} />;
+  return (
+    <Image
+      className={cn('object-cover', className)}
+      onError={() => setStatus('error')}
+      onLoad={() => setStatus('loaded')}
+      src={src}
+      alt={alt}
+      fill
+      sizes={sizes || '40px'}
+      {...props}
+    />
+  );
 }
 
-function AvatarFallback({ children, ...props }: AvatarFallbackProps) {
+function AvatarFallback({ children, className, ...props }: AvatarFallbackProps) {
   const { status } = useAvatar();
   if (status === 'loaded') return null;
 
-  return <span {...props}>{children}</span>;
+  return (
+    <span
+      className={cn(
+        'bg-muted text-muted-foreground flex size-full items-center justify-center rounded-full text-xs',
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </span>
+  );
 }
 
 export { Avatar, AvatarImage, AvatarFallback };
