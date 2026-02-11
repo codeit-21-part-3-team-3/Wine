@@ -31,17 +31,29 @@ export async function fetcher<TResponse = unknown>(
 
   const url = `${path}${buildQueryString(query)}`;
 
+  const isFormData = body instanceof FormData;
+
+  let finalBody: BodyInit | undefined;
+
+  if (body === undefined) {
+    finalBody = undefined;
+  } else if (isFormData) {
+    finalBody = body;
+  } else {
+    finalBody = JSON.stringify(body);
+  }
+
   const res = await fetch(url, {
     credentials: 'include',
     ...rest,
     headers: {
-      'Content-Type': 'application/json',
+      ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
       ...(headers ?? {}),
     },
-    body: body !== undefined ? JSON.stringify(body) : undefined,
+    body: finalBody,
   });
 
-  if (!res.ok) throw new Error('Request failed');
+  if (!res.ok) throw { status: res.status };
 
-  return res.json();
+  return res.json().catch(() => null as TResponse);
 }
