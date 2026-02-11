@@ -1,27 +1,7 @@
-type QueryValue = string | number | boolean;
-type Query = Record<string, QueryValue | QueryValue[] | undefined | null>;
-
 type FetcherOptions = Omit<RequestInit, 'body'> & {
   body?: unknown;
-  query?: Query;
+  query?: Record<string, unknown>;
 };
-
-function buildQueryString(query?: Query) {
-  if (!query) return '';
-  const params = new URLSearchParams();
-
-  Object.entries(query).forEach(([key, value]) => {
-    if (value == null) return;
-
-    if (Array.isArray(value)) {
-      value.forEach(v => params.append(key, String(v)));
-    } else {
-      params.append(key, String(value));
-    }
-  });
-  const qs = params.toString();
-  return qs ? `?${qs}` : '';
-}
 
 export async function fetcher<TResponse = unknown>(
   path: `/api/${string}`,
@@ -29,19 +9,18 @@ export async function fetcher<TResponse = unknown>(
 ): Promise<TResponse> {
   const { body, query, headers, ...rest } = options ?? {};
 
-  const url = `${path}${buildQueryString(query)}`;
+  const params = new URLSearchParams();
+
+  if (query) {
+    Object.entries(query).forEach(([k, v]) => {
+      if (v != null) params.append(k, String(v));
+    });
+  }
+
+  const qs = params.toString();
+  const url = `${path}${qs ? `?${qs}` : ''}`;
 
   const isFormData = body instanceof FormData;
-
-  let finalBody: BodyInit | undefined;
-
-  if (body === undefined) {
-    finalBody = undefined;
-  } else if (isFormData) {
-    finalBody = body;
-  } else {
-    finalBody = JSON.stringify(body);
-  }
 
   const res = await fetch(url, {
     credentials: 'include',
@@ -50,10 +29,12 @@ export async function fetcher<TResponse = unknown>(
       ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
       ...(headers ?? {}),
     },
-    body: finalBody,
+    body: body == null ? undefined : isFormData ? body : JSON.stringify(body),
   });
 
-  if (!res.ok) throw { status: res.status };
+  const data = await res.json().catch(() => null);
 
-  return res.json().catch(() => null as TResponse);
+  if (!res.ok) throw { status: res.status, data };
+
+  return data as TResponse;
 }
