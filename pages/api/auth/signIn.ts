@@ -1,24 +1,22 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+import { AuthResponse, ClientAuthResponse } from '@/types/auth/auth';
+import { setCookie } from '@/lib/auth/cookie';
+
+const BASE_URL = process.env.API_URL;
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<ClientAuthResponse | { message: string }>
+) {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
-  const BaseURL = process.env.API_URL;
-
-  if (!BaseURL) {
-    return res.status(500).json({ message: 'API_URL이 설정되지 않았습니다.' });
-  }
-
   try {
-    const { email, password } = req.body;
+    const { email, password }: SignInRequest = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({ message: 'Bad Request' });
-    }
-
-    const response = await fetch(`${BaseURL}/auth/signIn`, {
+    const response = await fetch(`${BASE_URL}/auth/signIn`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -30,19 +28,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (response.status === 401 || response.status === 400) {
         return res.status(401).json({ message: '이메일 또는 비밀번호가 일치하지 않습니다.' });
       }
+
+      return res.status(response.status).json({ message: '서버 오류가 발생했습니다.' });
     }
 
-    const data = await response.json();
-
-    const isProd = process.env.NODE_ENV === 'production';
-    const cookieBase = `Path=/; HttpOnly; SameSite=Lax${isProd ? '; Secure' : ''}`;
+    const data: AuthResponse = await response.json();
 
     res.setHeader('Set-Cookie', [
-      `accessToken=${data.accessToken}; Max-Age=${30 * 60}; ${cookieBase}`,
-      `refreshToken=${data.refreshToken}; Max-Age=${7 * 24 * 60 * 60}; ${cookieBase}`,
+      setCookie.accessToken(data.accessToken),
+      setCookie.refreshToken(data.refreshToken),
     ]);
 
-    return res.status(200).json({
+    return res.status(201).json({
       id: data.user.id,
       nickname: data.user.nickname,
       image: data.user.image,
