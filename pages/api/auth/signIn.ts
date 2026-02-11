@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { AuthResponse, ClientAuthResponse, SignInCredentials } from '@/types/auth/auth';
+import { AuthResponse, SignInCredentials, User } from '@/types/auth/auth';
 import { AUTH_COOKIES } from '@/lib/auth/cookie';
 
 const BASE_URL = process.env.API_URL;
@@ -8,7 +8,7 @@ const ALLOWED_METHODS = ['POST'];
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ClientAuthResponse | { message: string }>
+  res: NextApiResponse<User | { message: string }>
 ) {
   if (!ALLOWED_METHODS.includes(req.method as string)) {
     res.setHeader('Allow', ALLOWED_METHODS.join(', '));
@@ -45,6 +45,8 @@ export default async function handler(
       id: data.user.id,
       nickname: data.user.nickname,
       image: data.user.image,
+      createdAt: data.user.createdAt,
+      updatedAt: data.user.updatedAt,
     });
   } catch (error) {
     console.error('Error signing in:', error);

@@ -23,5 +23,3 @@ export interface AuthResponse {
   refreshToken: string;
   user: User;
 }
-
-export type ClientAuthResponse = Pick<User, 'id' | 'nickname' | 'image'>;

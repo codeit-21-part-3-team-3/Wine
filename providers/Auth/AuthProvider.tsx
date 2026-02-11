@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import type { ReactNode } from 'react';
 
 import { AuthContextValue, User, LoginResponse } from './types';
@@ -13,7 +13,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const initAuth = async () => {
       try {
-        const response = await fetch('/api/auth/me');
+        const response = await fetch('/api/proxy/users/me');
 
         if (response.ok) {
           const data = await response.json();
@@ -28,7 +28,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     initAuth();
   }, []);
 
-  const login = async (credentials: SignInCredentials): Promise<LoginResponse> => {
+  const login = useCallback(async (credentials: SignInCredentials): Promise<LoginResponse> => {
     try {
       const response = await fetch('/api/auth/signin', {
         method: 'POST',
@@ -49,23 +49,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.error('로그인 중 오류 발생:', error);
       return { success: false, error: '네트워크 오류가 발생했습니다.' };
     }
-  };
+  }, []);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
       setUser(null);
     } catch (error) {
       console.error('로그아웃 중 오류 발생:', error);
     }
-  };
+  }, []);
 
-  const value = {
-    isLoading,
-    user,
-    login,
-    logout,
-  };
+  const value = useMemo(
+    () => ({
+      isLoading,
+      user,
+      login,
+      logout,
+    }),
+    [isLoading, user, login, logout]
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
