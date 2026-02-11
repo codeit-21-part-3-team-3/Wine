@@ -22,7 +22,7 @@ export default function IconButton({
       type={type}
       aria-label={alt}
       className={cn(
-        'inline-flex items-center justify-center rounded-md transition hover:opacity-80 disabled:opacity-50',
+        'inline-flex items-center justify-center cursor-pointer rounded-md transition hover:opacity-80 disabled:opacity-50',
         className
       )}
       {...props}
