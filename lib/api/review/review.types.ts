@@ -1,6 +1,6 @@
-import type { User } from '@/types/auth/auth';
+import { ApiUser } from '../wine/wine.types';
 
-export type ReviewUser = Pick<User, 'id' | 'nickname' | 'image'>;
+export type ReviewUser = ApiUser;
 
 export interface ApiReview {
   id: number;
@@ -13,7 +13,7 @@ export interface ApiReview {
   content: string;
   createdAt: string;
   updatedAt: string;
-  user: User;
+  user: ApiUser;
   isLiked: boolean;
   wineId: number;
   teamId: string;
