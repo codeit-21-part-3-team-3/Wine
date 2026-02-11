@@ -65,24 +65,28 @@ export const Dropdown = ({ children, className }: { children: ReactNode; classNa
 
 // 트리거
 const Trigger = ({ children, className }: { children: ReactNode; className?: string }) => {
-  const { toggle, triggerRef } = useDropdown();
+  const { toggle, triggerRef, isOpen } = useDropdown();
 
   return (
-    <div
-      ref={triggerRef as React.RefObject<HTMLDivElement>}
+    <button
+      ref={triggerRef as React.RefObject<HTMLButtonElement>}
+      type="button"
       onClick={toggle}
-      className={cn('cursor-pointer inline-flex', className)}
+      className={cn(
+        'inline-flex items-center justify-center outline-none transition-colors rounded cursor-pointer',
+        className
+      )}
+      aria-haspopup="true"
+      aria-expanded={isOpen}
     >
       {children}
-    </div>
+    </button>
   );
 };
-Trigger.displayName = 'Dropdown.Trigger';
 
 //  메뉴
 const Menu = ({ children, className }: { children: ReactNode; className?: string }) => {
   const { isOpen, triggerRef, menuRef } = useDropdown();
-  const positionRef = useRef({ top: 0, left: 0 });
 
   useLayoutEffect(() => {
     if (!isOpen || !triggerRef.current || !menuRef.current) return;
@@ -90,30 +94,23 @@ const Menu = ({ children, className }: { children: ReactNode; className?: string
     const updatePosition = () => {
       const rect = triggerRef.current?.getBoundingClientRect();
       const menuWidth = menuRef.current?.offsetWidth ?? 130;
+      const padding = 8;
 
       if (rect) {
-        const rightAlignedLeft = rect.right - menuWidth;
-        positionRef.current = {
-          top: rect.bottom + 6,
-          left: rightAlignedLeft,
-        };
+        let left = rect.right - menuWidth;
+        if (left < padding) left = rect.left;
+        left = Math.max(padding, Math.min(left, window.innerWidth - menuWidth - padding));
+        const top = rect.bottom + 4;
 
         if (menuRef.current) {
-          menuRef.current.style.top = `${positionRef.current.top}px`;
-          menuRef.current.style.left = `${positionRef.current.left}px`;
+          menuRef.current.style.top = `${top}px`;
+          menuRef.current.style.left = `${left}px`;
           menuRef.current.style.visibility = 'visible';
         }
       }
     };
 
     updatePosition();
-    window.addEventListener('scroll', updatePosition, true);
-    window.addEventListener('resize', updatePosition);
-
-    return () => {
-      window.removeEventListener('scroll', updatePosition, true);
-      window.removeEventListener('resize', updatePosition);
-    };
   }, [isOpen, triggerRef, menuRef]);
 
   if (!isOpen || typeof window === 'undefined') return null;
@@ -144,20 +141,26 @@ const Item = ({
   isActive,
 }: {
   children: ReactNode;
-  onClick: () => void;
+  onClick?: () => void;
   className?: string;
   isActive?: boolean;
 }) => {
   const { close } = useDropdown();
+
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    }
+    close();
+  };
+
   return (
     <li
-      onClick={() => {
-        onClick();
-        close();
-      }}
+      onClick={handleClick}
       className={cn(
         'cursor-pointer rounded px-4 py-2.5 text-base text-foreground',
         'hover:bg-muted transition-colors text-center',
+        !onClick && 'cursor-default',
         isActive && 'bg-muted',
         className
       )}
