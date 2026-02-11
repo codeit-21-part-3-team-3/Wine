@@ -1,20 +1,22 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { AuthResponse, ClientAuthResponse } from '@/types/auth/auth';
-import { setCookie } from '@/lib/auth/cookie';
+import { AuthResponse, ClientAuthResponse, SignInCredentials } from '@/types/auth/auth';
+import { AUTH_COOKIES } from '@/lib/auth/cookie';
 
 const BASE_URL = process.env.API_URL;
+const ALLOWED_METHODS = ['POST'];
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ClientAuthResponse | { message: string }>
 ) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method Not Allowed' });
+  if (!ALLOWED_METHODS.includes(req.method as string)) {
+    res.setHeader('Allow', ALLOWED_METHODS.join(', '));
+    return res.status(405).json({ message: '허용된 메소드가 아닙니다.' });
   }
 
   try {
-    const { email, password }: SignInRequest = req.body;
+    const { email, password }: SignInCredentials = req.body;
 
     const response = await fetch(`${BASE_URL}/auth/signIn`, {
       method: 'POST',
@@ -35,11 +37,11 @@ export default async function handler(
     const data: AuthResponse = await response.json();
 
     res.setHeader('Set-Cookie', [
-      setCookie.accessToken(data.accessToken),
-      setCookie.refreshToken(data.refreshToken),
+      AUTH_COOKIES.accessToken(data.accessToken),
+      AUTH_COOKIES.refreshToken(data.refreshToken),
     ]);
 
-    return res.status(201).json({
+    return res.status(200).json({
       id: data.user.id,
       nickname: data.user.nickname,
       image: data.user.image,

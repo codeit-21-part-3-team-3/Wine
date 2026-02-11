@@ -1,19 +1,21 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { AuthResponse, ClientAuthResponse } from '@/types/auth/auth';
+import { AuthResponse, SignUpCredentials, ClientAuthResponse } from '@/types/auth/auth';
 
 const BASE_URL = process.env.API_URL;
+const ALLOWED_METHODS = ['POST'];
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ClientAuthResponse | { message: string }>
 ) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method Not Allowed' });
+  if (!ALLOWED_METHODS.includes(req.method as string)) {
+    res.setHeader('Allow', ALLOWED_METHODS.join(', '));
+    return res.status(405).json({ message: '허용된 메소드가 아닙니다.' });
   }
 
   try {
-    const { email, nickname, password, passwordConfirmation } = req.body;
+    const { email, nickname, password, passwordConfirmation }: SignUpCredentials = req.body;
 
     const response = await fetch(`${BASE_URL}/auth/signUp`, {
       method: 'POST',
@@ -26,28 +28,6 @@ export default async function handler(
     if (!response.ok) {
       const errorData = await response.json();
 
-      if (errorData.details) {
-        const firstKey = Object.keys(errorData.details)[0];
-        const firstError = errorData.details[firstKey];
-
-        let fieldName = '입력값';
-        if (firstKey.includes('password')) fieldName = '비밀번호';
-        if (firstKey.includes('email')) fieldName = '이메일';
-        if (firstKey.includes('nickname')) fieldName = '닉네임';
-
-        let customMessage = firstError.message;
-        if (customMessage.includes('minLength 8')) {
-          customMessage = `${fieldName}는 8자 이상이어야 합니다.`;
-        } else if (customMessage.includes('already exists')) {
-          customMessage = `이미 사용 중인 ${fieldName}입니다.`;
-        }
-
-        return res.status(response.status).json({
-          message: customMessage,
-        });
-      }
-
-      // details가 없는 일반적인 에러 메시지 처리
       return res.status(response.status).json({
         message: errorData.message || '서버 오류가 발생했습니다.',
       });
