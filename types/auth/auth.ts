@@ -1,3 +1,15 @@
+export interface SignInCredentials {
+  email: string;
+  password: string;
+}
+
+export interface SignUpCredentials {
+  email: string;
+  nickname: string;
+  password: string;
+  passwordConfirmation: string;
+}
+
 export interface User {
   id: number;
   nickname: string;
@@ -11,5 +23,3 @@ export interface AuthResponse {
   refreshToken: string;
   user: User;
 }
-
-export type ClientAuthResponse = Pick<User, 'id' | 'nickname' | 'image'>;

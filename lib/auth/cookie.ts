@@ -3,7 +3,7 @@ export const getCookieOptions = (maxAge: number) => {
   return `Path=/; HttpOnly; SameSite=Lax; Max-Age=${maxAge}; ${isProd ? '; Secure' : ''}`;
 };
 
-export const setCookie = {
+export const AUTH_COOKIES = {
   accessToken: (token: string) => `accessToken=${token}; ${getCookieOptions(60 * 60 * 24 * 7)}`,
   refreshToken: (token: string) => `refreshToken=${token}; ${getCookieOptions(60 * 60 * 24 * 7)}`,
   clearAccessToken: () => `accessToken=; Path=/; Max-Age=0`,
