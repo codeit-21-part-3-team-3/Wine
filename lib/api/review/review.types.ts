@@ -1,16 +1,6 @@
-/* ================================
-   공통 User
-================================ */
+import type { User } from '@/types/auth/auth';
 
-export interface ApiUser {
-  id: number;
-  nickname: string;
-  image: string;
-}
-
-/* ================================
-   Review Base (모든 응답 공통)
-================================ */
+export type ReviewUser = Pick<User, 'id' | 'nickname' | 'image'>;
 
 export interface ApiReview {
   id: number;
@@ -21,23 +11,15 @@ export interface ApiReview {
   softAcidic: number;
   aroma: string[];
   content: string;
-
   createdAt: string;
   updatedAt: string;
-
-  user: ApiUser;
-
+  user: User;
   isLiked: boolean;
-
   wineId: number;
   teamId: string;
 }
 
-/* ================================
-   Request Body
-================================ */
-
-export interface CreateReviewBody {
+export interface CreateReviewRequest {
   rating: number;
   lightBold: number;
   smoothTannic: number;
@@ -48,19 +30,7 @@ export interface CreateReviewBody {
   wineId: number;
 }
 
-export interface UpdateReviewBody {
-  rating?: number;
-  lightBold?: number;
-  smoothTannic?: number;
-  drySweet?: number;
-  softAcidic?: number;
-  aroma?: string[];
-  content?: string;
-}
-
-/* ================================
-   Response
-================================ */
+export type UpdateReviewRequest = Partial<CreateReviewRequest>;
 
 export type CreateReviewResponse = ApiReview;
 export type GetReviewResponse = ApiReview;

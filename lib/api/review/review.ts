@@ -1,17 +1,26 @@
 import { fetcher } from '@/lib/fetcher';
 import {
-  CreateReviewBody,
+  CreateReviewRequest,
   CreateReviewResponse,
   DeleteReviewResponse,
   GetReviewResponse,
-  UpdateReviewBody,
+  UpdateReviewRequest,
   UpdateReviewResponse,
 } from './review.types';
 
-export function createReview(body: CreateReviewBody) {
+const clampScore = (v: number) => Math.min(5, Math.max(0, v));
+
+export function createReview(body: CreateReviewRequest) {
   return fetcher<CreateReviewResponse>('/api/proxy/reviews', {
     method: 'POST',
-    body,
+    body: {
+      ...body,
+      rating: clampScore(body.rating),
+      lightBold: clampScore(body.lightBold),
+      smoothTannic: clampScore(body.smoothTannic),
+      drySweet: clampScore(body.drySweet),
+      softAcidic: clampScore(body.softAcidic),
+    },
   });
 }
 
@@ -21,10 +30,17 @@ export function getReview(id: number) {
   });
 }
 
-export function updateReview(id: number, body: UpdateReviewBody) {
+export function updateReview(id: number, body: UpdateReviewRequest) {
   return fetcher<UpdateReviewResponse>(`/api/proxy/reviews/${id}`, {
     method: 'PATCH',
-    body,
+    body: {
+      ...body,
+      ...(body.rating !== undefined && { rating: clampScore(body.rating) }),
+      ...(body.lightBold !== undefined && { lightBold: clampScore(body.lightBold) }),
+      ...(body.smoothTannic !== undefined && { smoothTannic: clampScore(body.smoothTannic) }),
+      ...(body.drySweet !== undefined && { drySweet: clampScore(body.drySweet) }),
+      ...(body.softAcidic !== undefined && { softAcidic: clampScore(body.softAcidic) }),
+    },
   });
 }
 
