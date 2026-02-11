@@ -1,4 +1,4 @@
-import { ApiUser } from '../wine/wine.types';
+import { ApiUser } from '../user/user.types';
 
 export type ReviewUser = ApiUser;
 
