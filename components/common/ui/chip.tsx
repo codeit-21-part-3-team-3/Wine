@@ -1,3 +1,5 @@
+import { cn } from '@/utils/cn';
+
 interface ChipProps {
   label: string;
   selected: boolean;
@@ -6,14 +8,19 @@ interface ChipProps {
 
 export default function Chip({ label, selected = false, onClick }: ChipProps) {
   const baseStyle =
-    'flex items-center justify-center w-fit px-[18px] py-3 rounded-full border text-sm transition-all cursor-pointer font-medium';
-
-  const statusStyle = selected
-    ? 'bg-[#484746] text-white border-[#484746]'
-    : 'bg-white text-[#31302F] border-[#F2F2F2]';
+    'flex items-center justify-center w-fit px-[18px] py-3 rounded-full border text-base font-medium transition-all cursor-pointer';
 
   return (
-    <button type="button" className={`${baseStyle} ${statusStyle}`} onClick={onClick}>
+    <button
+      type="button"
+      className={cn(
+        baseStyle,
+        selected
+          ? 'bg-primary text-primary-foreground border-primary'
+          : 'bg-white text-[#31302F] border-[#F2F2F2]'
+      )}
+      onClick={onClick}
+    >
       {label}
     </button>
   );
