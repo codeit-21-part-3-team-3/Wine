@@ -7,20 +7,14 @@ interface ChipProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 export default function Chip({ label, selected = false, className, ...props }: ChipProps) {
   const baseStyle =
-    'flex items-center justify-center w-fit px-[18px] py-3 rounded-full border text-base font-medium transition-all cursor-pointer';
+    'px-[12px] py-[9px] text-sm md:px-[18px] md:py-3 md:text-base flex items-center justify-center w-fit rounded-full border font-medium transition-all cursor-pointer';
+
+  const variantStyle = selected
+    ? 'bg-primary text-primary-foreground border-primary'
+    : 'bg-white text-[#31302F] border-[#F2F2F2]';
 
   return (
-    <button
-      type="button"
-      className={cn(
-        baseStyle,
-        selected
-          ? 'bg-primary text-primary-foreground border-primary'
-          : 'bg-white text-[#31302F] border-[#F2F2F2]',
-        className
-      )}
-      {...props}
-    >
+    <button type="button" className={cn(baseStyle, variantStyle, className)} {...props}>
       {label}
     </button>
   );
