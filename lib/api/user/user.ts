@@ -10,6 +10,7 @@ import {
 export function getMe() {
   return fetcher<GetMeResponse>('/api/proxy/users/me', {
     method: 'GET',
+    cache: 'no-store',
   });
 }
 
@@ -23,11 +24,13 @@ export function updateMe(body: UpdateMeRequest) {
 export function getMyReviews() {
   return fetcher<GetMyReviewsResponse>('/api/proxy/users/me/reviews', {
     method: 'GET',
+    cache: 'no-store',
   });
 }
 
 export function getMyWines() {
   return fetcher<GetMyWinesResponse>('/api/proxy/users/me/wines', {
     method: 'GET',
+    cache: 'no-store',
   });
 }
