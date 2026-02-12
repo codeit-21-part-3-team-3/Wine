@@ -11,7 +11,7 @@ import {
 const clampScore = (v: number) => Math.min(5, Math.max(0, v));
 
 export function createReview(body: CreateReviewRequest) {
-  return fetcher<CreateReviewResponse>('/api/proxy/reviews', {
+  return fetcher<CreateReviewResponse>('/reviews', {
     method: 'POST',
     body: {
       ...body,
@@ -25,13 +25,13 @@ export function createReview(body: CreateReviewRequest) {
 }
 
 export function getReview(id: number) {
-  return fetcher<GetReviewResponse>(`/api/proxy/reviews/${id}`, {
+  return fetcher<GetReviewResponse>(`/reviews/${id}`, {
     method: 'GET',
   });
 }
 
 export function updateReview(id: number, body: UpdateReviewRequest) {
-  return fetcher<UpdateReviewResponse>(`/api/proxy/reviews/${id}`, {
+  return fetcher<UpdateReviewResponse>(`/reviews/${id}`, {
     method: 'PATCH',
     body: {
       ...body,
@@ -45,15 +45,15 @@ export function updateReview(id: number, body: UpdateReviewRequest) {
 }
 
 export function deleteReview(id: number) {
-  return fetcher<DeleteReviewResponse>(`/api/proxy/reviews/${id}`, {
+  return fetcher<DeleteReviewResponse>(`/reviews/${id}`, {
     method: 'DELETE',
   });
 }
 
 export function likeReview(id: number) {
-  return fetcher<void>(`/api/proxy/reviews/${id}/like`, { method: 'POST' });
+  return fetcher<void>(`/reviews/${id}/like`, { method: 'POST' });
 }
 
 export function unlikeReview(id: number) {
-  return fetcher<void>(`/api/proxy/reviews/${id}/like`, { method: 'DELETE' });
+  return fetcher<void>(`/reviews/${id}/like`, { method: 'DELETE' });
 }
