@@ -1,13 +1,5 @@
 import { ApiUser } from '../user/user.types';
 
-export interface RefreshTokenRequest {
-  refreshToken: string;
-}
-
-export interface RefreshTokenResponse {
-  accessToken: string;
-}
-
 export interface OAuthSignInRequest {
   state: string;
   redirectUri: string;
