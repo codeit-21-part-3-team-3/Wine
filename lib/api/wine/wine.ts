@@ -1,9 +1,14 @@
 import { fetcher } from '@/lib/fetcher';
-import { GetWinesQuery, GetWinesResponse } from './wine.types';
+import {
+  CreateWineRequest,
+  GetWinesQuery,
+  GetWinesResponse,
+  UpdateWineRequest,
+} from './wine.types';
 import { GetWineDetailResponse } from './wine.types';
 import { GetRecommendedWinesResponse } from './wine.types';
-import { CreateWineBody, CreateWineResponse } from './wine.types';
-import { UpdateWineBody, UpdateWineResponse } from './wine.types';
+import { CreateWineResponse } from './wine.types';
+import { UpdateWineResponse } from './wine.types';
 import { DeleteWineResponse } from './wine.types';
 
 export function getWines(query: GetWinesQuery) {
@@ -24,14 +29,14 @@ export function getRecommendedWines(limit: number) {
   });
 }
 
-export function createWine(body: CreateWineBody) {
+export function createWine(body: CreateWineRequest) {
   return fetcher<CreateWineResponse>('/api/proxy/wines', {
     method: 'POST',
     body,
   });
 }
 
-export function updateWine(id: number, body: UpdateWineBody) {
+export function updateWine(id: number, body: UpdateWineRequest) {
   return fetcher<UpdateWineResponse>(`/api/proxy/wines/${id}`, {
     method: 'PATCH',
     body,

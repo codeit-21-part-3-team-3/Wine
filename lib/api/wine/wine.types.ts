@@ -1,30 +1,16 @@
 import type { WineType } from '@/types/domain/wine';
+import { ApiUser } from '../user/user.types';
+import { ApiReview } from '../review/review.types';
+import { QueryParams } from '@/lib/fetcher';
 
-/* ================================
-   공통
-================================ */
+export type WineUser = ApiUser;
 
-export interface ApiUser {
-  id: number;
-  nickname: string;
-  image: string;
-}
+export type ApiRecentReview = Pick<
+  ApiReview,
+  'id' | 'content' | 'aroma' | 'rating' | 'createdAt' | 'updatedAt' | 'user'
+>;
 
-export interface ApiRecentReview {
-  id: number;
-  content: string;
-  aroma: string[];
-  rating: number;
-  createdAt: string;
-  updatedAt: string;
-  user: ApiUser;
-}
-
-/* ================================
-   Wine Base (모든 응답 공통)
-================================ */
-
-export interface ApiWineBase {
+export interface ApiWine {
   id: number;
   name: string;
   region: string;
@@ -37,18 +23,11 @@ export interface ApiWineBase {
   recentReview?: ApiRecentReview;
 }
 
-/* ================================
-   List / Recommended
-================================ */
+export type WineListItem = ApiWine;
 
-export type WineListItem = ApiWineBase;
-
-type QueryValue = string | number | boolean;
-
-export interface GetWinesQuery {
-  [key: string]: QueryValue | QueryValue[] | undefined | null;
+export interface GetWinesQuery extends QueryParams {
   limit: number;
-  cursor?: number;
+  cursor?: number | null;
   type?: WineType;
   minPrice?: number;
   maxPrice?: number;
@@ -64,58 +43,20 @@ export interface GetWinesResponse {
 
 export type GetRecommendedWinesResponse = WineListItem[];
 
-/* ================================
-   Detail
-================================ */
+export type ApiWineReview = Omit<ApiReview, 'wineId' | 'teamId'>;
 
-export interface ApiReview {
-  id: number;
-  rating: number;
-  lightBold: number;
-  smoothTannic: number;
-  drySweet: number;
-  softAcidic: number;
-  aroma: string[];
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-  isLiked: boolean;
-  user: ApiUser;
-}
-
-export interface GetWineDetailResponse extends ApiWineBase {
-  reviews: ApiReview[];
+export interface GetWineDetailResponse extends ApiWine {
+  reviews: ApiWineReview[];
   avgRatings: Record<string, number>;
 }
 
-/* ================================
-   Request Body
-================================ */
+export type CreateWineRequest = Pick<ApiWine, 'name' | 'region' | 'image' | 'price' | 'type'>;
 
-export interface CreateWineBody {
-  name: string;
-  region: string;
-  image: string;
-  price: number;
-  type: WineType;
-}
+export type UpdateWineRequest = Partial<
+  Pick<ApiWine, 'name' | 'region' | 'image' | 'price' | 'type' | 'avgRating'>
+>;
 
-export interface UpdateWineBody {
-  name?: string;
-  region?: string;
-  image?: string;
-  price?: number;
-  avgRating?: number;
-  type?: WineType;
-}
+export type CreateWineResponse = ApiWine;
+export type UpdateWineResponse = ApiWine;
 
-/* ================================
-   Mutation Response
-================================ */
-
-export type CreateWineResponse = ApiWineBase;
-export type UpdateWineResponse = ApiWineBase;
-
-export interface DeleteWineResponse {
-  id: number;
-}
+export type DeleteWineResponse = Pick<ApiWine, 'id'>;
