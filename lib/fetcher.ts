@@ -1,3 +1,5 @@
+import { ApiPath } from './fetcher.types';
+
 type QueryPrimitive = string | number | boolean | null | undefined;
 
 export type QueryParams = Record<string, QueryPrimitive | QueryPrimitive[]>;
@@ -24,7 +26,7 @@ function buildQueryString(query: QueryParams): string {
 }
 
 export async function fetcher<TResponse = unknown>(
-  path: `/${string}`,
+  path: ApiPath,
   options?: FetcherOptions
 ): Promise<TResponse> {
   const { body, query, headers, ...rest } = options ?? {};
