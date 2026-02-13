@@ -9,7 +9,7 @@ interface AuthLayoutProps {
 
 export default function AuthLayout({ children }: AuthLayoutProps) {
   return (
-    <div className="min-h-screen bg-secondary flex flex-col items-center pt-24 sm:pt-40 px-4">
+    <main className="min-h-screen bg-secondary flex flex-col items-center pt-24 sm:pt-40 px-4">
       <div className="w-full max-w-[500px] bg-white rounded-2xl py-12 px-5 sm:py-20 sm:px-12">
         <div className="flex flex-col items-center mb-10 sm:mb-16">
           <Image
@@ -22,6 +22,6 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
         </div>
         {children}
       </div>
-    </div>
+    </main>
   );
 }
