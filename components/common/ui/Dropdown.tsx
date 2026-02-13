@@ -58,7 +58,7 @@ export const Dropdown = ({ children, className }: { children: ReactNode; classNa
 
   return (
     <DropdownContext.Provider value={{ isOpen, toggle, close, triggerRef, menuRef }}>
-      <div className={cn('relative inline-block text-left', className)}>{children}</div>
+      <div className={cn('relative inline-flex text-left', className)}>{children}</div>
     </DropdownContext.Provider>
   );
 };
