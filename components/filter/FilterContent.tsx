@@ -6,7 +6,7 @@ import RatingFilter from './RatingFilter';
 import { cn } from '@/utils/cn';
 
 interface FilterState {
-  types: WineType[];
+  type: WineType | null;
   minPrice: number;
   maxPrice: number;
   rating: number | null;
@@ -22,7 +22,7 @@ interface FilterContentProps {
 export default function FilterContent({ value, onChange, actions, className }: FilterContentProps) {
   return (
     <div className={cn(className)}>
-      <TypeFilter value={value.types} onChange={types => onChange({ ...value, types })} />
+      <TypeFilter value={value.type} onChange={type => onChange({ ...value, type })} />
       <PriceRange
         value={[value.minPrice, value.maxPrice]}
         onChange={([minPrice, maxPrice]) => onChange({ ...value, minPrice, maxPrice })}
