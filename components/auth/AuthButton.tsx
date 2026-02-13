@@ -1,14 +1,14 @@
 import { useAuth } from '@/providers/Auth/AuthProvider';
 import Link from 'next/link';
-import { Avatar, AvatarFallback, AvatarImage } from '../common/ui/Avatar';
-import defaultUserImage from '@/assets/images/default-user-image.png';
 import { Dropdown } from '../common/ui/Dropdown';
+import UserProfile from '../common/ui/User/UserProfile';
+import AvatarSkeleton from '../common/ui/Avatar/AvatarSkeleton';
 
 export default function AuthButton() {
   const { user, isLoading, logout } = useAuth();
 
   if (isLoading) {
-    return <div className="w-10 h-10" />;
+    return <AvatarSkeleton className="md:w-10 md:h-10" />;
   }
 
   if (!user) {
@@ -22,10 +22,7 @@ export default function AuthButton() {
   return (
     <Dropdown>
       <Dropdown.Trigger>
-        <Avatar>
-          <AvatarImage src={user.image || defaultUserImage.src} alt={user.nickname} />
-          <AvatarFallback>{user.nickname?.[0] ?? '?'}</AvatarFallback>
-        </Avatar>
+        <UserProfile user={user} />
       </Dropdown.Trigger>
       <Dropdown.Menu>
         <Dropdown.Item>
