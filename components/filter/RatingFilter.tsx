@@ -16,8 +16,8 @@ const OPTIONS = [
 
 export default function RatingFilter({ value, onChange, className }: RatingFilterProps) {
   return (
-    <section className={cn('space-y-3', className)}>
-      <h3 className="text-lg font-semibold">평점</h3>
+    <section className={cn('space-y-5 mt-16 lg:mt-12', className)}>
+      <h3 className="text-lg mb-3 font-semibold">평점</h3>
 
       <ul className="flex flex-col gap-3">
         {OPTIONS.map(item => (

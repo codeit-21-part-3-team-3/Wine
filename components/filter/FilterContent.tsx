@@ -28,7 +28,7 @@ export default function FilterContent({ value, onChange, actions, className }: F
         onChange={([minPrice, maxPrice]) => onChange({ ...value, minPrice, maxPrice })}
       />
       <RatingFilter value={value.rating} onChange={rating => onChange({ ...value, rating })} />
-      {actions && <div className="mt-10 flex gap-2 justify-center">{actions}</div>}
+      {actions && <div className="mt-10 lg:mt-16 flex gap-2 justify-center">{actions}</div>}
     </div>
   );
 }
