@@ -9,17 +9,17 @@ interface FilterState {
   types: WineType[];
   minPrice: number;
   maxPrice: number;
-  ratings: number[];
+  rating: number | null;
 }
 
 interface FilterContentProps {
   value: FilterState;
   onChange: (next: FilterState) => void;
-  footer?: ReactNode;
+  actions?: ReactNode;
   className?: string;
 }
 
-export default function FilterContent({ value, onChange, footer, className }: FilterContentProps) {
+export default function FilterContent({ value, onChange, actions, className }: FilterContentProps) {
   return (
     <div className={cn(className)}>
       <TypeFilter value={value.types} onChange={types => onChange({ ...value, types })} />
@@ -27,8 +27,8 @@ export default function FilterContent({ value, onChange, footer, className }: Fi
         value={[value.minPrice, value.maxPrice]}
         onChange={([minPrice, maxPrice]) => onChange({ ...value, minPrice, maxPrice })}
       />
-      <RatingFilter value={value.ratings} onChange={ratings => onChange({ ...value, ratings })} />
-      {footer}
+      <RatingFilter value={value.rating} onChange={rating => onChange({ ...value, rating })} />
+      {actions && <div className="mt-10 flex gap-2 justify-center">{actions}</div>}
     </div>
   );
 }
