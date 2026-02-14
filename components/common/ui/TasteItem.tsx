@@ -1,19 +1,19 @@
 import DashedHorizontalBarGraph from '@/components/common/ui/DashedBarGraph';
 import { cn } from '@/utils/cn';
 
-export type TasteType = '바디감' | '타닌' | '당도' | '산미';
+export type Taste = '바디감' | '탄닌' | '당도' | '산미';
 
-export const TASTE_ORDER: TasteType[] = ['바디감', '타닌', '당도', '산미'];
+export const TASTES: Taste[] = ['바디감', '탄닌', '당도', '산미'];
 
-const DEFAULT_LABELS: Record<TasteType, { min: string; max: string }> = {
-  바디감: { min: '가벼워요', max: '진해요' },
-  타닌: { min: '부드러워요', max: '떫어요' },
-  당도: { min: '드라이해요', max: '달아요' },
-  산미: { min: '안셔요', max: '많이셔요' },
+export const TASTE_LABEL_MAP: Record<Taste, { minLabel: string; maxLabel: string }> = {
+  바디감: { minLabel: '가벼워요', maxLabel: '진해요' },
+  탄닌: { minLabel: '부드러워요', maxLabel: '떫어요' },
+  당도: { minLabel: '드라이해요', maxLabel: '달아요' },
+  산미: { minLabel: '안셔요', maxLabel: '많이셔요' },
 };
 
 interface TasteItemProps {
-  title: TasteType;
+  taste: Taste;
   value: number;
   onChange?: (value: number) => void;
   variant?: 'default' | 'review';
@@ -21,7 +21,7 @@ interface TasteItemProps {
 }
 
 const TasteItem = ({
-  title,
+  taste,
   value,
   onChange,
   variant = 'default',
@@ -29,6 +29,7 @@ const TasteItem = ({
 }: TasteItemProps) => {
   const isInteractive = !!onChange;
   const isReview = variant === 'review';
+  const { minLabel, maxLabel } = TASTE_LABEL_MAP[taste];
 
   const containerStyle = isInteractive
     ? 'max-md:flex-col max-md:items-center max-md:gap-2 flex-row items-center gap-5'
@@ -48,15 +49,15 @@ const TasteItem = ({
 
   return (
     <div className={cn('flex w-full transition-all', containerStyle)}>
-      <span className={titleStyle}>{title}</span>
+      <span className={titleStyle}>{taste}</span>
 
       <div className={cn('flex items-center flex-1', isReview ? 'justify-start' : 'w-full')}>
         <DashedHorizontalBarGraph
           count={value}
           onClick={onChange}
-          variant={variant}
-          leftLabel={DEFAULT_LABELS[title].min}
-          rightLabel={DEFAULT_LABELS[title].max}
+          widthVariant={isReview ? 'compact' : 'full'}
+          minLabel={minLabel}
+          maxLabel={maxLabel}
         />
       </div>
     </div>

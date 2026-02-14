@@ -1,35 +1,49 @@
 import { cn } from '@/utils/cn';
 
+type BarWidthVariant = 'full' | 'compact';
+
 interface DashedBarGraphProps {
-  leftLabel?: string;
-  rightLabel: string;
+  minLabel?: string;
+  maxLabel: string;
   count: number;
   onClick?: (count: number) => void;
-  variant?: 'default' | 'review';
+  widthVariant?: BarWidthVariant;
 }
 
 const MAX_SCORE = 5;
 
+function getFirstOrLastBarStyle(index: number) {
+  if (index === 0) return 'rounded-l-full';
+  if (index === MAX_SCORE - 1) return 'rounded-r-full';
+  return '';
+}
+
 const DashedBarGraph = ({
-  leftLabel,
-  rightLabel,
+  minLabel,
+  maxLabel,
   count,
   onClick,
-  variant = 'default',
+  widthVariant = 'full',
 }: DashedBarGraphProps) => {
   const isReadOnly = !onClick;
-  const isReview = variant === 'review';
+  const isCompact = widthVariant === 'compact';
   const bars = Array.from({ length: MAX_SCORE }, (_, i) => i + 1);
 
+  const BAR_WIDTH_STYLE = {
+    full: 'flex-1',
+    compact: 'w-6',
+  };
+
   return (
-    <div className={cn('flex items-center w-full', isReview ? 'gap-3' : 'gap-1')}>
-      {!isReadOnly && leftLabel && (
-        <span className="text-sm w-16 text-left shrink-0 text-foreground/50">{leftLabel}</span>
+    <div className={cn('flex items-center w-full', isCompact ? 'gap-3' : 'gap-1')}>
+      {!isReadOnly && minLabel && (
+        <span className="text-sm w-16 text-left shrink-0 text-foreground/50">{minLabel}</span>
       )}
 
-      <div className={cn('flex items-center gap-1', isReview ? 'flex-none' : 'flex-1')}>
+      <div className={cn('flex items-center gap-1', isCompact ? 'flex-none' : 'flex-1')}>
         {bars.map((score, index) => {
           const isActive = score <= count;
+
           return (
             <button
               key={score}
@@ -41,9 +55,8 @@ const DashedBarGraph = ({
               <div
                 className={cn(
                   'h-2.5 transition-all duration-100',
-                  isReview ? 'w-6' : 'flex-1',
-                  index === 0 && 'rounded-l-full',
-                  index === MAX_SCORE - 1 && 'rounded-r-full',
+                  BAR_WIDTH_STYLE[widthVariant],
+                  getFirstOrLastBarStyle(index),
                   isActive ? 'bg-secondary-foreground' : 'bg-secondary',
                   !isReadOnly && 'hover:opacity-80'
                 )}
@@ -52,7 +65,7 @@ const DashedBarGraph = ({
           );
         })}
       </div>
-      <span className="text-sm w-16 text-right shrink-0 text-foreground/50">{rightLabel}</span>
+      <span className="text-sm w-16 text-right shrink-0 text-foreground/50">{maxLabel}</span>
     </div>
   );
 };
