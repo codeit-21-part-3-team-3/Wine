@@ -35,8 +35,7 @@ export const mockWineData: WineListResponse = {
       id: 2311,
       name: 'Bordeaux Prosecco 2013',
       region: 'Bordeaux',
-      image:
-        'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=800&q=80',
+      image: 'https://i.ifh.cc/Xq5yas.png',
       price: 91000,
       type: 'SPARKLING',
       avgRating: 3.46,
