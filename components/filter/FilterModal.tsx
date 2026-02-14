@@ -6,7 +6,7 @@ import Icon from '../common/ui/Icon';
 
 type FilterContentProps = ComponentProps<typeof FilterContent>;
 
-interface FilterModalProps extends Omit<FilterContentProps, 'footer'> {
+interface FilterModalProps extends Omit<FilterContentProps, 'actions'> {
   onApply: () => void;
   onReset: () => void;
 }

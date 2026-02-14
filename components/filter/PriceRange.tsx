@@ -45,7 +45,7 @@ export default function PriceRange({ value, onChange, className }: PriceRangePro
           step={STEP}
           value={min}
           onChange={e => handleMin(Number(e.target.value))}
-          className="absolute top-1/2 -translate-y-1/2 left-0 right-0 w-full h-0 appearance-none bg-transparent pointer-events-none range-thumb"
+          className="absolute top-1/2 -translate-y-1/2 left-0 right-0 w-full h-0 appearance-none bg-transparent range-thumb"
         />
         <input
           type="range"
@@ -54,7 +54,7 @@ export default function PriceRange({ value, onChange, className }: PriceRangePro
           step={STEP}
           value={max}
           onChange={e => handleMax(Number(e.target.value))}
-          className="absolute top-1/2 -translate-y-1/2 w-full h-0 appearance-none bg-transparent pointer-events-none range-thumb"
+          className="absolute top-1/2 -translate-y-1/2 w-full h-0 appearance-none bg-transparent range-thumb"
         />
       </div>
     </section>

@@ -5,7 +5,7 @@ import Button from '../common/ui/Button';
 
 type FilterContentProps = ComponentProps<typeof FilterContent>;
 
-interface SidebarFilterProps extends Omit<FilterContentProps, 'footer'> {
+interface SidebarFilterProps extends Omit<FilterContentProps, 'actions'> {
   onApply: () => void;
   className?: string;
 }
