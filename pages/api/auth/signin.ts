@@ -27,11 +27,13 @@ export default async function handler(
     });
 
     if (!response.ok) {
-      if (response.status === 401 || response.status === 400) {
+      if (response.status === 401) {
         return res.status(401).json({ message: '이메일 또는 비밀번호가 일치하지 않습니다.' });
       }
 
-      return res.status(response.status).json({ message: '서버 오류가 발생했습니다.' });
+      const errorData = await response.json();
+
+      return res.status(response.status).json(errorData);
     }
 
     const data: AuthResponse = await response.json();
