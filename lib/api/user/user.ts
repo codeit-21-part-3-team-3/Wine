@@ -8,26 +8,26 @@ import {
 } from './user.types';
 
 export function getMe() {
-  return fetcher<GetMeResponse>('/api/proxy/users/me', {
+  return fetcher<GetMeResponse>('/users/me', {
     method: 'GET',
   });
 }
 
 export function updateMe(body: UpdateMeRequest) {
-  return fetcher<UpdateMeResponse>('/api/proxy/users/me', {
+  return fetcher<UpdateMeResponse>('/users/me', {
     method: 'PATCH',
     body,
   });
 }
 
 export function getMyReviews() {
-  return fetcher<GetMyReviewsResponse>('/api/proxy/users/me/reviews', {
+  return fetcher<GetMyReviewsResponse>('/users/me/reviews', {
     method: 'GET',
   });
 }
 
 export function getMyWines() {
-  return fetcher<GetMyWinesResponse>('/api/proxy/users/me/wines', {
+  return fetcher<GetMyWinesResponse>('/users/me/wines', {
     method: 'GET',
   });
 }
