@@ -5,13 +5,13 @@ import { cn } from '@/utils/cn';
 
 interface RadioGroupContextValue {
   value: string;
-  onValueChange: Dispatch<SetStateAction<string>>;
+  onValueChange: (value: string) => void;
   name: string;
 }
 
 interface RadioGroupProps {
   value: string;
-  onValueChange: Dispatch<SetStateAction<string>>;
+  onValueChange: (value: string) => void;
   children: ReactNode;
   className?: string;
   name?: string;
