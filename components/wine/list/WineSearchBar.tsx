@@ -12,7 +12,7 @@ export default function WineSearchBar({ value, onChange }: WineSearchBarProps) {
     <div className="mb-6">
       <Input
         value={value}
-        onChange={onChange}
+        onChange={e => onChange?.(e.target.value)}
         placeholder="와인을 검색해 보세요"
         prefix={<Image src={searchIcon} alt="" aria-hidden width={16} height={16} />}
       />

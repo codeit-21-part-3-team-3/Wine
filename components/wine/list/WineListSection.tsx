@@ -17,7 +17,7 @@ export default function WineListSection() {
   const showList = !showEmpty;
 
   return (
-    <section className="flex-1 flex flex-col">
+    <section className="flex-1 pl-15 flex flex-col">
       <WineSearchBar value={keyword} onChange={setKeyword} />
       {showEmpty && <WineListEmpty />}
       {showList && <WineList wines={filtered} />}
