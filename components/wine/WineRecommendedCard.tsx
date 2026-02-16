@@ -2,8 +2,6 @@ import { cn } from '@/utils/cn';
 import Image from 'next/image';
 import { HTMLAttributes } from 'react';
 
-// ✨ 멘토님 리뷰 반영: CardStyle 인터페이스 제거 (타입 추론 활용)
-
 interface WineRecommendedCardProps extends HTMLAttributes<HTMLDivElement> {
   name: string;
   region: string;
@@ -40,7 +38,6 @@ export const WineRecommendedCard = ({
 }: WineRecommendedCardProps) => {
   const isDisplayActive = variant === 'landing' && (isActive ?? false);
 
-  // ✨ 내부 로직 단순화: 스타일 데이터를 객체화하여 중복 삼항 연산자 제거
   const STYLES = {
     landing: {
       active: {
@@ -72,7 +69,6 @@ export const WineRecommendedCard = ({
     },
   } as const;
 
-  // ✨ 해결 포인트: variant와 isActive에 따라 사용할 스타일 뭉치를 한 번에 선택
   const currentStyles =
     variant === 'landing'
       ? isDisplayActive
@@ -102,7 +98,6 @@ export const WineRecommendedCard = ({
             alt={name}
             fill
             sizes="(max-width: 768px) 100vw, 300px"
-            // ✨ priority 속성을 추가하여 LCP 최적화 및 깜빡임 방지 (선택 사항이나 추천)
             className={cn('object-contain transition-transform duration-700', currentStyles.image)}
           />
         </div>

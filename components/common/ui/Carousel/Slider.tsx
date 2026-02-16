@@ -51,8 +51,6 @@ export const Slider = ({
         className={cn('common-swiper overflow-hidden', scrollbarStyles)}
       >
         {children.map((child, index) => {
-          // 1. itemKeys가 있으면 그 값을 쓰고, 없으면 index를 씁니다.
-          // 2. Swiper Loop 시 중복 키 에러를 방지하기 위해 prefix를 붙여주는 것이 좋습니다.
           const slideKey = itemKeys ? `slide-${itemKeys[index]}` : `slide-${index}`;
 
           return (
