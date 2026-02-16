@@ -1,6 +1,16 @@
 import { cn } from '@/utils/cn';
 import Image from 'next/image';
-import { SliderInjectedProps } from '@/components/common/ui/Carousel/Slider';
+import { HTMLAttributes } from 'react';
+
+// ✨ 멘토님 리뷰 반영: CardStyle 인터페이스 제거 (타입 추론 활용)
+
+interface WineRecommendedCardProps extends HTMLAttributes<HTMLDivElement> {
+  name: string;
+  region: string;
+  image: string;
+  isActive?: boolean;
+  variant?: 'landing' | 'list';
+}
 
 const CARD_VARIANTS = {
   landing: {
@@ -19,60 +29,83 @@ const CARD_VARIANTS = {
   },
 } as const;
 
-interface WineRecommendedCardProps extends SliderInjectedProps {
-  name: string;
-  region: string;
-  image: string;
-  variant?: 'landing' | 'list';
-}
-
 export const WineRecommendedCard = ({
   name,
   region,
   image,
   isActive,
   variant = 'landing',
+  className,
   ...props
 }: WineRecommendedCardProps) => {
-  const isLanding = variant === 'landing';
-  const isDisplayActive = isLanding && (isActive ?? false);
+  const isDisplayActive = variant === 'landing' && (isActive ?? false);
 
-  const currentStyles = isLanding
-    ? {
-        card: isDisplayActive ? CARD_VARIANTS.landing.active : CARD_VARIANTS.landing.base,
-        title: isDisplayActive ? CARD_VARIANTS.landing.activeTitle : CARD_VARIANTS.landing.title,
-        sub: isDisplayActive ? CARD_VARIANTS.landing.activeSub : CARD_VARIANTS.landing.sub,
-      }
-    : {
+  // ✨ 내부 로직 단순화: 스타일 데이터를 객체화하여 중복 삼항 연산자 제거
+  const STYLES = {
+    landing: {
+      active: {
+        card: CARD_VARIANTS.landing.active,
+        title: CARD_VARIANTS.landing.activeTitle,
+        sub: CARD_VARIANTS.landing.activeSub,
+        container: 'scale-100 lg:scale-110 z-10 opacity-100',
+        image: 'scale-100 opacity-100',
+        padding: 'px-3 md:px-6 py-6 md:py-8 lg:py-10',
+      },
+      base: {
+        card: CARD_VARIANTS.landing.base,
+        title: CARD_VARIANTS.landing.title,
+        sub: CARD_VARIANTS.landing.sub,
+        container: 'scale-90 lg:scale-95 opacity-40',
+        image: 'scale-90 opacity-80',
+        padding: 'px-3 md:px-6 py-6 md:py-8 lg:py-10',
+      },
+    },
+    list: {
+      base: {
         card: CARD_VARIANTS.list.base,
         title: CARD_VARIANTS.list.title,
         sub: CARD_VARIANTS.list.sub,
-      };
-  let imageStyle = 'scale-100 opacity-100';
+        container: 'scale-100 opacity-100',
+        image: 'scale-100 opacity-100',
+        padding: 'px-4 py-8',
+      },
+    },
+  } as const;
 
-  if (isLanding) {
-    imageStyle = isDisplayActive ? 'scale-100 opacity-100' : 'scale-90 opacity-80';
-  }
+  // ✨ 해결 포인트: variant와 isActive에 따라 사용할 스타일 뭉치를 한 번에 선택
+  const currentStyles =
+    variant === 'landing'
+      ? isDisplayActive
+        ? STYLES.landing.active
+        : STYLES.landing.base
+      : STYLES.list.base;
+
   return (
-    <div {...props} className="flex flex-col items-center w-full px-2 py-8">
+    <div
+      {...props}
+      className={cn(
+        'flex flex-col items-center w-full transition-all duration-500 ease-out',
+        currentStyles.padding,
+        currentStyles.container,
+        className
+      )}
+    >
       <div
         className={cn(
-          'w-full flex flex-col items-center justify-center transition-[transform,opacity,background-color] duration-700 ease-out',
-          'rounded-2xl md:rounded-3xl p-4 md:p-8',
-          isLanding && (isDisplayActive ? 'scale-110 opacity-100' : 'scale-90 opacity-40'),
+          'w-full flex flex-col items-center justify-center transition-all duration-700 ease-out rounded-2xl md:rounded-3xl p-4 md:p-8',
           currentStyles.card
         )}
       >
-        <div className={cn('relative w-full overflow-hidden', 'h-40 md:h-56')}>
+        <div className={cn('relative w-full overflow-hidden h-40 md:h-56')}>
           <Image
             src={image}
             alt={name}
             fill
             sizes="(max-width: 768px) 100vw, 300px"
-            className={cn('object-contain transition-transform duration-700', imageStyle)}
+            // ✨ priority 속성을 추가하여 LCP 최적화 및 깜빡임 방지 (선택 사항이나 추천)
+            className={cn('object-contain transition-transform duration-700', currentStyles.image)}
           />
         </div>
-
         <div className="mt-8 text-center">
           <h3 className={cn('transition-colors duration-500', currentStyles.title)}>{name}</h3>
           <p className={cn('mt-1 transition-colors duration-500', currentStyles.sub)}>{region}</p>

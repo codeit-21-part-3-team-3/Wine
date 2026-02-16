@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState, ReactNode } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Scrollbar, Autoplay } from 'swiper/modules';
 import { SwiperOptions } from 'swiper/types';
@@ -10,128 +10,80 @@ import nextIcon from '@/assets/icon/icon-carousel-next.svg';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/scrollbar';
-import 'swiper/css/autoplay';
-
-interface SliderProps {
-  type: 'landing' | 'list';
-  children: ((props: SliderInjectedProps) => React.ReactNode)[];
-  slidesPerView?: number;
-  centeredSlides?: boolean;
-  spaceBetween?: number;
-}
 
 export interface SliderInjectedProps {
   isActive?: boolean;
 }
 
-const LANDING_CONFIG: SwiperOptions = {
-  loop: true,
-  centeredSlides: true,
-  autoplay: { delay: 4000, disableOnInteraction: false, pauseOnMouseEnter: true },
-  slidesPerView: 2.1,
-  spaceBetween: 12,
-  breakpoints: {
-    768: { slidesPerView: 3, spaceBetween: 24 },
-    1200: { slidesPerView: 5, spaceBetween: 20 },
-  },
-};
+type SliderChild = ((props: SliderInjectedProps) => ReactNode) | ReactNode;
 
-const LIST_CONFIG: SwiperOptions = {
-  loop: false,
-  centeredSlides: false,
-  autoplay: false,
-  navigation: { nextEl: '.icon-carousel-next', prevEl: '.icon-carousel-prev' },
-  scrollbar: { draggable: true, hide: false },
-  slidesPerView: 2,
-  spaceBetween: 12,
-  breakpoints: {
-    768: { slidesPerView: 3, spaceBetween: 24 },
-    1200: { slidesPerView: 4, spaceBetween: 20 },
-  },
-};
-
-const SCROLLBAR_STYLES = cn(
-  '[&_.swiper-scrollbar]:max-md:block [&_.swiper-scrollbar]:hidden',
-  '[&_.swiper-scrollbar]:relative [&_.swiper-scrollbar]:mt-[30px] [&_.swiper-scrollbar]:mx-auto',
-  '[&_.swiper-scrollbar]:w-[80%] [&_.swiper-scrollbar]:bg-black/10 [&_.swiper-scrollbar]:h-1',
-  '[&_.swiper-scrollbar-drag]:bg-black'
-);
+interface SliderProps extends SwiperOptions {
+  children: SliderChild[];
+  className?: string;
+  showNavigation?: boolean;
+  scrollbarStyles?: string;
+  itemKeys?: (string | number)[];
+}
 
 export const Slider = ({
-  type,
   children,
-  slidesPerView,
-  centeredSlides,
-  spaceBetween,
+  className,
+  showNavigation = false,
+  scrollbarStyles,
+  itemKeys,
+  ...swiperConfig
 }: SliderProps) => {
-  const isLanding = type === 'landing';
-  const baseConfig = isLanding ? LANDING_CONFIG : LIST_CONFIG;
-  const currentConfig = {
-    ...baseConfig,
-    ...(slidesPerView !== undefined && { slidesPerView }),
-    ...(centeredSlides !== undefined && { centeredSlides }),
-    ...(spaceBetween !== undefined && { spaceBetween }),
-  };
-
-  const childrenArray = React.useMemo(() => {
-    return Array.isArray(children) ? children : [children];
-  }, [children]);
+  const [prevEl, setPrevEl] = useState<HTMLButtonElement | null>(null);
+  const [nextEl, setNextEl] = useState<HTMLButtonElement | null>(null);
 
   return (
-    <div className="w-full relative overflow-hidden">
-      <div
-        className={cn(
-          'w-full lg:max-w-300 mx-auto px-0 relative py-12 overflow-visible',
-          !isLanding && 'px-4 lg:px-12'
-        )}
+    <div className={cn('w-full relative overflow-hidden', className)}>
+      <Swiper
+        modules={[Navigation, Scrollbar, Autoplay]}
+        {...swiperConfig}
+        navigation={{
+          prevEl,
+          nextEl,
+        }}
+        observer={true}
+        observeParents={true}
+        watchSlidesProgress={true}
+        className={cn('common-swiper overflow-hidden', scrollbarStyles)}
       >
-        <Swiper
-          modules={[Navigation, Scrollbar, Autoplay]}
-          {...currentConfig}
-          className={cn('common-swiper overflow-hidden', !isLanding && SCROLLBAR_STYLES)}
-        >
-          {childrenArray.map((child, index) => (
-            <SwiperSlide key={index} className="flex justify-center items-center">
-              {({ isActive }) => {
-                const slidePadding = isLanding ? 'px-3 md:px-6 py-6 md:py-8 lg:py-10' : 'px-4';
-                const animation = isLanding
-                  ? isActive
-                    ? 'scale-100 lg:scale-110 z-10 opacity-100'
-                    : 'scale-90 lg:scale-95 opacity-40'
-                  : 'scale-100 opacity-100';
+        {children.map((child, index) => {
+          // 1. itemKeys가 있으면 그 값을 쓰고, 없으면 index를 씁니다.
+          // 2. Swiper Loop 시 중복 키 에러를 방지하기 위해 prefix를 붙여주는 것이 좋습니다.
+          const slideKey = itemKeys ? `slide-${itemKeys[index]}` : `slide-${index}`;
 
-                return (
-                  <div
-                    className={cn('transition-all duration-500 w-full', slidePadding, animation)}
-                  >
-                    <div className="w-full mx-auto">
-                      {typeof child === 'function'
-                        ? (child as (props: SliderInjectedProps) => React.ReactNode)({ isActive })
-                        : child}
-                    </div>
-                  </div>
-                );
-              }}
+          return (
+            <SwiperSlide key={slideKey} className="flex justify-center items-center">
+              {swiperProps => (typeof child === 'function' ? child(swiperProps) : child)}
             </SwiperSlide>
-          ))}
-        </Swiper>
-
-        {!isLanding && <NavButtons />}
-      </div>
+          );
+        })}
+      </Swiper>
+      {showNavigation && <NavButtons setPrevEl={setPrevEl} setNextEl={setNextEl} />}
     </div>
   );
 };
 
-const NavButtons = () => {
+const NavButtons = ({
+  setPrevEl,
+  setNextEl,
+}: {
+  setPrevEl: (el: HTMLButtonElement | null) => void;
+  setNextEl: (el: HTMLButtonElement | null) => void;
+}) => {
   const btnClass =
-    'hidden md:flex items-center justify-center absolute top-1/2 -translate-y-1/2 w-12 h-12 bg-transparent border-none z-50 cursor-pointer p-0';
+    'hidden md:flex items-center justify-center absolute top-1/2 -translate-y-1/2 w-12 h-12 z-50 cursor-pointer p-0 bg-transparent border-none';
+
   return (
     <>
-      <button className={cn(btnClass, 'left-[-20px] icon-carousel-prev')} aria-label="이전">
-        <NextImage src={prevIcon} alt="" width={48} height={48} className="w-full h-full" />
+      <button ref={setPrevEl} className={cn(btnClass, 'left-[-20px]')} aria-label="이전">
+        <NextImage src={prevIcon} alt="" width={48} height={48} priority />
       </button>
-      <button className={cn(btnClass, 'right-[-20px] icon-carousel-next')} aria-label="다음">
-        <NextImage src={nextIcon} alt="" width={48} height={48} className="w-full h-full" />
+      <button ref={setNextEl} className={cn(btnClass, 'right-[-20px]')} aria-label="다음">
+        <NextImage src={nextIcon} alt="" width={48} height={48} priority />
       </button>
     </>
   );

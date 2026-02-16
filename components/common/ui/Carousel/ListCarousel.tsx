@@ -1,5 +1,7 @@
 import { Slider } from './Slider';
 import { WineRecommendedCard } from '@/components/wine/WineRecommendedCard';
+import { SwiperOptions } from 'swiper/types';
+import { cn } from '@/utils/cn';
 
 interface ListCarouselProps {
   wineList: Array<{
@@ -10,25 +12,50 @@ interface ListCarouselProps {
   }>;
 }
 
+const LIST_PRESET: SwiperOptions = {
+  loop: false,
+  centeredSlides: false,
+  autoplay: false,
+  scrollbar: {
+    draggable: true,
+    hide: false,
+  },
+  slidesPerView: 2,
+  spaceBetween: 12,
+  breakpoints: {
+    768: { slidesPerView: 3, spaceBetween: 24 },
+    1200: { slidesPerView: 4, spaceBetween: 20 },
+  },
+};
+
+const SCROLLBAR_STYLES = cn(
+  '[&_.swiper-scrollbar]:max-md:block [&_.swiper-scrollbar]:hidden',
+  '[&_.swiper-scrollbar]:relative [&_.swiper-scrollbar]:mt-[30px] [&_.swiper-scrollbar]:mx-auto',
+  '[&_.swiper-scrollbar]:w-[80%] [&_.swiper-scrollbar]:bg-black/10 [&_.swiper-scrollbar]:h-1',
+  '[&_.swiper-scrollbar-drag]:bg-black'
+);
+
 export const ListCarousel = ({ wineList }: ListCarouselProps) => {
   return (
     <section className="w-full py-24">
-      <div className="w-full">
-        <Slider type="list">
-          {wineList.map((wine, idx) => {
-            const RenderItem = () => (
-              <div key={`${wine.id}-${idx}`} className="flex flex-col group">
-                <WineRecommendedCard
-                  isActive={false}
-                  name={wine.name}
-                  region={wine.region}
-                  image={wine.image}
-                  variant="list"
-                />
-              </div>
-            );
-            return RenderItem;
-          })}
+      <div className="w-full px-4 lg:px-12">
+        <Slider
+          {...LIST_PRESET}
+          itemKeys={wineList.map(wine => wine.id)}
+          showNavigation={true}
+          scrollbarStyles={SCROLLBAR_STYLES}
+        >
+          {wineList.map(wine => (
+            <div key={wine.id} className="flex flex-col group w-full">
+              <WineRecommendedCard
+                name={wine.name}
+                region={wine.region}
+                image={wine.image}
+                isActive={false}
+                variant="list"
+              />
+            </div>
+          ))}
         </Slider>
       </div>
     </section>
