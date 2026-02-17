@@ -1,14 +1,13 @@
-import { ComponentPropsWithRef, ReactNode, ChangeEvent } from 'react';
+import { ComponentPropsWithRef, ReactNode } from 'react';
 import { cn } from '@/utils/cn';
 import Image from 'next/image';
 import iconInputError from '@/assets/icon/icon-input-error.svg';
 
-interface InputProps extends Omit<ComponentPropsWithRef<'input'>, 'type' | 'onChange' | 'prefix'> {
+interface InputProps extends Omit<ComponentPropsWithRef<'input'>, 'type' | 'prefix'> {
   type?: 'text' | 'password';
   status?: 'default' | 'error';
   prefix?: ReactNode;
   suffix?: ReactNode;
-  onChange?: (value: string) => void;
 }
 
 const Input = ({
@@ -17,14 +16,9 @@ const Input = ({
   status = 'default',
   prefix,
   suffix,
-  onChange,
   ref,
   ...props
 }: InputProps) => {
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    onChange?.(e.target.value);
-  };
-
   const suffixContent =
     suffix ??
     (status === 'error' ? (
@@ -40,7 +34,6 @@ const Input = ({
       <input
         ref={ref}
         type={type}
-        onChange={handleChange}
         aria-invalid={status === 'error' ? 'true' : 'false'}
         className={cn(
           'w-full h-11 rounded border transition-colors outline-none text-sm',
