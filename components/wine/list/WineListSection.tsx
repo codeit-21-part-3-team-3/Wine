@@ -1,18 +1,23 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import WineSearchBar from './WineSearchBar';
 import WineList from './WineList';
-import { mockWineData } from '@/mock/wine.mock';
 import WineListEmpty from './WineListEmpty';
+import { Wine } from '@/types/domain/wine';
 
-export default function WineListSection() {
+interface WineListSectionProps {
+  initialWines: Wine[];
+}
+
+export default function WineListSection({ initialWines }: WineListSectionProps) {
   const [keyword, setKeyword] = useState('');
 
-  const wines = mockWineData.list;
+  const wines = initialWines;
 
-  const filtered = wines.filter(w => w.name.toLowerCase().includes(keyword.toLowerCase()));
+  const filtered = useMemo(() => {
+    return wines.filter(w => w.name.toLowerCase().includes(keyword.toLowerCase()));
+  }, [keyword, wines]);
 
   const isSearching = keyword.trim().length > 0;
-
   const showEmpty = isSearching && filtered.length === 0;
   const showList = !showEmpty;
 
