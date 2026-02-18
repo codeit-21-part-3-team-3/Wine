@@ -9,7 +9,8 @@ type FetcherOptions = Omit<RequestInit, 'body'> & {
   query?: QueryParams;
 };
 
-const BASE_URL = '/api/proxy';
+const isServer = typeof window === 'undefined';
+const BASE_URL = isServer ? (process.env.API_URL ?? '') : '/api/proxy';
 
 function buildQueryString(query: QueryParams): string {
   const params = new URLSearchParams();
