@@ -4,8 +4,8 @@ import { Navigation, Scrollbar, Autoplay } from 'swiper/modules';
 import { SwiperOptions } from 'swiper/types';
 import { cn } from '@/utils/cn';
 import NextImage from 'next/image';
-import prevIcon from '@/assets/icon/icon-carousel-prev.svg';
-import nextIcon from '@/assets/icon/icon-carousel-next.svg';
+import prevIcon from '@/assets/icons/icon-carousel-prev.svg';
+import nextIcon from '@/assets/icons/icon-carousel-next.svg';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -77,10 +77,10 @@ const NavButtons = ({
 
   return (
     <>
-      <button ref={setPrevEl} className={cn(btnClass, 'left-[-20px]')} aria-label="이전">
+      <button ref={setPrevEl} className={cn(btnClass, 'left-[0px]')} aria-label="이전">
         <NextImage src={prevIcon} alt="" width={48} height={48} priority />
       </button>
-      <button ref={setNextEl} className={cn(btnClass, 'right-[-20px]')} aria-label="다음">
+      <button ref={setNextEl} className={cn(btnClass, 'right-[0px]')} aria-label="다음">
         <NextImage src={nextIcon} alt="" width={48} height={48} priority />
       </button>
     </>

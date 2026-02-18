@@ -1,4 +1,4 @@
-import { Slider } from './Slider';
+import { Slider } from '@/components/common/ui/Slider';
 import { WineRecommendedCard } from '@/components/wine/WineRecommendedCard';
 import { SwiperOptions } from 'swiper/types';
 import { cn } from '@/utils/cn';
@@ -37,7 +37,7 @@ const SCROLLBAR_STYLES = cn(
 
 export const ListCarousel = ({ wineList }: ListCarouselProps) => {
   return (
-    <section className="w-full py-24">
+    <section className="w-full">
       <div className="w-full px-4 lg:px-12">
         <Slider
           {...LIST_PRESET}

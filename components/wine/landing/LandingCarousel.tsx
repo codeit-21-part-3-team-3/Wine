@@ -1,4 +1,4 @@
-import { Slider } from '@/components/common/ui/Carousel/Slider';
+import { Slider } from '@/components/common/ui/Slider';
 import { WineRecommendedCard } from '@/components/wine/WineRecommendedCard';
 import { SwiperOptions } from 'swiper/types';
 
