@@ -3,10 +3,12 @@ import heart from '@/assets/icons/heart.png';
 import kebab from '@/assets/icons/kebab-menu.png';
 import chevronUp from '@/assets/icons/chevron-up.png';
 import chevronDown from '@/assets/icons/chevron-down.png';
+import filter from '@/assets/icons/filter.png';
 
 const ICON_MAP = {
   heart,
   kebab,
+  filter,
   'chevron-up': chevronUp,
   'chevron-down': chevronDown,
 } as const;
