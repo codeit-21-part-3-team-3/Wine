@@ -5,7 +5,7 @@ export function uploadImage(file: File) {
   const formData = new FormData();
   formData.append('image', file);
 
-  return fetcher<UploadImageResponse>(`/api/proxy/images/upload`, {
+  return fetcher<UploadImageResponse>(`/images/upload`, {
     method: 'POST',
     body: formData,
   });
