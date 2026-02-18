@@ -1,9 +1,9 @@
-import { cn } from '@/utils/cn';
 import ReviewRating from '@/components/review/ReviewRating';
+import { ReviewStatItem } from '@/utils/reviewStats';
 
 interface ReviewStatsProps {
   rating: number;
-  distribution: { star: number; ratio: string }[];
+  distribution: ReviewStatItem[];
 }
 
 export default function ReviewStats({ rating, distribution }: ReviewStatsProps) {
@@ -28,7 +28,10 @@ export default function ReviewStats({ rating, distribution }: ReviewStatsProps) 
               {item.star}점
             </span>
             <div className="flex-1 h-1.5 bg-secondary rounded-full overflow-hidden">
-              <div className={cn('h-full bg-foreground transition-all duration-500', item.ratio)} />
+              <div
+                className="h-full bg-foreground transition-all duration-500"
+                style={{ width: `${item.ratio}%` }}
+              />
             </div>
           </div>
         ))}

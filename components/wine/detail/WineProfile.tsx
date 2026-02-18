@@ -1,5 +1,3 @@
-import { cn } from '@/utils/cn';
-
 export default function WineProfile() {
   return (
     <section className="flex flex-col lg:flex-row gap-y-12 lg:gap-y-0 lg:gap-x-20 py-6 md:py-10 lg:py-20 border-b border-border">
