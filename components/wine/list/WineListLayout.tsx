@@ -25,7 +25,7 @@ const initialFilter: FilterState = {
 export default function WineListLayout({ initialWines }: WineListLayoutProps) {
   const [filter, setFilter] = useState<FilterState>(initialFilter);
   const handleApply = () => {
-    console.log('apply filter');
+    return null;
   };
 
   return (
