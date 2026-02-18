@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import { Review, calculateAverage, calculateDistribution } from '@/utils/reviewStats';
+import { Review } from '@/types/domain/review';
+import { calculateAverage, calculateDistribution } from '@/utils/reviewStats';
 
 export const useReviewStats = (reviews: Review[] = []) => {
   return useMemo(() => {
