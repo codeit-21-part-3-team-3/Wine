@@ -9,13 +9,13 @@ interface MyRivewCardProps {
   review: Review;
 }
 
-export default function MyRivewCard({ review }: MyRivewCardProps) {
+export default function MyReviewCard({ review }: MyRivewCardProps) {
   if (!review.wine) return null;
   return (
     <ReviewContainer
       header={
         <div className="flex flex-col gap-2">
-          <div className="flex justify-between mt-10">
+          <div className="flex justify-between mt-5">
             <div className="flex gap-2">
               <ReviewRating rating={review.rating} />
               <p className="mr-2">{review.rating}</p>
