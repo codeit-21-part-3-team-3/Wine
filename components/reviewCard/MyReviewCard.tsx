@@ -5,11 +5,11 @@ import { formatTimeAgo } from '@/utils/formatTimeAgo';
 import IconButton from '../common/ui/IconButton';
 import ReviewWineInfo from '../review/ReviewWineInfo';
 
-interface MyRivewCardProps {
+interface MyReviewCardProps {
   review: Review;
 }
 
-export default function MyReviewCard({ review }: MyRivewCardProps) {
+export default function MyReviewCard({ review }: MyReviewCardProps) {
   if (!review.wine) return null;
   return (
     <ReviewContainer
