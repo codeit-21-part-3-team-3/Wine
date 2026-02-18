@@ -1,5 +1,5 @@
-import { useRef, useState, useCallback, useEffect } from 'react';
-import type { FormEvent } from 'react';
+import { useRef, useState, useCallback } from 'react';
+import type { SubmitEvent } from 'react';
 import type { useFormProps, Field, RegisterOptions } from './types';
 import { getErrorMessage } from './utils';
 
@@ -10,17 +10,13 @@ function useForm<TFieldValues extends Record<string, unknown> = Record<string, u
   const errorsRef = useRef(errors);
   const fieldsRef = useRef<Partial<Record<keyof TFieldValues, Field<TFieldValues>>>>({});
 
-  useEffect(() => {
-    errorsRef.current = errors;
-  }, [errors]);
-
   const getValues = useCallback((): TFieldValues => {
     const values = {} as TFieldValues;
 
     Object.entries(fieldsRef.current).forEach(([key, field]) => {
       const name = key as keyof TFieldValues;
       const validElements = field!.elements.filter(
-        (el): el is HTMLInputElement | HTMLTextAreaElement => el !== null
+        (el): el is HTMLInputElement | HTMLTextAreaElement => el !== null && el.isConnected
       );
 
       if (validElements.length === 0) return;
@@ -58,11 +54,32 @@ function useForm<TFieldValues extends Record<string, unknown> = Record<string, u
     return values;
   }, []);
 
+  const isFieldAlive = useCallback((name: keyof TFieldValues) => {
+    const field = fieldsRef.current[name];
+    if (!field) return false;
+    return field.elements.some(el => el && el.isConnected);
+  }, []);
+
+  const clearError = useCallback((name: keyof TFieldValues) => {
+    setErrors(prev => {
+      if (!prev[name]) return prev;
+      const next = { ...prev };
+      delete next[name];
+      errorsRef.current = next;
+      return next;
+    });
+  }, []);
+
   const validateField = useCallback(
     (name: keyof TFieldValues, isTriggered = false) => {
       function run(targetName: keyof TFieldValues, triggered: boolean) {
         const field = fieldsRef.current[targetName];
         if (!field) return;
+
+        if (!isFieldAlive(targetName)) {
+          clearError(targetName);
+          return;
+        }
 
         const values = getValues();
         const errorMessage = getErrorMessage(field.rules, values[targetName], values);
@@ -72,6 +89,7 @@ function useForm<TFieldValues extends Record<string, unknown> = Record<string, u
           const next = { ...prev };
           if (errorMessage) next[targetName] = errorMessage;
           else delete next[targetName];
+          errorsRef.current = next;
           return next;
         });
 
@@ -81,7 +99,7 @@ function useForm<TFieldValues extends Record<string, unknown> = Record<string, u
       }
       run(name, isTriggered);
     },
-    [getValues]
+    [getValues, isFieldAlive, clearError]
   );
 
   const register = useCallback(
@@ -89,6 +107,7 @@ function useForm<TFieldValues extends Record<string, unknown> = Record<string, u
       name: TFieldName,
       rules: RegisterOptions<TFieldValues, TFieldName> = {}
     ) => {
+      let lastEl: HTMLInputElement | HTMLTextAreaElement | null = null;
       if (!fieldsRef.current[name]) {
         fieldsRef.current[name] = {
           elements: [],
@@ -102,17 +121,19 @@ function useForm<TFieldValues extends Record<string, unknown> = Record<string, u
       return {
         name,
         ref: (element: HTMLInputElement | HTMLTextAreaElement | null) => {
-          if (!element) {
-            if (fieldsRef.current[name]) {
-              fieldsRef.current[name]!.elements = fieldsRef.current[name]!.elements.filter(
-                el => el !== null && el !== element
-              );
+          const field = fieldsRef.current[name];
+          if (!field) return;
+
+          if (element === null) {
+            if (lastEl) {
+              field.elements = field.elements.filter(el => el !== lastEl);
+              lastEl = null;
             }
             return;
           }
-          if (!fieldsRef.current[name]!.elements.includes(element)) {
-            fieldsRef.current[name]!.elements.push(element);
-          }
+
+          lastEl = element;
+          if (!field.elements.includes(element)) field.elements.push(element);
         },
         onBlur: () => {
           fieldsRef.current[name]!.isTouched = true;
@@ -138,7 +159,7 @@ function useForm<TFieldValues extends Record<string, unknown> = Record<string, u
       onValid: (data: TFieldValues) => void | Promise<void>,
       onInvalid?: (errors: Partial<Record<keyof TFieldValues, string>>) => void | Promise<void>
     ) =>
-      async (e?: FormEvent) => {
+      async (e?: SubmitEvent) => {
         if (e) e.preventDefault();
 
         const values = getValues();
@@ -148,6 +169,12 @@ function useForm<TFieldValues extends Record<string, unknown> = Record<string, u
         Object.entries(fieldsRef.current).forEach(([key, field]) => {
           const name = key as keyof TFieldValues;
           const typedField = field as Field<TFieldValues>;
+
+          if (!isFieldAlive(name)) {
+            clearError(name);
+            return;
+          }
+
           const errorMessage = getErrorMessage(typedField.rules, values[name], values);
           if (errorMessage) {
             nextErrors[name] = errorMessage;
@@ -163,7 +190,7 @@ function useForm<TFieldValues extends Record<string, unknown> = Record<string, u
           await onInvalid?.(nextErrors);
         }
       },
-    [getValues]
+    [getValues, isFieldAlive, clearError]
   );
 
   return {
