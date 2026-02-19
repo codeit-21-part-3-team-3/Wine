@@ -9,7 +9,7 @@ interface WineFormProps {
   mode: Mode;
 }
 
-const WINE_TYPES = ['Red', 'White', 'Sparkling'];
+const WINE_TYPES = ['RED', 'WHITE', 'SPARKLING'];
 
 export default function WineForm({ mode }: WineFormProps) {
   const isEdit = mode === 'edit';
