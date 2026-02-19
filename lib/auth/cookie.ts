@@ -1,3 +1,8 @@
+import type { NextApiResponse } from 'next';
+import type { ServerResponse } from 'http';
+
+export type HeaderHandleable = Pick<NextApiResponse | ServerResponse, 'setHeader' | 'getHeader'>;
+
 export const getCookieOptions = (maxAge: number) => {
   const isProd = process.env.NODE_ENV === 'production';
 
@@ -15,4 +20,35 @@ export const AUTH_COOKIES = {
     `refreshToken=${encodeURIComponent(token)}; ${getCookieOptions(60 * 60 * 24 * 7)}`,
   clearAccessToken: () => `accessToken=; ${getCookieOptions(0)}`,
   clearRefreshToken: () => `refreshToken=; ${getCookieOptions(0)}`,
+
+  setAuth: (accessToken: string, refreshToken: string) => [
+    `accessToken=${encodeURIComponent(accessToken)}; ${getCookieOptions(60 * 30)}`,
+    `refreshToken=${encodeURIComponent(refreshToken)}; ${getCookieOptions(60 * 60 * 24 * 7)}`,
+  ],
+
+  clearAuth: () => [
+    `accessToken=; ${getCookieOptions(0)}`,
+    `refreshToken=; ${getCookieOptions(0)}`,
+  ],
+};
+
+export const parseCookie = (cookieHeader?: string) => {
+  const output: Record<string, string> = {};
+  if (!cookieHeader) return output;
+
+  cookieHeader.split(';').forEach(part => {
+    const [key, ...value] = part.trim().split('=');
+    if (!key) return;
+    output[key] = decodeURIComponent(value.join('=') ?? '');
+  });
+
+  return output;
+};
+
+export const mergeSetCookie = (res: HeaderHandleable, newValue: string | string[]) => {
+  const prev = res.getHeader('Set-Cookie');
+  const prevArray = prev ? (Array.isArray(prev) ? prev.map(String) : [String(prev)]) : [];
+  const nextArray = Array.isArray(newValue) ? newValue : [newValue];
+
+  res.setHeader('Set-Cookie', [...prevArray, ...nextArray]);
 };
