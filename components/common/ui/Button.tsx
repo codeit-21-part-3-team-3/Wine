@@ -16,7 +16,8 @@ const sizes = {
   md: 'h-[50px] px-4',
 } as const;
 
-const base = 'font-bold flex items-center justify-center w-full rounded-sm transition-colors';
+const base =
+  'font-bold flex cursor-pointer items-center justify-center w-full rounded-sm transition-colors';
 
 export default function Button({
   variant = 'primary',
