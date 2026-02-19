@@ -19,7 +19,7 @@ export default function MyWineCard({ wine, onEdit, onDelete, className }: MyWine
           src={wine.image}
           alt={wine.name}
           fill
-          sizes="(max-width: 640px) 100vw, (max-width: 640px) 100vw, 400px"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
           className="object-contain p-10 transition-transform duration-200 group-hover:scale-105"
         />
       </div>
