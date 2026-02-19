@@ -1,40 +1,52 @@
+import { useWineFilterUrlSync, useWineKeywordFilter, useWineListFetch } from '@/hooks/list';
+import type { Wine } from '@/types/domain/wine';
 import Container from '@/components/common/layout/Container';
 import WineListSection from './WineListSection';
 import SidebarFilter from '@/components/filter/SidebarFilter';
-import type { Wine, WineType } from '@/types/domain/wine';
-import { useState } from 'react';
+import WineListEmpty from './WineListEmpty';
+import WineListSkeleton from './WineListSkeleton';
+import SearchControls from './SearchControls';
 
 interface WineListLayoutProps {
   initialWines: Wine[];
 }
 
-interface FilterState {
-  type: WineType | null;
-  minPrice: number;
-  maxPrice: number;
-  rating: number | null;
-}
-
-const initialFilter: FilterState = {
-  type: null,
-  minPrice: 0,
-  maxPrice: 100000,
-  rating: null,
-};
-
 export default function WineListLayout({ initialWines }: WineListLayoutProps) {
-  const [filter, setFilter] = useState<FilterState>(initialFilter);
-  const handleApply = () => {
-    return null;
-  };
+  const { filter, setFilter, apply, reset, router } = useWineFilterUrlSync();
+  const { wines, isLoading, error } = useWineListFetch(initialWines, router);
+  const { keyword, setKeyword, filtered } = useWineKeywordFilter(wines);
+
+  const showError = !isLoading && error;
+  const showEmpty = !isLoading && !error && filtered.length === 0;
+  const showContent = !isLoading && !error && filtered.length > 0;
 
   return (
     <Container>
       <div className="flex gap-6 mt-10">
         <section className="w-71 hidden lg:block shrink-0">
-          <SidebarFilter value={filter} onChange={setFilter} onApply={handleApply} />
+          <SidebarFilter value={filter} onChange={setFilter} onApply={apply} />
         </section>
-        <WineListSection initialWines={initialWines} />
+        <div className="flex flex-col w-full w-max-200">
+          <SearchControls
+            filter={filter}
+            setFilter={setFilter}
+            onApply={apply}
+            onReset={reset}
+            keyword={keyword}
+            onKeywordChange={setKeyword}
+          />
+          {isLoading && (
+            <section className="flex-1 lg:mt-17 lg:pl-15 flex flex-col">
+              <WineListSkeleton />
+            </section>
+          )}
+
+          {showError && <p className="mt-70 text-red-500">{error}</p>}
+
+          {showEmpty && <WineListEmpty />}
+
+          {showContent && <WineListSection wines={filtered} />}
+        </div>
       </div>
     </Container>
   );
