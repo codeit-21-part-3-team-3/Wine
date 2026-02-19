@@ -1,4 +1,4 @@
-import { useWineFilterUrlSync, useWineKeywordFilter, useWineListFetch } from '@/hooks/list';
+import { useWineFilterUrlSync, useWineListFetch, useWineNameUrlSync } from '@/hooks/list';
 import type { Wine } from '@/types/domain/wine';
 import Container from '@/components/common/layout/Container';
 import WineListSection from './WineListSection';
@@ -14,11 +14,11 @@ interface WineListLayoutProps {
 export default function WineListLayout({ initialWines }: WineListLayoutProps) {
   const { filter, setFilter, apply, reset, router } = useWineFilterUrlSync();
   const { wines, isLoading, error } = useWineListFetch(initialWines, router);
-  const { keyword, setKeyword, filtered } = useWineKeywordFilter(wines);
+  const { name, setName } = useWineNameUrlSync();
 
-  const showError = !isLoading && error;
-  const showEmpty = !isLoading && !error && filtered.length === 0;
-  const showContent = !isLoading && !error && filtered.length > 0;
+  const showError = !isLoading && !!error;
+  const showEmpty = !isLoading && !error && wines.length === 0;
+  const showContent = !isLoading && !error && wines.length > 0;
 
   return (
     <Container>
@@ -26,26 +26,30 @@ export default function WineListLayout({ initialWines }: WineListLayoutProps) {
         <section className="w-71 hidden lg:block shrink-0">
           <SidebarFilter value={filter} onChange={setFilter} onApply={apply} />
         </section>
-        <div className="flex flex-col w-full w-max-200">
+        <div className="flex flex-col w-full w-max-200 min-h-200">
           <SearchControls
             filter={filter}
             setFilter={setFilter}
             onApply={apply}
             onReset={reset}
-            keyword={keyword}
-            onKeywordChange={setKeyword}
+            name={name}
+            onNameChange={setName}
           />
           {isLoading && (
-            <section className="flex-1 lg:mt-17 lg:pl-15 flex flex-col">
+            <section className="flex-1 lg:pl-15 flex flex-col">
               <WineListSkeleton />
             </section>
           )}
 
           {showError && <p className="mt-70 text-red-500">{error}</p>}
 
-          {showEmpty && <WineListEmpty />}
+          {showEmpty && (
+            <div className="flex items-center justify-center md:h-full">
+              <WineListEmpty />
+            </div>
+          )}
 
-          {showContent && <WineListSection wines={filtered} />}
+          {showContent && <WineListSection wines={wines} />}
         </div>
       </div>
     </Container>

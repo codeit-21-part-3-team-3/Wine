@@ -5,6 +5,7 @@ export const DEFAULT_FILTER: FilterState = {
   minPrice: 0,
   maxPrice: 100000,
   rating: null,
+  name: '',
 };
 
 export const WINE_TYPES = ['RED', 'WHITE', 'SPARKLING'] as const;
