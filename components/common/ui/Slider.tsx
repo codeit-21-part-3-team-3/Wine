@@ -37,7 +37,7 @@ export const Slider = ({
   const [nextEl, setNextEl] = useState<HTMLButtonElement | null>(null);
 
   return (
-    <div className={cn('w-full relative overflow-hidden', className)}>
+    <div className={cn('w-full relative', className)}>
       <Swiper
         modules={[Navigation, Scrollbar, Autoplay]}
         {...swiperConfig}
@@ -77,10 +77,18 @@ const NavButtons = ({
 
   return (
     <>
-      <button ref={setPrevEl} className={cn(btnClass, 'left-[0px]')} aria-label="이전">
+      <button
+        ref={setPrevEl}
+        className={cn(btnClass, 'md:left-[0px]', 'lg:left-[-30px]')}
+        aria-label="이전"
+      >
         <NextImage src={prevIcon} alt="" width={48} height={48} priority />
       </button>
-      <button ref={setNextEl} className={cn(btnClass, 'right-[0px]')} aria-label="다음">
+      <button
+        ref={setNextEl}
+        className={cn(btnClass, 'md:right-[0px]', 'lg:right-[-30px]')}
+        aria-label="다음"
+      >
         <NextImage src={nextIcon} alt="" width={48} height={48} priority />
       </button>
     </>

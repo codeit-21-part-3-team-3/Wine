@@ -78,7 +78,9 @@ export default function Home() {
         </div>
         <div className="flex justify-center pt-0 pb-16 lg:pb-32">
           <Link href="/wines">
-            <Button className="w-72 bg-zinc-950 text-lg font-bold">와인 보러가기</Button>
+            <Button className="w-72 bg-zinc-950 text-lg font-bold cursor-pointer">
+              와인 보러가기
+            </Button>
           </Link>
         </div>
       </Container>
