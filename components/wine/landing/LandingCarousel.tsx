@@ -1,13 +1,7 @@
 import { Slider } from '@/components/common/ui/Slider';
+import { Wine } from '@/types/domain/wine';
 import { WineRecommendedCard } from '@/components/wine/WineRecommendedCard';
 import { SwiperOptions } from 'swiper/types';
-
-interface Wine {
-  id: number;
-  name: string;
-  region: string;
-  image: string;
-}
 
 interface LandingCarouselProps {
   wineList: Wine[];
@@ -60,13 +54,7 @@ export const LandingCarousel = ({ wineList }: LandingCarouselProps) => {
                   <div className="relative flex justify-center items-center">
                     {/* 실제 와인 카드 */}
                     <div className="relative z-10 w-full">
-                      <WineRecommendedCard
-                        name={wine.name}
-                        region={wine.region}
-                        image={wine.image}
-                        isActive={isActive}
-                        variant="landing"
-                      />
+                      <WineRecommendedCard wine={wine} isActive={isActive} variant="landing" />
                     </div>
                   </div>
                 );

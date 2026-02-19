@@ -1,15 +1,11 @@
+import { cn } from '@/utils/cn';
+import { Wine } from '@/types/domain/wine';
 import { Slider } from '@/components/common/ui/Slider';
 import { WineRecommendedCard } from '@/components/wine/WineRecommendedCard';
 import { SwiperOptions } from 'swiper/types';
-import { cn } from '@/utils/cn';
 
 interface ListCarouselProps {
-  wineList: Array<{
-    id: number;
-    name: string;
-    region: string;
-    image: string;
-  }>;
+  wineList: Wine[];
 }
 
 const LIST_PRESET: SwiperOptions = {
@@ -47,13 +43,7 @@ export const ListCarousel = ({ wineList }: ListCarouselProps) => {
         >
           {wineList.map(wine => (
             <div key={wine.id} className="flex flex-col group w-full">
-              <WineRecommendedCard
-                name={wine.name}
-                region={wine.region}
-                image={wine.image}
-                isActive={false}
-                variant="list"
-              />
+              <WineRecommendedCard wine={wine} isActive={false} variant="list" />
             </div>
           ))}
         </Slider>

@@ -1,11 +1,10 @@
 import { cn } from '@/utils/cn';
+import { Wine } from '@/types/domain/wine';
 import Image from 'next/image';
 import { HTMLAttributes } from 'react';
 
 interface WineRecommendedCardProps extends HTMLAttributes<HTMLDivElement> {
-  name: string;
-  region: string;
-  image: string;
+  wine: Wine;
   isActive?: boolean;
   variant?: 'landing' | 'list';
 }
@@ -28,14 +27,13 @@ const CARD_VARIANTS = {
 } as const;
 
 export const WineRecommendedCard = ({
-  name,
-  region,
-  image,
+  wine,
   isActive,
   variant = 'landing',
   className,
   ...props
 }: WineRecommendedCardProps) => {
+  const { name, region, image } = wine;
   const isDisplayActive = variant === 'landing' && (isActive ?? false);
 
   const STYLES = {
