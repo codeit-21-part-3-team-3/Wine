@@ -31,7 +31,7 @@ const DashedBarGraph = ({
 
   const BAR_WIDTH_STYLE = {
     full: 'flex-1',
-    compact: 'w-6',
+    compact: 'flex-1 md:w-6 md:flex-none',
   };
 
   return (
@@ -40,7 +40,7 @@ const DashedBarGraph = ({
         <span className="text-sm w-16 text-left shrink-0 text-foreground/50">{minLabel}</span>
       )}
 
-      <div className={cn('flex items-center gap-1', isCompact ? 'flex-none' : 'flex-1')}>
+      <div className={cn('flex items-center gap-1 flex-1')}>
         {bars.map((score, index) => {
           const isActive = score <= count;
 

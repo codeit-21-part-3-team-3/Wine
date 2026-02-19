@@ -8,6 +8,7 @@ import ReviewContainer from '../review/ReviewContainer';
 import ChevronToggleButton from '../review/ChevronToggleButton';
 import { useState } from 'react';
 import ReviewMenu from '../review/ReviewMenu';
+import TasteItem, { TASTES, Taste as TasteLabel } from '@/components/common/ui/TasteItem';
 
 interface ReviewFeedCardProps {
   review: Review;
@@ -23,6 +24,21 @@ export default function ReviewFeedCard({ review, isOwner }: ReviewFeedCardProps)
 
   const handleDelete = (reviewId: number) => {
     console.log('모달');
+  };
+  // 임시! 데이터 연결시 따로 파일분리 예정
+  const getTasteValue = (tasteName: TasteLabel) => {
+    switch (tasteName) {
+      case '바디감':
+        return review.tastes.body;
+      case '탄닌':
+        return review.tastes.tannin;
+      case '당도':
+        return review.tastes.sweetness;
+      case '산미':
+        return review.tastes.acidity;
+      default:
+        return 0;
+    }
   };
 
   /**
@@ -51,11 +67,19 @@ export default function ReviewFeedCard({ review, isOwner }: ReviewFeedCardProps)
     >
       <AromaList aromas={review.aroma} />
       <ReviewContent content={review.content} />
-      {/**
-       * @todo(@jaywai-lee, 26.02.10)
-       * 애란님 작업 중인 맛 부분 추가 예정
-       */}
-      {expanded && <div className="h-19 mt-12 bg-gray-100 rounded-md" />}
+      {expanded && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4 mt-6">
+          {TASTES.map(name => (
+            <TasteItem
+              key={`${review.id}-${name}`}
+              taste={name}
+              value={getTasteValue(name)}
+              variant="review"
+            />
+          ))}
+        </div>
+      )}
+
       <ChevronToggleButton open={expanded} onToggle={() => setExpanded(prev => !prev)} />
       <div className="h-px bg-gray-300" />
     </ReviewContainer>

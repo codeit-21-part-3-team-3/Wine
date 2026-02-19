@@ -51,7 +51,12 @@ const TasteItem = ({
     <div className={cn('flex w-full transition-all', containerStyle)}>
       <span className={titleStyle}>{taste}</span>
 
-      <div className={cn('flex items-center flex-1', isReview ? 'justify-start' : 'w-full')}>
+      <div
+        className={cn(
+          'flex items-center flex-1',
+          isReview ? 'justify-start [&_.bg-secondary-foreground]:opacity-70' : 'w-full'
+        )}
+      >
         <DashedHorizontalBarGraph
           count={value}
           onClick={onChange}
