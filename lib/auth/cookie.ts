@@ -15,4 +15,27 @@ export const AUTH_COOKIES = {
     `refreshToken=${encodeURIComponent(token)}; ${getCookieOptions(60 * 60 * 24 * 7)}`,
   clearAccessToken: () => `accessToken=; ${getCookieOptions(0)}`,
   clearRefreshToken: () => `refreshToken=; ${getCookieOptions(0)}`,
+
+  setAuth: (accessToken: string, refreshToken: string) => [
+    `accessToken=${encodeURIComponent(accessToken)}; ${getCookieOptions(60 * 30)}`,
+    `refreshToken=${encodeURIComponent(refreshToken)}; ${getCookieOptions(60 * 60 * 24 * 7)}`,
+  ],
+
+  clearAuth: () => [
+    `accessToken=; ${getCookieOptions(0)}`,
+    `refreshToken=; ${getCookieOptions(0)}`,
+  ],
+};
+
+export const parseCookie = (cookieHeader?: string) => {
+  const output: Record<string, string> = {};
+  if (!cookieHeader) return output;
+
+  cookieHeader.split(';').forEach(part => {
+    const [key, ...value] = part.trim().split('=');
+    if (!key) return;
+    output[key] = decodeURIComponent(value.join('=') ?? '');
+  });
+
+  return output;
 };
