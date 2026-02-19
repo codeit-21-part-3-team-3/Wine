@@ -7,6 +7,7 @@ import ReviewContent from '../review/ReviewContent';
 import ReviewContainer from '../review/ReviewContainer';
 import ChevronToggleButton from '../review/ChevronToggleButton';
 import { useState } from 'react';
+import ReviewMenu from '../review/ReviewMenu';
 
 interface ReviewFeedCardProps {
   review: Review;
@@ -15,6 +16,21 @@ interface ReviewFeedCardProps {
 
 export default function ReviewFeedCard({ review, isOwner }: ReviewFeedCardProps) {
   const [expanded, setExpanded] = useState(false);
+
+  const handleEdit = (reviewId: number) => {
+    console.log('모달');
+  };
+
+  const handleDelete = (reviewId: number) => {
+    console.log('모달');
+  };
+
+  /**
+   * @todo(@jaywai-lee, 26.02.18)
+   * 페이지 레벨 action 연결 전까지 임시 핸들러
+   * merge 후 상위로 lift 예정
+   */
+
   return (
     <ReviewContainer
       header={
@@ -25,7 +41,7 @@ export default function ReviewFeedCard({ review, isOwner }: ReviewFeedCardProps)
               <ReviewUser user={review.user} createdAt={review.createdAt} />
             </div>
             {isOwner ? (
-              <IconButton icon="kebab" size={28} />
+              <ReviewMenu reviewId={review.id} onEdit={handleEdit} onDelete={handleDelete} />
             ) : (
               <IconButton icon="heart" size={28} />
             )}

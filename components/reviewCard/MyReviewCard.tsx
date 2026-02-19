@@ -2,15 +2,30 @@ import { Review } from '@/types/domain/review';
 import ReviewContainer from '../review/ReviewContainer';
 import ReviewRating from '../review/ReviewRating';
 import { formatTimeAgo } from '@/utils/formatTimeAgo';
-import IconButton from '../common/ui/IconButton';
 import ReviewWineInfo from '../review/ReviewWineInfo';
+import ReviewMenu from '../review/ReviewMenu';
 
 interface MyRivewCardProps {
   review: Review;
 }
 
-export default function MyRivewCard({ review }: MyRivewCardProps) {
+export default function MyReviewCard({ review }: MyRivewCardProps) {
   if (!review.wine) return null;
+
+  const handleEdit = (reviewId: number) => {
+    console.log('모달');
+  };
+
+  const handleDelete = (reviewId: number) => {
+    console.log('모달');
+  };
+
+  /**
+   * @todo(@jaywai-lee, 26.02.18)
+   * 페이지 레벨 action 연결 전까지 임시 핸들러
+   * merge 후 상위로 lift 예정
+   */
+
   return (
     <ReviewContainer
       header={
@@ -21,7 +36,7 @@ export default function MyRivewCard({ review }: MyRivewCardProps) {
               <p className="mr-2">{review.rating}</p>
               <span className="text-gray-400">{formatTimeAgo(review.createdAt)}</span>
             </div>
-            <IconButton icon="kebab" size={28} />
+            <ReviewMenu reviewId={review.id} onEdit={handleEdit} onDelete={handleDelete} />
           </div>
           <ReviewWineInfo wine={review.wine} />
         </div>
