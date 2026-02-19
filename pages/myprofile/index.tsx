@@ -7,9 +7,9 @@ export default function MyPage() {
     <>
       <Gnb />
       <Container>
-        <main>
+        <div>
           <MyProfilePage />
-        </main>
+        </div>
       </Container>
     </>
   );

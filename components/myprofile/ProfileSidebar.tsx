@@ -84,7 +84,7 @@ export default function ProfileSidebar({
           <AvatarFallback>{fallback}</AvatarFallback>
         </Avatar>
         <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Icon name="camera" size={40} alt="프로필 이미지 변경" />
+          <Icon name="camera" size={40} />
         </div>
       </label>
       <input
