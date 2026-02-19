@@ -12,7 +12,7 @@ interface SidebarFilterProps extends Omit<FilterContentProps, 'actions'> {
 
 export default function SidebarFilter({ onApply, className, ...props }: SidebarFilterProps) {
   return (
-    <aside className={cn('fixed top-20 w-75 z-10', className)}>
+    <aside className={cn('sticky top-20 w-full', className)}>
       <FilterContent {...props} actions={<Button onClick={onApply}>필터 적용하기</Button>} />
     </aside>
   );

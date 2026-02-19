@@ -1,0 +1,52 @@
+name: Wine Service CI/CD
+
+on:
+  push:
+    branches: ['develop']
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 소스 코드 체크아웃
+        uses: actions/checkout@v4
+
+      - name: Node.js 환경 세팅
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 의존성 설치 및 빌드 검증
+        run: |
+          npm ci
+          npm run build
+
+      # 성공 시 n8n을 통해 서버 배포 명령 전달
+      - name: 배포 자동화 호출 (Success)
+        if: success()
+        run: |
+          curl -X POST ${{ secrets.N8N_WEBHOOK_URL }} \
+          -H "Content-Type: application/json" \
+          -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
+          -d '{
+            "status": "success",
+            "project": "Wine",
+            "branch": "${{ github.ref_name }}",
+            "author": "${{ github.actor }}"
+          }'
+
+      # 실패 시 디코 알림을 위한 n8n 호출 (에러 리포트)
+      - name: 빌드 실패 알림 (Failure)
+        if: failure()
+        run: |
+          curl -X POST ${{ secrets.N8N_WEBHOOK_URL }} \
+          -H "Content-Type: application/json" \
+          -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
+          -d '{
+            "status": "failure",
+            "project": "Wine",
+            "branch": "${{ github.ref_name }}",
+            "error_log": "Build process failed in GitHub Actions"
+          }'

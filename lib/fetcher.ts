@@ -1,3 +1,5 @@
+import { ApiPath } from './fetcher.types';
+
 type QueryPrimitive = string | number | boolean | null | undefined;
 
 export type QueryParams = Record<string, QueryPrimitive | QueryPrimitive[]>;
@@ -6,6 +8,9 @@ type FetcherOptions = Omit<RequestInit, 'body'> & {
   body?: unknown;
   query?: QueryParams;
 };
+
+const isServer = typeof window === 'undefined';
+const BASE_URL = isServer ? (process.env.API_URL ?? '') : '/api/proxy';
 
 function buildQueryString(query: QueryParams): string {
   const params = new URLSearchParams();
@@ -22,12 +27,13 @@ function buildQueryString(query: QueryParams): string {
 }
 
 export async function fetcher<TResponse = unknown>(
-  path: `/api/${string}`,
+  path: ApiPath,
   options?: FetcherOptions
 ): Promise<TResponse> {
   const { body, query, headers, ...rest } = options ?? {};
   const qs = query ? buildQueryString(query) : '';
-  const url = qs ? `${path}${path.includes('?') ? '&' : '?'}${qs}` : path;
+  const base = `${BASE_URL}${path}`;
+  const url = qs ? `${base}${path.includes('?') ? '&' : '?'}${qs}` : base;
   const isFormData = body instanceof FormData;
   const res = await fetch(url, {
     credentials: 'include',
