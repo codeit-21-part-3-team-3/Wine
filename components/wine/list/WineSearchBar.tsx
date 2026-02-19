@@ -9,7 +9,7 @@ interface WineSearchBarProps {
 
 export default function WineSearchBar({ value, onChange }: WineSearchBarProps) {
   return (
-    <div className="mb-6">
+    <div className="mb-6 w-full max-w-200">
       <Input
         value={value}
         onChange={e => onChange?.(e.target.value)}

@@ -5,11 +5,11 @@ import { formatTimeAgo } from '@/utils/formatTimeAgo';
 import ReviewWineInfo from '../review/ReviewWineInfo';
 import ReviewMenu from '../review/ReviewMenu';
 
-interface MyRivewCardProps {
+interface MyReviewCardProps {
   review: Review;
 }
 
-export default function MyReviewCard({ review }: MyRivewCardProps) {
+export default function MyReviewCard({ review }: MyReviewCardProps) {
   if (!review.wine) return null;
 
   const handleEdit = (reviewId: number) => {
@@ -30,7 +30,7 @@ export default function MyReviewCard({ review }: MyRivewCardProps) {
     <ReviewContainer
       header={
         <div className="flex flex-col gap-2">
-          <div className="flex justify-between mt-10">
+          <div className="flex justify-between mt-5">
             <div className="flex gap-2">
               <ReviewRating rating={review.rating} />
               <p className="mr-2">{review.rating}</p>

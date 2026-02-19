@@ -146,4 +146,5 @@ export {
   DialogTitle,
   DialogTrigger,
   useDialogState,
+  useDialog,
 };
