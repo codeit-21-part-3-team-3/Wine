@@ -8,11 +8,11 @@ interface AromaListProps {
 
 export default function AromaList({ aromas }: AromaListProps) {
   return (
-    <div className="flex gap-2 mb-2">
+    <div className="flex flex-wrap items-center gap-x-1 gap-y-2 mb-2">
       {aromas.map((a, i) => (
         <Fragment key={a}>
           <AromaBadge type={a} />
-          {i < aromas.length - 1 && <span>·</span>}
+          {i < aromas.length - 1 && <span className="inline-block px-1 text-gray-400">·</span>}
         </Fragment>
       ))}
     </div>
