@@ -18,10 +18,14 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: 의존성 설치 및 빌드 검증
+      - name: 패키지 설치
         run: |
           npm ci
-          npm run build
+
+      - name: Next.js 빌드
+        run: npm run build
+        env:
+          API_URL: ${{ secrets.API_URL }}
 
       # 성공 시 n8n을 통해 서버 배포 명령 전달
       - name: 배포 자동화 호출 (Success)

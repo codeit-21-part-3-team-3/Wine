@@ -8,7 +8,6 @@ import Gnb from '@/components/common/layout/Gnb';
 import Button from '@/components/common/ui/Button';
 import { LandingCarousel } from '@/components/wine/landing/LandingCarousel';
 import { GetStaticProps } from 'next';
-import { getRecommendedWines } from '@/lib/api/wine/wine';
 import { Wine } from '@/types/domain/wine';
 
 interface HomeProps {
@@ -92,9 +91,17 @@ export default function Home({ recommendedWines }: HomeProps) {
   );
 }
 
+async function fetchServerWines(limit: number) {
+  const API_URL = process.env.API_URL;
+  const res = await fetch(`${API_URL}/wines/recommended?limit=${limit}`);
+
+  if (!res.ok) throw new Error('서버 데이터를 가져오지 못했습니다.');
+  return res.json();
+}
+
 export const getStaticProps: GetStaticProps = async () => {
   try {
-    const recommendedWines = await getRecommendedWines(RECOMMENDED_WINE_LIMIT);
+    const recommendedWines = await fetchServerWines(RECOMMENDED_WINE_LIMIT);
 
     return {
       props: {
