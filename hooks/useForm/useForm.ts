@@ -1,12 +1,12 @@
 import { useRef, useState, useCallback } from 'react';
 import type { SubmitEvent } from 'react';
-import type { useFormProps, Field, RegisterOptions } from './types';
+import type { useFormProps, Field, RegisterOptions, FieldErrors } from './types';
 import { getErrorMessage } from './utils';
 
 function useForm<TFieldValues extends Record<string, unknown> = Record<string, unknown>>({
   mode = 'onSubmit',
 }: useFormProps = {}) {
-  const [errors, setErrors] = useState<Partial<Record<keyof TFieldValues, string>>>({});
+  const [errors, setErrors] = useState<FieldErrors<TFieldValues>>({});
   const errorsRef = useRef(errors);
   const fieldsRef = useRef<Partial<Record<keyof TFieldValues, Field<TFieldValues>>>>({});
 
@@ -94,12 +94,21 @@ function useForm<TFieldValues extends Record<string, unknown> = Record<string, u
         });
 
         if (!triggered && field.rules.deps) {
-          field.rules.deps.forEach(depName => run(depName, true));
+          field.rules.deps.forEach(depName => {
+            const depField = fieldsRef.current[depName];
+            if (!depField) return;
+
+            if ((mode === 'onTouched' || mode === 'onBlur') && !depField.isTouched) {
+              return;
+            }
+
+            run(depName, true);
+          });
         }
       }
       run(name, isTriggered);
     },
-    [getValues, isFieldAlive, clearError]
+    [getValues, isFieldAlive, clearError, mode]
   );
 
   const register = useCallback(
@@ -143,8 +152,9 @@ function useForm<TFieldValues extends Record<string, unknown> = Record<string, u
         },
         onChange: () => {
           if (
-            errorsRef.current[name] ||
-            (mode === 'onTouched' && fieldsRef.current[name]!.isTouched)
+            errorsRef.current[name] &&
+            mode === 'onTouched' &&
+            fieldsRef.current[name]!.isTouched
           ) {
             validateField(name);
           }
@@ -157,13 +167,13 @@ function useForm<TFieldValues extends Record<string, unknown> = Record<string, u
   const handleSubmit = useCallback(
     (
       onValid: (data: TFieldValues) => void | Promise<void>,
-      onInvalid?: (errors: Partial<Record<keyof TFieldValues, string>>) => void | Promise<void>
+      onInvalid?: (errors: FieldErrors<TFieldValues>) => void | Promise<void>
     ) =>
       async (e?: SubmitEvent) => {
         if (e) e.preventDefault();
 
         const values = getValues();
-        const nextErrors: Partial<Record<keyof TFieldValues, string>> = {};
+        const nextErrors: FieldErrors<TFieldValues> = {};
         let isValid = true;
 
         Object.entries(fieldsRef.current).forEach(([key, field]) => {

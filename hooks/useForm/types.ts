@@ -27,3 +27,7 @@ export interface Field<TFieldValues extends Record<string, unknown> = Record<str
 export interface useFormProps {
   mode?: FormMode;
 }
+
+export type FieldErrors<TFieldValues extends Record<string, unknown>> = Partial<
+  Record<keyof TFieldValues, string>
+>;
