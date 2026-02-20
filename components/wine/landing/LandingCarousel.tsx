@@ -46,13 +46,11 @@ export const LandingCarousel = ({ wineList }: LandingCarouselProps) => {
       >
         <div className="relative z-10">
           {' '}
-          {/* 여백 조절용 */}
           <Slider {...LANDING_PRESET} itemKeys={wineList.map(wine => wine.id)}>
             {wineList.map(wine => {
               return function SliderItem({ isActive }: { isActive?: boolean }) {
                 return (
                   <div className="relative flex justify-center items-center">
-                    {/* 실제 와인 카드 */}
                     <div className="relative z-10 w-full">
                       <WineRecommendedCard wine={wine} isActive={isActive} variant="landing" />
                     </div>

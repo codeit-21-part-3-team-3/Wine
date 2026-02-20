@@ -22,8 +22,8 @@ const CARD_VARIANTS = {
   },
   list: {
     base: 'overflow-hidden',
-    title: 'text-gray-900 text-sm leading-5 h-10 overflow-hidden break-keep mt-4 font-bold',
-    sub: 'text-gray-500 text-xs h-5 overflow-hidden whitespace-nowrap mt-1',
+    title: 'text-gray-900 text-basic leading-5 h-10 overflow-hidden break-keep mt-4 font-bold',
+    sub: 'text-gray-500 text-sm h-5 overflow-hidden whitespace-nowrap mt-1',
   },
 } as const;
 
