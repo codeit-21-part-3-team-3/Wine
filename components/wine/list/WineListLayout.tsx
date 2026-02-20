@@ -26,7 +26,7 @@ export default function WineListLayout({ initialWines }: WineListLayoutProps) {
         <section className="w-71 hidden lg:block shrink-0">
           <SidebarFilter value={filter} onChange={setFilter} onApply={apply} />
         </section>
-        <div className="flex flex-col w-full w-max-200 min-h-200">
+        <div className="flex flex-col w-full min-h-200">
           <SearchControls
             filter={filter}
             setFilter={setFilter}
