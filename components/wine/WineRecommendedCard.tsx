@@ -13,17 +13,18 @@ const CARD_VARIANTS = {
   landing: {
     base: 'bg-transparent border-transparent',
     active: 'bg-zinc-900 shadow-2xl border-1 border-zinc-700',
-    title: 'text-zinc-700 text-xs min-h-[32px] line-clamp-2 break-keep font-medium mb-1',
+    title:
+      'text-zinc-700 text-xs min-h-[32px] line-clamp-2 overflow-hidden break-keep font-medium mb-1',
     activeTitle:
-      'ext-white text-sm lg:text-base leading-tight min-h-[38px] lg:min-h-[48px] line-clamp-2 break-keep mb-1',
+      'ext-white text-sm lg:text-base leading-tight min-h-[36px] lg:min-h-[42px] line-clamp-2 break-keep mb-1',
     sub: 'text-zinc-600 text-xs whitespace-nowrap overflow-hidden h-4',
     activeSub:
       'text-zinc-400 text-[10px] lg:text-sm whitespace-nowrap overflow-hidden text-ellipsis h-5',
   },
   list: {
     base: 'overflow-hidden',
-    title: 'text-gray-900 text-sm leading-5 h-10 overflow-hidden break-keep mt-4 font-bold',
-    sub: 'text-gray-500 text-xs h-5 overflow-hidden whitespace-nowrap mt-1',
+    title: 'text-gray-900 text-basic leading-5 h-10 overflow-hidden break-keep mt-4 font-bold',
+    sub: 'text-gray-500 text-sm h-5 overflow-hidden whitespace-nowrap mt-1',
   },
 } as const;
 

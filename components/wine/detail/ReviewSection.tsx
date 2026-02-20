@@ -1,12 +1,13 @@
 import Button from '@/components/common/ui/Button';
 import ReviewFeedCard from '@/components/reviewCard/ReviewFeedCard';
 import ReviewStats from '@/components/wine/detail/ReviewStats';
-import { mockListReviews } from '@/mock/review.list.mock';
+import { MOCK_WINE_DETAIL } from '@/mock/wineDetail.mock';
 import { useReviewStats } from '@/hooks/useReviewStats';
 
 export default function ReviewSection() {
   const currentUserId = 10;
-  const { totalReviews, averageRating, distribution } = useReviewStats(mockListReviews);
+  const reviewsFromDetail = MOCK_WINE_DETAIL.reviews;
+  const { totalReviews, averageRating, distribution } = useReviewStats(reviewsFromDetail);
 
   return (
     <section className="w-full py-6 md:py-10 lg:py-20 px-0">
@@ -22,7 +23,7 @@ export default function ReviewSection() {
           </div>
 
           <div className="">
-            {mockListReviews.map(review => (
+            {reviewsFromDetail.map(review => (
               <ReviewFeedCard
                 key={review.id}
                 review={review}

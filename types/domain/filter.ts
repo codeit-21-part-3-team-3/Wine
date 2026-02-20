@@ -5,4 +5,5 @@ export interface FilterState {
   minPrice: number;
   maxPrice: number;
   rating: number | null;
+  name?: string;
 }

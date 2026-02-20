@@ -36,5 +36,6 @@ export function parseWineFilterQuery(query: ParsedUrlQuery): FilterState {
     minPrice: parseInputNumber(getSingle(query.minPrice), 0),
     maxPrice: parseInputNumber(getSingle(query.maxPrice), 100000),
     rating: parseInputNullableNumber(getSingle(query.rating)),
+    name: getSingle(query.name) ?? '',
   };
 }

@@ -33,21 +33,19 @@ const SCROLLBAR_STYLES = cn(
 
 export const ListCarousel = ({ wineList }: ListCarouselProps) => {
   return (
-    <section className="w-full">
-      <div className="w-full px-4 lg:px-12">
-        <Slider
-          {...LIST_PRESET}
-          itemKeys={wineList.map(wine => wine.id)}
-          showNavigation={true}
-          scrollbarStyles={SCROLLBAR_STYLES}
-        >
-          {wineList.map(wine => (
-            <div key={wine.id} className="flex flex-col group w-full">
-              <WineRecommendedCard wine={wine} isActive={false} variant="list" />
-            </div>
-          ))}
-        </Slider>
-      </div>
+    <section className="w-full max-w-300 lg:m-auto">
+      <Slider
+        {...LIST_PRESET}
+        itemKeys={wineList.map(wine => wine.id)}
+        showNavigation={true}
+        scrollbarStyles={SCROLLBAR_STYLES}
+      >
+        {wineList.map(wine => (
+          <div key={wine.id} className="flex flex-col group w-full">
+            <WineRecommendedCard wine={wine} isActive={false} variant="list" />
+          </div>
+        ))}
+      </Slider>
     </section>
   );
 };

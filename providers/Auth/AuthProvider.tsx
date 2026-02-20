@@ -30,7 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(async (credentials: SignInCredentials): Promise<LoginResponse> => {
     try {
-      const response = await fetch('/api/auth/signin', {
+      const response = await fetch('/api/proxy/auth/signin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (response.ok) {
         setUser(data);
-        return { success: true, user: data };
+        return { success: true };
       }
       return { success: false, error: data.message };
     } catch (error) {
@@ -53,7 +53,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(async () => {
     try {
-      await fetch('/api/auth/logout', { method: 'POST' });
+      await fetch('/api/proxy/auth/logout', { method: 'POST' });
       setUser(null);
     } catch (error) {
       console.error('로그아웃 중 오류 발생:', error);

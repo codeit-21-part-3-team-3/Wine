@@ -6,7 +6,7 @@ export interface User {
   image: string | null;
 }
 
-export type LoginResponse = { success: true; user: User } | { success: false; error: string };
+export type LoginResponse = { success: true } | { success: false; error: string };
 
 export interface AuthContextValue {
   isLoading: boolean;
