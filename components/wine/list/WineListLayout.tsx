@@ -10,6 +10,7 @@ import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import { useState } from 'react';
 import Button from '@/components/common/ui/Button';
 import WineFormModal from '../WineFormModal';
+import { useAuth } from '@/providers/Auth/AuthProvider';
 
 interface WineListLayoutProps {
   initialWines: Wine[];
@@ -33,6 +34,7 @@ export default function WineListLayout({ initialWines, initialCursor }: WineList
     hasNextPage: hasMoreWines,
     loading: isLoading,
   });
+  const { user, isLoading: isAuthLoading } = useAuth();
 
   const showError = !isLoading && !!error;
   const showEmpty = !isLoading && !error && wines.length === 0;
@@ -69,15 +71,17 @@ export default function WineListLayout({ initialWines, initialCursor }: WineList
 
           {showContent && <WineListSection wines={wines} />}
 
-          <Button
-            className="fixed rounded-full bottom-[calc(1.5rem+env(safe-area-inset-bottom))] right-6 w-auto md:px-6 z-50 shadow-lg hover:sclae-105 transition-transform  "
-            onClick={() => setIsCreateOpen(true)}
-            size="sm"
-          >
-            <span className="md:hidden">＋</span>
-            <span className="hidden md:inline lg:hidden">와인 등록</span>
-            <span className="hidden lg:inline">와인 등록하기</span>
-          </Button>
+          {!isAuthLoading && user && (
+            <Button
+              className="fixed rounded-full bottom-[calc(1.5rem+env(safe-area-inset-bottom))] right-6 w-auto md:px-6 z-50 shadow-lg hover:sclae-105 transition-transform  "
+              onClick={() => setIsCreateOpen(true)}
+              size="sm"
+            >
+              <span className="md:hidden">＋</span>
+              <span className="hidden md:inline lg:hidden">와인 등록</span>
+              <span className="hidden lg:inline">와인 등록하기</span>
+            </Button>
+          )}
 
           {hasMoreWines && <div ref={sentinelRef} className="h-12" />}
 
