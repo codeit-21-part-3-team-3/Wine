@@ -13,7 +13,7 @@ export default function AuthButton() {
 
   if (!user) {
     return (
-      <Link href="/login" className="font-normal text-primary-foreground">
+      <Link href="/auth/signin" className="font-normal text-primary-foreground">
         로그인
       </Link>
     );
