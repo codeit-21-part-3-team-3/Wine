@@ -14,7 +14,6 @@ export interface User {
   id: number;
   nickname: string;
   image: string | null;
-  teamId: string;
   createdAt: string;
   updatedAt: string;
 }

@@ -1,15 +1,15 @@
 import { fetcher } from '@/lib/fetcher';
-import { AuthResponse, SignInCredentials, SignUpCredentials } from '@/types/auth/auth';
+import { SignInCredentials, SignUpCredentials, User } from '@/types/auth/auth';
 
 export function signIn(body: SignInCredentials) {
-  return fetcher<AuthResponse>('/auth/signIn', {
+  return fetcher<User>('/auth/signin', {
     method: 'POST',
     body,
   });
 }
 
 export function signUp(body: SignUpCredentials) {
-  return fetcher<AuthResponse>('/auth/signUp', {
+  return fetcher<User>('/auth/signup', {
     method: 'POST',
     body,
   });

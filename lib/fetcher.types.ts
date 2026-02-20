@@ -1,8 +1,8 @@
 type Id = number | `${number}`;
 
 export type ApiPath =
-  | '/auth/signIn'
-  | '/auth/signUp'
+  | '/auth/signin'
+  | '/auth/signup'
   | '/auth/logout'
   | `/auth/signIn/${string}`
   | '/images/upload'

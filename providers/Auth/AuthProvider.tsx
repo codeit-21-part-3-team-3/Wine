@@ -31,7 +31,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = useCallback(async (credentials: SignInCredentials): Promise<void> => {
     try {
       const data = await signIn(credentials);
-      setUser(data.user);
+
+      setUser(data);
     } catch (error) {
       throw error;
     }
@@ -40,7 +41,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signup = useCallback(async (credentials: SignUpCredentials): Promise<void> => {
     try {
       const data = await signUp(credentials);
-      setUser(data.user);
+      setUser(data);
     } catch (error) {
       throw error;
     }
