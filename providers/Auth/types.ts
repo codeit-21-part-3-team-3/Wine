@@ -6,4 +6,5 @@ export interface AuthContextValue {
   login: (credentials: SignInCredentials) => Promise<void>;
   signup: (credentials: SignUpCredentials) => Promise<void>;
   logout: () => Promise<void>;
+  updateUser: (newUser: User) => void;
 }
