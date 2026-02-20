@@ -7,8 +7,8 @@ interface SearchControlsProps {
   setFilter: (v: FilterState) => void;
   onApply: () => void;
   onReset: () => void;
-  keyword: string;
-  onKeywordChange: (v: string) => void;
+  name: string;
+  onNameChange: (v: string) => void;
 }
 
 export default function SearchControls({
@@ -16,8 +16,8 @@ export default function SearchControls({
   setFilter,
   onApply,
   onReset,
-  keyword,
-  onKeywordChange,
+  name,
+  onNameChange,
 }: SearchControlsProps) {
   return (
     <div className="flex items-start gap-2">
@@ -25,7 +25,7 @@ export default function SearchControls({
         <FilterModal value={filter} onChange={setFilter} onApply={onApply} onReset={onReset} />
       </div>
       <div className="flex-1 lg:pl-15">
-        <WineSearchBar value={keyword} onChange={onKeywordChange} />
+        <WineSearchBar value={name} onChange={onNameChange} />
       </div>
     </div>
   );

@@ -7,5 +7,6 @@ export function mapFilterToQuery(filter: FilterState): Partial<GetWinesQuery> {
     ...(filter.rating !== null ? { rating: filter.rating } : {}),
     ...(filter.minPrice !== 0 ? { minPrice: filter.minPrice } : {}),
     ...(filter.maxPrice !== 100000 ? { maxPrice: filter.maxPrice } : {}),
+    ...(filter.name ? { name: filter.name } : {}),
   };
 }
