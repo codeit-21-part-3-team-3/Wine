@@ -2,7 +2,15 @@ import Container from '@/components/common/layout/Container';
 import Gnb from '@/components/common/layout/Gnb';
 import Image from 'next/image';
 import wineRed from '@/assets/detailwine/wine-red.png';
+import wineWhite from '@/assets/detailwine/wine-white.png';
+import wineSparkling from '@/assets/detailwine/wine-sparkling.png';
 import { mockWineData } from '@/mock/wine.mock';
+
+const BACKGROUND_IMAGES = {
+  RED: wineRed,
+  WHITE: wineWhite,
+  SPARKLING: wineSparkling,
+};
 
 export default function HeroSection() {
   const wine = mockWineData.list[0];
@@ -11,9 +19,25 @@ export default function HeroSection() {
     <div className="bg-gray-50 pt-px lg:rounded-b-[88px]">
       <Gnb />
       <Container className="flex-1 flex items-center justify-center">
-        <section className="py-8 lg:py-0 flex flex-col lg:flex-row items-center gap-6 lg:gap-[48px] w-full">
-          <div className="relative w-full lg:w-[460px] h-[300px] lg:h-[450px] flex items-center justify-center">
-            <Image src={wine.image} alt={wine.name} fill className="object-contain" priority />
+        <section className="py-8 lg:py-0 flex flex-col lg:flex-row items-center gap-6 lg:gap-12 w-full">
+          <div className="relative w-full lg:w-[460px] h-[300px] lg:h-[450px] flex items-center justify-center overflow-hidden">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Image
+                src={BACKGROUND_IMAGES[wine.type] || wineRed}
+                alt=""
+                fill
+                className="object-contain"
+              />
+            </div>
+            <div className="relative w-full h-full">
+              <Image
+                src={wine.image}
+                alt={wine.name}
+                fill
+                className="object-contain z-10"
+                priority
+              />
+            </div>
           </div>
 
           <div className="flex flex-col w-full lg:w-auto items-start">
