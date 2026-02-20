@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Button from '@/components/common/ui/Button';
 import ReviewFeedCard from '@/components/reviewCard/ReviewFeedCard';
 import ReviewStats from '@/components/wine/detail/ReviewStats';
+import ReviewEmpty from '@/components/wine/detail/ReviewEmpty';
 import { useReviewStats } from '@/hooks/useReviewStats';
 import { GetWineDetailResponse, ApiWineReview } from '@/lib/api/wine/wine.types';
 import { deleteReview, likeReview, unlikeReview } from '@/lib/api/review/review';
@@ -56,12 +57,12 @@ export default function ReviewSection({ wine, myId }: ReviewSectionProps) {
   // 리뷰가 없을 때 UI
   if (!reviews || reviews.length === 0) {
     return (
-      <div className="flex flex-col items-center py-20 bg-gray-50 rounded-lg w-full">
-        <p className="text-gray-500 font-medium">아직 리뷰가 없습니다.</p>
-        <Button variant="primary" className="mt-4 px-8">
-          첫 리뷰 작성하기
-        </Button>
-      </div>
+      <ReviewEmpty
+        onWriteClick={() => {
+          /* 여기에 리뷰 작성 모달을 여는 로직을 연결하세요! */
+          console.log('리뷰 작성 모달 오픈');
+        }}
+      />
     );
   }
 

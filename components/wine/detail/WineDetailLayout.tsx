@@ -11,7 +11,7 @@ interface WineDetailLayoutProps {
 
 export default function WineDetailLayout({ wine, user }: WineDetailLayoutProps) {
   return (
-    <Container>
+    <Container className="pb-16 lg:pb-20">
       <WineProfile wine={wine} />
       <ReviewSection wine={wine} myId={user?.id ?? 0} />
     </Container>
