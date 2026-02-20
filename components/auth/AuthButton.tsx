@@ -26,7 +26,7 @@ export default function AuthButton() {
       </Dropdown.Trigger>
       <Dropdown.Menu>
         <Dropdown.Item>
-          <Link href="/mypage" className="block w-full">
+          <Link href="/myprofile" className="block w-full">
             마이페이지
           </Link>
         </Dropdown.Item>
