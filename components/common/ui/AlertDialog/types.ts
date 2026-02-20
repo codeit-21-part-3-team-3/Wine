@@ -19,6 +19,7 @@ export interface AlertDialogTriggerProps {
 export interface AlertDialogContentProps {
   children: ReactNode;
   className?: string;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
 }
 
 export interface AlertDialogActionProps {

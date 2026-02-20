@@ -122,10 +122,16 @@ function AlertDialogDescription({ children, className }: AlertDialogContentProps
   return <p className={cn('text-sm text-gray-600', className)}>{children}</p>;
 }
 
-function AlertDialogCancel({ children, className }: AlertDialogContentProps) {
+function AlertDialogCancel({ children, className, onClick }: AlertDialogContentProps) {
   const { setOpen } = useAlertDialog();
   return (
-    <Button className={cn('', className)} onClick={() => setOpen(false)}>
+    <Button
+      className={cn('', className)}
+      onClick={e => {
+        onClick?.(e);
+        setOpen(false);
+      }}
+    >
       {children}
     </Button>
   );
