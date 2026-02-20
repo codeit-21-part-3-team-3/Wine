@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import Button from '../Button';
@@ -65,7 +65,15 @@ function DialogTrigger({ children, onClick }: DialogTriggerProps) {
 }
 
 function DialogPortal({ children }: PropsWithChildren): ReactPortal | null {
-  if (typeof window === 'undefined') return null;
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
   return createPortal(children, document.body);
 }
 
