@@ -47,7 +47,8 @@ jobs:
             "project": "Wine",
             "branch": "${{ github.ref_name }}",
             "author": "${{ github.actor }}",
-            "image": "ghcr.io/codeit-21-part-3-team-3/wine:latest"
+            "image": "ghcr.io/codeit-21-part-3-team-3/wine:latest",
+            "API_URL": "${{ secrets.API_URL }}"
           }'
 
       # 실패 시 n8n을 통해 디스코드 알림 전달
