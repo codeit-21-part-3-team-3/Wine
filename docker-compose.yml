@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   wine-app:
-    build: .
+    image: ghcr.io/codeit-21-part-3-team-3/wine:latest
     container_name: wine-next-service
     restart: unless-stopped
     ports:
