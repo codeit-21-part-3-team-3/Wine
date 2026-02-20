@@ -6,15 +6,28 @@ import SidebarFilter from '@/components/filter/SidebarFilter';
 import WineListEmpty from './WineListEmpty';
 import WineListSkeleton from './WineListSkeleton';
 import SearchControls from './SearchControls';
+import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 
 interface WineListLayoutProps {
   initialWines: Wine[];
+  initialCursor?: number;
 }
 
-export default function WineListLayout({ initialWines }: WineListLayoutProps) {
+export default function WineListLayout({ initialWines, initialCursor }: WineListLayoutProps) {
   const { filter, setFilter, apply, reset, router } = useWineFilterUrlSync();
-  const { wines, isLoading, error } = useWineListFetch(initialWines, router);
+  const {
+    wines,
+    isLoading,
+    error,
+    hasNextPage: hasMoreWines,
+    fetchNextPage,
+  } = useWineListFetch(initialWines, router, initialCursor);
   const { name, setName } = useWineNameUrlSync();
+  const sentinelRef = useInfiniteScroll<HTMLDivElement>({
+    onIntersect: fetchNextPage,
+    hasNextPage: hasMoreWines,
+    loading: isLoading,
+  });
 
   const showError = !isLoading && !!error;
   const showEmpty = !isLoading && !error && wines.length === 0;
@@ -50,6 +63,8 @@ export default function WineListLayout({ initialWines }: WineListLayoutProps) {
           )}
 
           {showContent && <WineListSection wines={wines} />}
+
+          {hasMoreWines && <div ref={sentinelRef} className="h-12" />}
         </div>
       </div>
     </Container>

@@ -17,6 +17,7 @@ export function useWineFilterUrlSync() {
     router.push({ pathname: router.pathname, query: mapFilterToUrlQuery(draftFilter) }, undefined, {
       shallow: true,
     });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const reset = () => {
