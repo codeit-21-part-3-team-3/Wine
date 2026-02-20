@@ -1,15 +1,15 @@
 import Container from '@/components/common/layout/Container';
 import Gnb from '@/components/common/layout/Gnb';
+import { ListCarousel } from '@/components/wine/list/ListCarousel';
+import { mockWineData } from '@/mock/wine.mock';
 
+const wineList = mockWineData.list;
 export default function HeroSection() {
   return (
-    <div className="bg-gray-50 pt-px">
+    <div className="w-full bg-gray-50 pt-px lg:rounded-b-[88px] pb-6 md:pb-0">
       <Gnb />
-
       <Container>
-        <section className=" h-100 rounded-xl bg-gray-100 flex items-center justify-center">
-          <span className="text-gray-400">carousel placeholder</span>
-        </section>
+        <ListCarousel wineList={wineList} />
       </Container>
     </div>
   );

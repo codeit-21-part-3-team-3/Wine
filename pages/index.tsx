@@ -1,15 +1,35 @@
-import { cn } from '@/utils/cn';
 import Image from 'next/image';
+import Link from 'next/link';
 import landingUiImg1 from '@/assets/landing/landing-ui-1.png';
 import landingUiImg2 from '@/assets/landing/landing-ui-2.png';
 import landingUiImg3 from '@/assets/landing/landing-ui-3.png';
 import Container from '@/components/common/layout/Container';
+import Gnb from '@/components/common/layout/Gnb';
+import Button from '@/components/common/ui/Button';
+import { LandingCarousel } from '@/components/wine/landing/LandingCarousel';
+import { GetStaticProps } from 'next';
+import { Wine } from '@/types/domain/wine';
 
-export default function Home() {
+interface HomeProps {
+  recommendedWines: Wine[];
+}
+const RECOMMENDED_WINE_LIMIT = 12;
+
+export default function Home({ recommendedWines }: HomeProps) {
   return (
     <main>
-      <h1>Codeit Wine</h1>
+      <section className="bg-zinc-950 text-white pt-5">
+        <Container className="mx-auto px-4 relative h-full">
+          <Gnb className="bg-transparent m-0 md:m-0 lg:m-0 shadow-none" />
 
+          <h2 className="text-2xl md:text-3xl font-bold mt-12 md:mt-12 lg:mt-24 mx-5 md:mx-10">
+            한 곳에서 관리하는
+            <br />
+            나만의 와인창고
+          </h2>
+          {recommendedWines.length > 0 && <LandingCarousel wineList={recommendedWines} />}
+        </Container>
+      </section>
       <Container className="flex flex-col">
         <div className="flex flex-col lg:flex-row items-start lg:items-center gap-5 md:gap-8 lg:gap-[140px] py-[60px] lg:py-20">
           <div className="flex flex-col gap-4 items-start w-full lg:w-[238px] shrink-0">
@@ -61,7 +81,41 @@ export default function Home() {
             <Image src={landingUiImg3} alt="" width={725} height={470} />
           </div>
         </div>
+        <div className="flex justify-center pt-0 pb-16 lg:pb-32">
+          <Link href="/wines">
+            <Button className="w-72 bg-zinc-950 text-lg font-bold">와인 보러가기</Button>
+          </Link>
+        </div>
       </Container>
     </main>
   );
 }
+
+async function fetchServerWines(limit: number) {
+  const API_URL = process.env.API_URL;
+  const res = await fetch(`${API_URL}/wines/recommended?limit=${limit}`);
+
+  if (!res.ok) throw new Error('서버 데이터를 가져오지 못했습니다.');
+  return res.json();
+}
+
+export const getStaticProps: GetStaticProps = async () => {
+  try {
+    const recommendedWines = await fetchServerWines(RECOMMENDED_WINE_LIMIT);
+
+    return {
+      props: {
+        recommendedWines,
+      },
+      revalidate: 3600,
+    };
+  } catch (error) {
+    console.error('추천 와인 로드 실패:', error);
+    return {
+      props: {
+        recommendedWines: [],
+      },
+      revalidate: 60,
+    };
+  }
+};

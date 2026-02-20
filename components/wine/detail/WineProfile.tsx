@@ -1,16 +1,51 @@
+import TasteItem, { TASTES, Taste } from '@/components/common/ui/TasteItem';
+import { MOCK_WINE_DETAIL } from '@/mock/wineDetail.mock';
+
+// 임시! 데이터 연결시 따로 파일분리 예정
+const getTasteValue = (tasteName: Taste, data: typeof MOCK_WINE_DETAIL.tastes) => {
+  switch (tasteName) {
+    case '바디감':
+      return data.body;
+    case '탄닌':
+      return data.tannin;
+    case '당도':
+      return data.sweetness;
+    case '산미':
+      return data.acidity;
+    default:
+      return 0;
+  }
+};
+
 export default function WineProfile() {
+  const { tastes: wineTastes, reviewCount } = MOCK_WINE_DETAIL;
   return (
     <section className="flex flex-col lg:flex-row gap-y-12 lg:gap-y-0 lg:gap-x-20 py-6 md:py-10 lg:py-20 border-b border-border">
-      <div className="flex-1 space-y-8">
-        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-end gap-0 lg:gap-0 mb-6">
-          <h3 className="text-2xl font-bold">어떤 맛이 나나요?</h3>
-          <span className="text-sm text-muted-foreground">(417명 참여)</span>
+      <div className="flex-1">
+        <div className="flex flex-col md:grid md:grid-cols-[200px_1fr] lg:flex lg:flex-col md:gap-x-10">
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-end w-full mb-4 md:mb-0 lg:mb-6">
+            <h3 className="text-2xl font-bold">어떤 맛이 나나요?</h3>
+            <span className="text-sm text-muted-foreground mt-1">({reviewCount}명 참여)</span>
+          </div>
+          <div className="flex flex-col gap-5">
+            {TASTES.map(name => (
+              <TasteItem
+                key={`detail-${name}`}
+                taste={name}
+                value={getTasteValue(name, wineTastes)}
+                showDivider
+              />
+            ))}
+          </div>
         </div>
       </div>
-      <div className="flex-1 space-y-8">
-        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-end gap-0 lg:gap-0 mb-6">
-          <h3 className="text-2xl font-bold">어떤 향이 나나요?</h3>
-          <span className="text-sm text-muted-foreground">(417명 참여)</span>
+
+      <div className="flex-1">
+        <div className="flex flex-col md:grid md:grid-cols-[200px_1fr] lg:flex lg:flex-col md:gap-x-10">
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-end w-full mb-4 md:mb-0 lg:mb-6">
+            <h3 className="text-2xl font-bold">어떤 향이 나나요?</h3>
+            <span className="text-sm text-muted-foreground mt-1">({reviewCount}명 참여)</span>
+          </div>
         </div>
       </div>
     </section>
