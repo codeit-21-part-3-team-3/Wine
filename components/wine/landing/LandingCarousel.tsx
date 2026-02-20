@@ -30,7 +30,7 @@ const LANDING_PRESET: SwiperOptions = {
 };
 
 export const LandingCarousel = ({ wineList }: LandingCarouselProps) => {
-  if (!wineList || wineList.length === 0) return null;
+  if (wineList.length === 0) return null;
 
   return (
     <section className="relative w-full">

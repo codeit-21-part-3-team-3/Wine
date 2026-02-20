@@ -7,10 +7,16 @@ import Container from '@/components/common/layout/Container';
 import Gnb from '@/components/common/layout/Gnb';
 import Button from '@/components/common/ui/Button';
 import { LandingCarousel } from '@/components/wine/landing/LandingCarousel';
-import { mockWineData } from '@/mock/wine.mock';
+import { GetStaticProps } from 'next';
+import { getRecommendedWines } from '@/lib/api/wine/wine';
+import { Wine } from '@/types/domain/wine';
 
-export default function Home() {
-  const wineList = mockWineData.list;
+interface HomeProps {
+  recommendedWines: Wine[];
+}
+const RECOMMENDED_WINE_LIMIT = 12;
+
+export default function Home({ recommendedWines }: HomeProps) {
   return (
     <main>
       <section className="bg-zinc-950 text-white pt-5">
@@ -22,7 +28,7 @@ export default function Home() {
             <br />
             나만의 와인창고
           </h2>
-          <LandingCarousel wineList={wineList} />
+          {recommendedWines.length > 0 && <LandingCarousel wineList={recommendedWines} />}
         </Container>
       </section>
       <Container className="flex flex-col">
@@ -85,3 +91,24 @@ export default function Home() {
     </main>
   );
 }
+
+export const getStaticProps: GetStaticProps = async () => {
+  try {
+    const recommendedWines = await getRecommendedWines(RECOMMENDED_WINE_LIMIT);
+
+    return {
+      props: {
+        recommendedWines,
+      },
+      revalidate: 3600,
+    };
+  } catch (error) {
+    console.error('추천 와인 로드 실패:', error);
+    return {
+      props: {
+        recommendedWines: [],
+      },
+      revalidate: 60,
+    };
+  }
+};
