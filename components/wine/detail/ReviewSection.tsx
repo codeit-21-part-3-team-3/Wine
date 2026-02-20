@@ -1,13 +1,69 @@
+import { useState } from 'react';
 import Button from '@/components/common/ui/Button';
 import ReviewFeedCard from '@/components/reviewCard/ReviewFeedCard';
 import ReviewStats from '@/components/wine/detail/ReviewStats';
-import { MOCK_WINE_DETAIL } from '@/mock/wineDetail.mock';
 import { useReviewStats } from '@/hooks/useReviewStats';
+import { GetWineDetailResponse, ApiWineReview } from '@/lib/api/wine/wine.types';
+import { deleteReview, likeReview, unlikeReview } from '@/lib/api/review/review';
 
-export default function ReviewSection() {
-  const currentUserId = 10;
-  const reviewsFromDetail = MOCK_WINE_DETAIL.reviews;
-  const { totalReviews, averageRating, distribution } = useReviewStats(reviewsFromDetail);
+interface ReviewSectionProps {
+  wine: GetWineDetailResponse;
+  myId: number;
+}
+
+export default function ReviewSection({ wine, myId }: ReviewSectionProps) {
+  const [reviews, setReviews] = useState<ApiWineReview[]>(wine.reviews);
+  const { totalReviews, averageRating, distribution } = useReviewStats(reviews);
+
+  const handleDelete = async (reviewId: number) => {
+    if (!confirm('정말 삭제하시겠습니까?')) return;
+
+    try {
+      await deleteReview(reviewId);
+      setReviews(prev => prev.filter(r => r.id !== reviewId));
+    } catch (error) {
+      console.error('삭제 에러:', error);
+    }
+  };
+
+  const handleLike = async (reviewId: number, isCurrentlyLiked: boolean) => {
+    const previousReviews = [...reviews];
+
+    // 좋아요 버튼 작업필요
+    setReviews(prev =>
+      prev.map(r =>
+        r.id === reviewId
+          ? {
+              ...r,
+              isLiked: !isCurrentlyLiked,
+            }
+          : r
+      )
+    );
+
+    try {
+      if (isCurrentlyLiked) {
+        await unlikeReview(reviewId);
+      } else {
+        await likeReview(reviewId);
+      }
+    } catch (error) {
+      setReviews(previousReviews);
+      console.error('좋아요 적용 에러:', error);
+    }
+  };
+
+  // 리뷰가 없을 때 UI
+  if (!reviews || reviews.length === 0) {
+    return (
+      <div className="flex flex-col items-center py-20 bg-gray-50 rounded-lg w-full">
+        <p className="text-gray-500 font-medium">아직 리뷰가 없습니다.</p>
+        <Button variant="primary" className="mt-4 px-8">
+          첫 리뷰 작성하기
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <section className="w-full py-6 md:py-10 lg:py-20 px-0">
@@ -23,11 +79,13 @@ export default function ReviewSection() {
           </div>
 
           <div className="">
-            {reviewsFromDetail.map(review => (
+            {reviews.map(review => (
               <ReviewFeedCard
                 key={review.id}
                 review={review}
-                isOwner={review.user.id === currentUserId}
+                isOwner={review.user.id === myId}
+                onDelete={handleDelete}
+                onLike={() => handleLike(review.id, review.isLiked)}
               />
             ))}
           </div>

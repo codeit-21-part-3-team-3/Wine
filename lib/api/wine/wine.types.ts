@@ -7,7 +7,17 @@ export type WineUser = ApiUser;
 
 export type ApiRecentReview = Pick<
   ApiReview,
-  'id' | 'content' | 'aroma' | 'rating' | 'createdAt' | 'updatedAt' | 'user'
+  | 'id'
+  | 'content'
+  | 'aroma'
+  | 'rating'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'user'
+  | 'lightBold'
+  | 'smoothTannic'
+  | 'drySweet'
+  | 'softAcidic'
 >;
 
 export interface ApiWine {
@@ -21,6 +31,10 @@ export interface ApiWine {
   reviewCount: number;
   userId: number;
   recentReview?: ApiRecentReview;
+  lightBold: number;
+  smoothTannic: number;
+  drySweet: number;
+  softAcidic: number;
 }
 
 export type WineListItem = ApiWine;
@@ -60,3 +74,8 @@ export type CreateWineResponse = ApiWine;
 export type UpdateWineResponse = ApiWine;
 
 export type DeleteWineResponse = Pick<ApiWine, 'id'>;
+
+export interface GetWineDetailResponse extends ApiWine {
+  reviews: ApiWineReview[];
+  avgRatings: Record<string, number>;
+}
