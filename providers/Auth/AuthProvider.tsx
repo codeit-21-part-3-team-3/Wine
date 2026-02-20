@@ -1,24 +1,24 @@
 import { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import type { ReactNode } from 'react';
+import { useRouter } from 'next/router';
 
-import { AuthContextValue, User, LoginResponse } from './types';
-import { SignInCredentials } from '@/types/auth/auth';
+import { AuthContextValue } from './types';
+import { SignInCredentials, SignUpCredentials, User } from '@/types/auth/auth';
+import { getMe } from '@/lib/api/user/user';
+import { signIn, signUp, signOut } from '@/lib/api/auth/auth';
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const initAuth = async () => {
       try {
-        const response = await fetch('/api/proxy/users/me');
-
-        if (response.ok) {
-          const data = await response.json();
-          setUser(data);
-        }
+        const data = await getMe();
+        setUser(data);
       } catch (error) {
         console.error('인증 확인 중 오류 발생:', error);
       } finally {
@@ -28,46 +28,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     initAuth();
   }, []);
 
-  const login = useCallback(async (credentials: SignInCredentials): Promise<LoginResponse> => {
+  const login = useCallback(async (credentials: SignInCredentials): Promise<void> => {
     try {
-      const response = await fetch('/api/proxy/auth/signin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(credentials),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setUser(data);
-        return { success: true };
-      }
-      return { success: false, error: data.message };
+      const data = await signIn(credentials);
+      setUser(data.user);
     } catch (error) {
-      console.error('로그인 중 오류 발생:', error);
-      return { success: false, error: '네트워크 오류가 발생했습니다.' };
+      throw error;
+    }
+  }, []);
+
+  const signup = useCallback(async (credentials: SignUpCredentials): Promise<void> => {
+    try {
+      const data = await signUp(credentials);
+      setUser(data.user);
+    } catch (error) {
+      throw error;
     }
   }, []);
 
   const logout = useCallback(async () => {
     try {
-      await fetch('/api/proxy/auth/logout', { method: 'POST' });
+      await signOut();
       setUser(null);
+      router.push('/');
     } catch (error) {
       console.error('로그아웃 중 오류 발생:', error);
     }
-  }, []);
+  }, [router]);
 
   const value = useMemo(
     () => ({
       isLoading,
       user,
       login,
+      signup,
       logout,
     }),
-    [isLoading, user, login, logout]
+    [isLoading, user, login, signup, logout]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

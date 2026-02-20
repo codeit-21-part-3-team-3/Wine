@@ -1,14 +1,8 @@
+import { User as ApiUser } from '@/types/auth/auth';
 import { ApiReview } from '../review/review.types';
 import { WineListItem } from '../wine/wine.types';
 
-export interface ApiUser {
-  id: number;
-  nickname: string;
-  image: string | null;
-  teamId: string;
-  createdAt: string;
-  updatedAt: string;
-}
+export type { ApiUser };
 
 export type GetMeResponse = ApiUser;
 
