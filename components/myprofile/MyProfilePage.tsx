@@ -7,6 +7,7 @@ import MyProfileTabs from './MyProfileTabs';
 import { ApiReview } from '@/lib/api/review/review.types';
 import { WineListItem } from '@/lib/api/wine/wine.types';
 import { ApiUser } from '@/lib/api/user/user.types';
+import { useProfileEditor } from '@/hooks/myprofile/userProfileEditor';
 
 type Tab = 'reviews' | 'wines';
 
@@ -26,7 +27,7 @@ interface MyProfilePageProps {
   loadingWines: boolean;
   onFetchReviews: () => void;
   onFetchWines: () => void;
-  onUpdateProfile: (nickname: string, file?: File | null) => void;
+  onUpdateProfile: (nickname: string, imageUrl?: string | null) => void;
   isUpdating: boolean;
   error?: MyProfileErrors;
 }
@@ -44,8 +45,7 @@ export default function MyProfilePage({
   error,
 }: MyProfilePageProps) {
   const [tab, setTab] = useState<Tab>('reviews');
-  const [nickname, setNickname] = useState(user.nickname);
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const editor = useProfileEditor(user);
 
   useEffect(() => {
     if (tab === 'reviews') onFetchReviews();
@@ -53,8 +53,8 @@ export default function MyProfilePage({
   }, [tab, onFetchReviews, onFetchWines]);
 
   const handleSubmit = () => {
-    onUpdateProfile(nickname, imageFile);
-    setImageFile(null);
+    onUpdateProfile(editor.derived.nextNickname, editor.derived.nextImage);
+    editor.resetUploadedImage();
   };
 
   return (
@@ -62,10 +62,14 @@ export default function MyProfilePage({
       sidebar={
         <ProfileSidebar
           user={user}
-          nickname={nickname}
-          onNicknameChange={setNickname}
-          onImageChange={setImageFile}
+          nickname={editor.nickname}
+          onNicknameChange={editor.setNickname}
+          avatarPreview={editor.picker.preview}
+          avatarError={editor.picker.error}
+          avatarUploading={editor.picker.uploading}
+          onSelectAvatar={editor.picker.handleFile}
           onSubmit={handleSubmit}
+          submitDisabled={editor.derived.isDisabled}
           isUpdating={isUpdating}
           error={error?.profile ?? undefined}
         />
