@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useForm } from '@/hooks/useForm/useForm';
 import type { FieldErrors } from '@/hooks/useForm/types';
 
+import { useRouter } from 'next/router';
 import { useAuth } from '@/providers/Auth/AuthProvider';
 
 type SignInValues = {
@@ -13,15 +14,24 @@ type SignInValues = {
 };
 
 export default function SignIn() {
+  const router = useRouter();
   const { login } = useAuth();
   const { register, handleSubmit, errors } = useForm<SignInValues>({ mode: 'onSubmit' });
 
   const valid = async (data: SignInValues) => {
-    const response = await login(data);
-    if (response.success) {
-      console.log('로그인 성공 테스트.');
-    } else {
-      console.log('로그인 실패!');
+    try {
+      await login(data);
+
+      const referrer = document.referrer;
+      const host = window.location.host;
+
+      if (referrer && referrer.includes(host) && !referrer.includes('/auth/')) {
+        router.push(referrer);
+      } else {
+        router.push('/');
+      }
+    } catch {
+      alert('로그인에 실패했습니다. 이메일 또는 비밀번호를 확인해주세요.');
     }
   };
 
