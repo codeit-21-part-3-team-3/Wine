@@ -18,6 +18,7 @@ export default function AvatarPicker({
   nickname,
   currentImage,
   preview,
+  error,
   uploading,
   onSelect,
   className,
@@ -29,7 +30,7 @@ export default function AvatarPicker({
     <div className={cn('flex flex-col items-center gap-2', className)}>
       <ImagePicker
         preview={null}
-        error={undefined}
+        error={error}
         uploading={uploading}
         onSelect={onSelect}
         className="border-0 p-0 w-auto h-auto"

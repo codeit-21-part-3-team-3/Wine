@@ -45,7 +45,6 @@ export function useImagePicker({ rules, onUploaded }: useImagePickerOptions) {
       } catch (err) {
         console.error('이미지 업로드 실패', err);
         setError('이미지 업로드 실패했습니다.');
-        toast.error('이미지 업로드 실패했습니다.');
       } finally {
         setUploading(false);
       }
