@@ -66,5 +66,12 @@ export function useWineListFetch(initialWines: Wine[], router: NextRouter, initi
     }
   };
 
-  return { wines, isLoading, error, hasNextPage, fetchNextPage };
+  const prependWine = (wine: Wine) => {
+    setWines(prev => {
+      if (prev.some(w => w.id === wine.id)) return prev;
+      return [wine, ...prev];
+    });
+  };
+
+  return { wines, isLoading, error, hasNextPage, fetchNextPage, prependWine };
 }

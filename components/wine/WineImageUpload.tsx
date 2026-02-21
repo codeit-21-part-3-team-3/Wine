@@ -1,39 +1,35 @@
-import { useState } from 'react';
-import Image from 'next/image';
-import camera from '@/assets/icons/camera.png';
+import { useImagePicker } from '@/hooks/imagePicker/useImagePicker';
+import { isImage, maxSize } from '@/utils/imagePicker/ImageValidation';
+import { ImagePicker } from '../common/ui/ImagePicker';
+import IconButton from '../common/ui/IconButton';
 
-export default function WineImageUpload() {
-  const [preview, setPreview] = useState<string | null>(null);
+interface WineImageUploadProps {
+  value?: string | null;
+  onChange: (url: string) => void;
+  error?: string | null;
+}
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+const RULES = [isImage, maxSize(5 * 1024 * 1024)];
 
-    const url = URL.createObjectURL(file);
-    setPreview(url);
-  };
-
+export default function WineImageUpload({ value, onChange, error }: WineImageUploadProps) {
+  const {
+    preview,
+    error: imagePickerError,
+    uploading,
+    handleFile,
+  } = useImagePicker({
+    rules: RULES,
+    onUploaded: onChange,
+  });
   return (
     <div className="flex flex-col gap-2">
       <span className="text-sm font-medium">와인 사진</span>
-
-      <label
-        htmlFor="wine-image"
-        className="relative w-32 h-32 border border-input flex items-center justify-center cursor-pointer overflow-hidden"
-      >
-        {preview ? (
-          <Image src={preview} alt="preview" fill className="object-cover" />
-        ) : (
-          <Image src={camera} alt="사진 업로드" width={24} height={24} className="opacity-60" />
-        )}
-      </label>
-
-      <input
-        id="wine-image"
-        type="file"
-        accept="image/*"
-        className="hidden"
-        onChange={handleChange}
+      <ImagePicker
+        preview={preview || value || null}
+        error={imagePickerError ?? error}
+        uploading={uploading}
+        onSelect={handleFile}
+        placeholder={<IconButton icon="camera" size={24} className="pointer-events-none" />}
       />
     </div>
   );
