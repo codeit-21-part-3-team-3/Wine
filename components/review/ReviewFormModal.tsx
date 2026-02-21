@@ -8,7 +8,7 @@ import {
 } from '@/components/common/ui/Dialog';
 import ReviewForm from './ReviewForm';
 import { Dispatch, SetStateAction } from 'react';
-import IconButton from '../common/ui/IconButton';
+import Icon from '@/components/common/ui/Icon';
 import { GetWineDetailResponse } from '@/lib/api/wine/wine.types';
 import { CreateReviewRequest } from '@/lib/api/review/review.types';
 
@@ -30,7 +30,7 @@ export default function ReviewFormModal({ open, onOpenChange, mode, wine, onSubm
           <DialogTitle className="text-2xl">{isEdit ? '리뷰 수정' : '리뷰 등록'}</DialogTitle>
 
           <DialogClose className="bg-transparent w-auto px-0">
-            <IconButton icon="cancel" size={16} />
+            <Icon name="cancel" size={16} />
           </DialogClose>
         </DialogHeader>
 
