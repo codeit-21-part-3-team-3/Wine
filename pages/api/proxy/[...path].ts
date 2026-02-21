@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { refreshAuthSession } from '@/lib/auth/refreshAuthSession';
 
 const BASE_URL = process.env.API_URL;
 const ALLOWED_METHODS = ['GET', 'POST', 'PATCH', 'DELETE'];
@@ -25,26 +26,38 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const qs = params.toString();
     const url = `${BASE_URL}/${pathString}${qs ? `?${qs}` : ''}`;
 
-    const { accessToken } = req.cookies;
+    const { accessToken, refreshToken } = req.cookies;
 
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
+    const forwardRequest = (token?: string) => {
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      return fetch(url, {
+        method: req.method,
+        headers,
+        body:
+          req.method === 'POST' || req.method === 'PATCH'
+            ? JSON.stringify(req.body ?? {})
+            : undefined,
+      });
     };
 
-    if (accessToken) {
-      headers['Authorization'] = `Bearer ${accessToken}`;
+    const response = await forwardRequest(accessToken);
+
+    if (response.status === 401 && refreshToken) {
+      const newAccessToken = await refreshAuthSession({ refreshToken, res });
+
+      if (newAccessToken) {
+        const retryResponse = await forwardRequest(newAccessToken);
+        const retryData = await retryResponse.json();
+        return res.status(retryResponse.status).json(retryData);
+      }
     }
-
-    const options = {
-      method: req.method,
-      headers,
-      body:
-        req.method === 'POST' || req.method === 'PATCH'
-          ? JSON.stringify(req.body ?? {})
-          : undefined,
-    };
-
-    const response = await fetch(url, options);
 
     const data = await response.json();
 
