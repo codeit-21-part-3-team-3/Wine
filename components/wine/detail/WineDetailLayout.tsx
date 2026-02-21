@@ -10,9 +10,10 @@ interface WineDetailLayoutProps {
 }
 
 export default function WineDetailLayout({ wine, user }: WineDetailLayoutProps) {
+  const hasReviews = wine.reviewCount > 0;
   return (
     <Container className="pb-16 lg:pb-20">
-      <WineProfile wine={wine} />
+      {hasReviews && <WineProfile wine={wine} />}
       <ReviewSection wine={wine} myId={user?.id ?? 0} />
     </Container>
   );

@@ -13,7 +13,7 @@ export default function HeroSection({ wine }: HeroSectionProps) {
       <Gnb />
 
       <Container>
-        {/* 데이터연동을 위해 임시로 넣은 것 지현이 작업중 */}
+        {/* 데이터연동을 위해 임시로 넣은 것 지현님 작업중 */}
         <section className="bg-gray-900 lg:py-12 flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
           <div className="relative w-full max-w-[300px] h-[400px]">
             {wine.image && !wine.image.includes('placeholder') ? (
