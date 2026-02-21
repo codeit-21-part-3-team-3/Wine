@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { AuthResponse, SignUpCredentials, User } from '@/types/auth/auth';
+import { AUTH_COOKIES } from '@/lib/auth/cookie';
 
 const BASE_URL = process.env.API_URL;
 const ALLOWED_METHODS = ['POST'];
@@ -34,6 +35,11 @@ export default async function handler(
     }
 
     const data: AuthResponse = await response.json();
+
+    res.setHeader('Set-Cookie', [
+      AUTH_COOKIES.accessToken(data.accessToken),
+      AUTH_COOKIES.refreshToken(data.refreshToken),
+    ]);
 
     return res.status(201).json({
       id: data.user.id,
