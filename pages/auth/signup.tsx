@@ -3,9 +3,9 @@ import FormField from '@/components/common/form/FormField';
 import Button from '@/components/common/ui/Button';
 import Link from 'next/link';
 import { useForm } from '@/hooks/useForm/useForm';
-import type { FieldErrors } from '@/hooks/useForm/types';
 import { useRouter } from 'next/router';
 import { useAuth } from '@/providers/Auth/AuthProvider';
+import { toast } from '@/components/common/ui/Toast';
 
 type SignUpValues = {
   email: string;
@@ -23,18 +23,17 @@ export default function SignUp() {
     try {
       await signup(data);
       router.push('/');
-    } catch {
-      alert('회원가입에 실패했습니다.');
+    } catch (error) {
+      const apiError = error as { data: { message: string } };
+      toast.error(apiError.data.message, {
+        title: '회원가입 실패',
+      });
     }
-  };
-
-  const inValid = (formErrors: FieldErrors<SignUpValues>) => {
-    console.log('실패했을때.', formErrors);
   };
 
   return (
     <AuthLayout>
-      <form className="flex flex-col" onSubmit={handleSubmit(valid, inValid)}>
+      <form className="flex flex-col" onSubmit={handleSubmit(valid)}>
         <div className="flex flex-col gap-6 mb-10">
           <FormField
             id="email"
