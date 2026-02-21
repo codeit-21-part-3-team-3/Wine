@@ -26,7 +26,7 @@ export default function WineImageUpload({ value, onChange, error }: WineImageUpl
       <span className="text-sm font-medium">와인 사진</span>
       <ImagePicker
         preview={preview || value || null}
-        error={error || imagePickerError}
+        error={imagePickerError ?? error}
         uploading={uploading}
         onSelect={handleFile}
         placeholder={<IconButton icon="camera" size={24} className="pointer-events-none" />}
