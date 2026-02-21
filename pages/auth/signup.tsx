@@ -4,6 +4,8 @@ import Button from '@/components/common/ui/Button';
 import Link from 'next/link';
 import { useForm } from '@/hooks/useForm/useForm';
 import type { FieldErrors } from '@/hooks/useForm/types';
+import { useRouter } from 'next/router';
+import { useAuth } from '@/providers/Auth/AuthProvider';
 
 type SignUpValues = {
   email: string;
@@ -13,10 +15,17 @@ type SignUpValues = {
 };
 
 export default function SignUp() {
-  const { register, handleSubmit, errors } = useForm<SignUpValues>({ mode: 'onBlur' });
+  const router = useRouter();
+  const { signup } = useAuth();
+  const { register, handleSubmit, errors } = useForm<SignUpValues>({ mode: 'onTouched' });
 
   const valid = async (data: SignUpValues) => {
-    console.log('회원가입 시도', data);
+    try {
+      await signup(data);
+      router.push('/');
+    } catch {
+      alert('회원가입에 실패했습니다.');
+    }
   };
 
   const inValid = (formErrors: FieldErrors<SignUpValues>) => {
@@ -71,6 +80,10 @@ export default function SignUp() {
               minLength: {
                 value: 8,
                 message: '비밀번호는 8자 이상이어야 합니다',
+              },
+              pattern: {
+                value: /^([a-z]|[A-Z]|[0-9]|[!@#$%^&*])+$/,
+                message: '비밀번호는 영문, 숫자, 특수문자(!@#$%^&*)만 사용 가능합니다',
               },
               deps: ['passwordConfirmation'],
             })}
