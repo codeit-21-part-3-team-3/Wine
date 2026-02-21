@@ -10,6 +10,14 @@ export type UpdateMeRequest = Partial<Pick<ApiUser, 'nickname' | 'image'>>;
 
 export type UpdateMeResponse = ApiUser;
 
-export type GetMyReviewsResponse = ApiReview[];
+export interface GetMyReviewsResponse {
+  list: ApiReview[];
+  totalCount: number;
+  nextCursor: number | null;
+}
 
-export type GetMyWinesResponse = WineListItem[];
+export interface GetMyWinesResponse {
+  list: WineListItem[];
+  totalCount: number;
+  nextCursor: number | null;
+}

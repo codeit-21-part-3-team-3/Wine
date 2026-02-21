@@ -13,6 +13,8 @@ interface ProfileSidebarProps {
   nickname: string;
   onNicknameChange: (value: string) => void;
   onSubmit: () => void;
+  onImageChange?: (file: File | null) => void;
+  isUpdating?: boolean;
   error?: string;
 }
 
@@ -35,6 +37,8 @@ export default function ProfileSidebar({
   nickname,
   onNicknameChange,
   onSubmit,
+  onImageChange,
+  isUpdating,
   error,
 }: ProfileSidebarProps) {
   const [preview, setPreview] = useState<string | null>(null);
@@ -47,18 +51,19 @@ export default function ProfileSidebar({
   const handleUploadFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
     setFileError(null);
+
     if (!file.type.startsWith('image/')) {
       setFileError('이미지 파일만 업로드할 수 있습니다.');
-      e.target.value = '';
       return;
     }
 
     if (file.size > MAX_FILE_SIZE) {
       setFileError('파일 크기는 5MB 이하만 가능합니다.');
-      e.target.value = '';
       return;
     }
+    onImageChange?.(file);
     setPreview(prev => {
       if (prev) URL.revokeObjectURL(prev);
       return URL.createObjectURL(file);
@@ -111,10 +116,10 @@ export default function ProfileSidebar({
         <Button
           className="self-end lg:self-center max-w-24.5"
           size="sm"
-          disabled={isDisabled}
+          disabled={isDisabled || isUpdating}
           onClick={onSubmit}
         >
-          변경하기
+          {isUpdating ? '처리 중...' : '변경하기'}
         </Button>
       </div>
     </div>
