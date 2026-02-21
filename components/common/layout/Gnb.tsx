@@ -12,7 +12,7 @@ export default function Gnb({ className }: GnbProps) {
   return (
     <header
       className={cn(
-        'max-w-300 rounded-sm bg-primary md:mt-7 md:mx-5 lg:m-auto lg:mt-10',
+        'max-w-300 md:rounded-sm bg-primary md:mt-7 md:mx-5 lg:m-auto lg:mt-10',
         className
       )}
     >
