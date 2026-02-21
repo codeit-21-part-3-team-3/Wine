@@ -6,6 +6,7 @@ import { useForm } from '@/hooks/useForm/useForm';
 import { useRouter } from 'next/router';
 import { useAuth } from '@/providers/Auth/AuthProvider';
 import { toast } from '@/components/common/ui/Toast';
+import type { FieldErrors } from '@/hooks/useForm';
 
 type SignUpValues = {
   email: string;
@@ -31,9 +32,17 @@ export default function SignUp() {
     }
   };
 
+  const Invalid = (errors: FieldErrors<SignUpValues>) => {
+    const firstError = Object.values(errors)[0];
+    if (!firstError) return;
+    toast.error(firstError, {
+      title: '회원가입 실패',
+    });
+  };
+
   return (
     <AuthLayout>
-      <form className="flex flex-col" onSubmit={handleSubmit(valid)}>
+      <form className="flex flex-col" onSubmit={handleSubmit(valid, Invalid)}>
         <div className="flex flex-col gap-6 mb-10">
           <FormField
             id="email"
