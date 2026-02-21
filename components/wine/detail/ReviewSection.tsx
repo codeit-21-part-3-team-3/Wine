@@ -6,6 +6,17 @@ import ReviewEmpty from '@/components/wine/detail/ReviewEmpty';
 import { useReviewStats } from '@/hooks/useReviewStats';
 import { GetWineDetailResponse, ApiWineReview } from '@/lib/api/wine/wine.types';
 import { deleteReview, likeReview, unlikeReview } from '@/lib/api/review/review';
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogTitle,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+  useAlertDialogState,
+} from '@/components/common/ui/AlertDialog';
+import { toast } from '@/components/common/ui/Toast';
+import Spinner from '@/components/common/ui/Spinner';
 
 interface ReviewSectionProps {
   wine: GetWineDetailResponse;
@@ -14,16 +25,31 @@ interface ReviewSectionProps {
 
 export default function ReviewSection({ wine, myId }: ReviewSectionProps) {
   const [reviews, setReviews] = useState<ApiWineReview[]>(wine.reviews);
+  const { open, onOpen, onClose } = useAlertDialogState();
+  const [selectedReviewId, setSelectedReviewId] = useState<number | null>(null);
   const { totalReviews, averageRating, distribution } = useReviewStats(reviews);
 
-  const handleDelete = async (reviewId: number) => {
-    if (!confirm('정말 삭제하시겠습니까?')) return;
-
+  const handleDeleteClick = (reviewId: number) => {
+    setSelectedReviewId(reviewId);
+    onOpen();
+  };
+  const [isDeleting, setIsDeleting] = useState(false);
+  const handleConfirmDelete = async () => {
+    if (selectedReviewId === null) return;
+    setIsDeleting(true);
     try {
-      await deleteReview(reviewId);
-      setReviews(prev => prev.filter(r => r.id !== reviewId));
+      await deleteReview(selectedReviewId);
+      setReviews(prev => prev.filter(r => r.id !== selectedReviewId));
+      toast.success('리뷰가 삭제되었습니다.', {
+        duration: 3000,
+      });
     } catch (error) {
       console.error('삭제 에러:', error);
+      toast.error('리뷰 삭제 중 오류가 발생했습니다.');
+    } finally {
+      setIsDeleting(false);
+      onClose();
+      setSelectedReviewId(null);
     }
   };
 
@@ -54,12 +80,10 @@ export default function ReviewSection({ wine, myId }: ReviewSectionProps) {
     }
   };
 
-  // 리뷰가 없을 때 UI
   if (!reviews || reviews.length === 0) {
     return (
       <ReviewEmpty
         onWriteClick={() => {
-          /* 여기에 리뷰 작성 모달을 여는 로직을 연결하세요! */
           console.log('리뷰 작성 모달 오픈');
         }}
       />
@@ -85,7 +109,7 @@ export default function ReviewSection({ wine, myId }: ReviewSectionProps) {
                 key={review.id}
                 review={review}
                 isOwner={review.user.id === myId}
-                onDelete={handleDelete}
+                onDelete={() => handleDeleteClick(review.id)}
                 onLike={() => handleLike(review.id, review.isLiked)}
               />
             ))}
@@ -100,6 +124,24 @@ export default function ReviewSection({ wine, myId }: ReviewSectionProps) {
           </div>
         </div>
       </div>
+      <AlertDialog open={open} onOpenChange={onClose}>
+        <AlertDialogContent className="max-w-[350px] p-8">
+          <AlertDialogTitle className="text-center text-lg font-semibold mb-8">
+            정말 삭제하시겠습니까?
+          </AlertDialogTitle>
+
+          <AlertDialogFooter className="flex gap-2">
+            <AlertDialogCancel>취소</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmDelete}>
+              {isDeleting ? (
+                <Spinner size="sm" className="text-white" label="삭제 중..." />
+              ) : (
+                '삭제하기'
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </section>
   );
 }
