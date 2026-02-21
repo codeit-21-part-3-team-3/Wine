@@ -54,15 +54,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       if (newAccessToken) {
         const retryResponse = await forwardRequest(newAccessToken);
-        const retryData = await retryResponse.json();
-        return res.status(retryResponse.status).json(retryData);
+        const retryData = await retryResponse.json().catch(() => null);
+        return res
+          .status(retryResponse.status)
+          .json(retryData ?? { message: '백엔드 재시도 응답 파싱 실패' });
       }
     }
 
-    const data = await response.json();
+    const data = await response.json().catch(() => null);
 
-    return res.status(response.status).json(data);
+    return res.status(response.status).json(data ?? { message: '백엔드 응답 파싱 실패' });
   } catch (error) {
-    return res.status(500).json({ message: '서버 오류가 발생했습니다.', error });
+    console.error('[Proxy Error]', error);
+    return res.status(500).json({ message: '서버 내부 오류가 발생했습니다.' });
   }
 }

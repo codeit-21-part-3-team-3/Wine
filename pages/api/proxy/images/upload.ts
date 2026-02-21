@@ -2,7 +2,9 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { refreshAuthSession } from '@/lib/auth/refreshAuthSession';
 
 export const config = {
-  api: { bodyParser: false },
+  api: {
+    bodyParser: false,
+  },
 };
 
 const BASE_URL = process.env.API_URL;
@@ -50,10 +52,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     }
 
-    const data = await response.json();
-
-    return res.status(response.status).json(data);
+    const data = await response.json().catch(() => null);
+    return res.status(response.status).json(data ?? { message: '백엔드 응답 파싱 실패' });
   } catch (error) {
-    return res.status(500).json({ message: '서버 오류가 발생했습니다.', error });
+    console.error('[Proxy Error]', error);
+    return res.status(500).json({ message: '서버 내부 오류가 발생했습니다.' });
   }
 }
