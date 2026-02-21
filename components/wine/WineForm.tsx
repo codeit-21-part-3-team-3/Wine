@@ -3,7 +3,8 @@ import Button from '../common/ui/Button';
 import Chip from '../common/ui/chip';
 import Input from '../common/ui/Input';
 import WineImageUpload from './WineImageUpload';
-import { Wine } from '@/types/domain/wine';
+import { Wine, WineType } from '@/types/domain/wine';
+import { useRef, useState } from 'react';
 
 type Mode = 'create' | 'edit';
 
@@ -15,23 +16,37 @@ interface WineFormProps {
 const WINE_TYPES = ['RED', 'WHITE', 'SPARKLING'] as const;
 
 export default function WineForm({ mode, onSuccess }: WineFormProps) {
+  const formRef = useRef<HTMLFormElement>(null);
   const form = useWineForm({ mode, onSuccess });
+  const [type, setType] = useState<WineType | null>(null);
+  const [image, setImage] = useState('');
+
+  const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!formRef.current) return;
+
+    const formData = new FormData(formRef.current);
+
+    const values = {
+      name: String(formData.get('name') ?? ''),
+      price: Number(formData.get('price') ?? 0),
+      region: String(formData.get('region') ?? ''),
+      type,
+      image,
+    };
+
+    form.submit(values);
+  };
 
   return (
-    <div className="flex flex-col gap-6">
-      <WineImageUpload
-        value={form.image}
-        onChange={form.setImage}
-        status={form.errors.image ? 'error' : 'default'}
-      />
-      {form.errors.image && <p className="text-red-500 text-[12px]">{form.errors.image}</p>}
+    <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-6">
+      <WineImageUpload value={image} onChange={setImage} error={form.errors.image} />
 
       <div className="flex flex-col gap-2">
         <span>와인 이름</span>
         <Input
+          name="name"
           status={form.errors.name ? 'error' : 'default'}
-          value={form.name}
-          onChange={e => form.setName(e.target.value)}
           placeholder="와인 이름 입력"
         />
         {form.errors.name && <p className="text-red-500 text-[12px]">{form.errors.name}</p>}
@@ -40,9 +55,9 @@ export default function WineForm({ mode, onSuccess }: WineFormProps) {
       <div className="flex flex-col gap-2">
         <span>가격</span>
         <Input
+          name="price"
+          type="text"
           status={form.errors.price ? 'error' : 'default'}
-          value={form.price}
-          onChange={e => form.setPrice(e.target.value)}
           placeholder="가격 입력"
         />
         {form.errors.price && <p className="text-red-500 text-[12px]">{form.errors.price}</p>}
@@ -52,7 +67,7 @@ export default function WineForm({ mode, onSuccess }: WineFormProps) {
         <span>타입</span>
         <div className="flex gap-2">
           {WINE_TYPES.map(t => (
-            <Chip key={t} label={t} selected={form.type === t} onClick={() => form.toggleType(t)} />
+            <Chip key={t} label={t} selected={type === t} onClick={() => setType(t)} />
           ))}
         </div>
         {form.errors.type && <p className="text-red-500 text-[12px]">{form.errors.type}</p>}
@@ -61,9 +76,8 @@ export default function WineForm({ mode, onSuccess }: WineFormProps) {
       <div className="flex flex-col gap-2">
         <span>원산지</span>
         <Input
+          name="region"
           status={form.errors.region ? 'error' : 'default'}
-          value={form.region}
-          onChange={e => form.setRegion(e.target.value)}
           placeholder="원산지 입력"
         />
         {form.errors.region && <p className="text-red-500 text-[12px]">{form.errors.region}</p>}
@@ -73,9 +87,9 @@ export default function WineForm({ mode, onSuccess }: WineFormProps) {
         <p className="text-red-500 text-[12px] font-medium">{form.errors.form}</p>
       )}
 
-      <Button onClick={form.submit} disabled={form.isSubmitting}>
+      <Button type="submit" disabled={form.isSubmitting}>
         {form.isSubmitting ? '등록 중...' : form.isEdit ? '와인 수정하기' : '와인 등록하기'}
       </Button>
-    </div>
+    </form>
   );
 }
