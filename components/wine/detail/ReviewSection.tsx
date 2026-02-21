@@ -5,7 +5,9 @@ import ReviewStats from '@/components/wine/detail/ReviewStats';
 import ReviewEmpty from '@/components/wine/detail/ReviewEmpty';
 import { useReviewStats } from '@/hooks/useReviewStats';
 import { GetWineDetailResponse, ApiWineReview } from '@/lib/api/wine/wine.types';
-import { deleteReview, likeReview, unlikeReview } from '@/lib/api/review/review';
+import { createReview, deleteReview, likeReview, unlikeReview } from '@/lib/api/review/review';
+import ReviewFormModal from '@/components/review/ReviewFormModal';
+import { CreateReviewRequest } from '@/lib/api/review/review.types';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -28,6 +30,7 @@ export default function ReviewSection({ wine, myId }: ReviewSectionProps) {
   const { open, onOpen, onClose } = useAlertDialogState();
   const [selectedReviewId, setSelectedReviewId] = useState<number | null>(null);
   const { totalReviews, averageRating, distribution } = useReviewStats(reviews);
+  const [isWriteModalOpen, setIsWriteModalOpen] = useState(false);
 
   const handleDeleteClick = (reviewId: number) => {
     setSelectedReviewId(reviewId);
@@ -67,7 +70,6 @@ export default function ReviewSection({ wine, myId }: ReviewSectionProps) {
           : r
       )
     );
-
     try {
       if (isCurrentlyLiked) {
         await unlikeReview(reviewId);
@@ -80,14 +82,20 @@ export default function ReviewSection({ wine, myId }: ReviewSectionProps) {
     }
   };
 
+  const handleCreateReview = async (formData: CreateReviewRequest) => {
+    try {
+      const newReview = await createReview(formData);
+      setReviews(prev => [newReview, ...prev]);
+      toast.success('리뷰가 성공적으로 등록되었습니다.');
+      setIsWriteModalOpen(false);
+    } catch (error) {
+      console.error('리뷰 등록 실패:', error);
+      toast.error('리뷰 등록 중 오류가 발생했습니다.');
+    }
+  };
+
   if (!reviews || reviews.length === 0) {
-    return (
-      <ReviewEmpty
-        onWriteClick={() => {
-          console.log('리뷰 작성 모달 오픈');
-        }}
-      />
-    );
+    return <ReviewEmpty onWriteClick={() => setIsWriteModalOpen(true)} />;
   }
 
   return (
@@ -118,12 +126,23 @@ export default function ReviewSection({ wine, myId }: ReviewSectionProps) {
         <div className="w-full lg:w-[350px]">
           <div className="flex flex-col gap-10">
             <ReviewStats rating={averageRating} distribution={distribution} />
-            <Button variant="primary" className="text-lg font-bold">
+            <Button
+              variant="primary"
+              className="text-lg font-bold"
+              onClick={() => setIsWriteModalOpen(true)}
+            >
               리뷰 남기기
             </Button>
           </div>
         </div>
       </div>
+      <ReviewFormModal
+        open={isWriteModalOpen}
+        onOpenChange={setIsWriteModalOpen}
+        mode="create"
+        wine={wine}
+        onSubmit={handleCreateReview}
+      />
       <AlertDialog open={open} onOpenChange={onClose}>
         <AlertDialogContent className="max-w-[350px] p-8">
           <AlertDialogTitle className="text-center text-lg font-semibold mb-8">

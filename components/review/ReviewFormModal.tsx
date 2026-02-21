@@ -9,14 +9,18 @@ import {
 import ReviewForm from './ReviewForm';
 import { Dispatch, SetStateAction } from 'react';
 import IconButton from '../common/ui/IconButton';
+import { GetWineDetailResponse } from '@/lib/api/wine/wine.types';
+import { CreateReviewRequest } from '@/lib/api/review/review.types';
 
 interface Props {
   open: boolean;
   onOpenChange: Dispatch<SetStateAction<boolean>>;
   mode: 'create' | 'edit';
+  wine: GetWineDetailResponse;
+  onSubmit: (data: CreateReviewRequest) => Promise<void>;
 }
 
-export default function ReviewFormModal({ open, onOpenChange, mode }: Props) {
+export default function ReviewFormModal({ open, onOpenChange, mode, wine, onSubmit }: Props) {
   const isEdit = mode === 'edit';
 
   return (
@@ -31,7 +35,7 @@ export default function ReviewFormModal({ open, onOpenChange, mode }: Props) {
         </DialogHeader>
 
         <DialogBody>
-          <ReviewForm mode={mode} />
+          <ReviewForm mode={mode} wine={wine} onSubmit={onSubmit} />
         </DialogBody>
       </DialogContent>
     </Dialog>
