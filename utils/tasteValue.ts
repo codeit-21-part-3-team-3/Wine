@@ -1,32 +1,16 @@
 import { Taste as TasteLabel } from '@/components/common/ui/TasteItem';
+import { TasteData } from '@/lib/api/wine/wine.types';
 
-interface ReviewTasteData {
-  lightBold: number;
-  smoothTannic: number;
-  drySweet: number;
-  softAcidic: number;
-}
-
-interface WineTasteData {
-  body: number;
-  tannin: number;
-  sweetness: number;
-  acidity: number;
-}
-
-export const getTasteValueByLabel = (
-  data: Partial<ReviewTasteData & WineTasteData>,
-  label: TasteLabel
-): number => {
+export const getTasteValueByLabel = (data: Partial<TasteData>, label: TasteLabel): number => {
   switch (label) {
     case '바디감':
-      return data.lightBold ?? data.body ?? 0;
+      return data.lightBold ?? 0;
     case '탄닌':
-      return data.smoothTannic ?? data.tannin ?? 0;
+      return data.smoothTannic ?? 0;
     case '당도':
-      return data.drySweet ?? data.sweetness ?? 0;
+      return data.drySweet ?? 0;
     case '산미':
-      return data.softAcidic ?? data.acidity ?? 0;
+      return data.softAcidic ?? 0;
     default:
       return 0;
   }
