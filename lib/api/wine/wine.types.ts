@@ -5,10 +5,16 @@ import { QueryParams } from '@/lib/fetcher';
 
 export type WineUser = ApiUser;
 
-export type ApiRecentReview = Pick<
-  ApiReview,
-  'id' | 'content' | 'aroma' | 'rating' | 'createdAt' | 'updatedAt' | 'user'
->;
+export interface TasteData {
+  lightBold: number;
+  smoothTannic: number;
+  drySweet: number;
+  softAcidic: number;
+}
+
+export type ApiWineReview = Omit<ApiReview, 'wineId' | 'teamId'> & TasteData;
+
+export type ApiRecentReview = ApiWineReview;
 
 export interface ApiWine {
   id: number;
@@ -43,20 +49,16 @@ export interface GetWinesResponse {
 
 export type GetRecommendedWinesResponse = WineListItem[];
 
-export type ApiWineReview = Omit<ApiReview, 'wineId' | 'teamId'>;
-
 export interface GetWineDetailResponse extends ApiWine {
   reviews: ApiWineReview[];
   avgRatings: Record<string, number>;
 }
 
 export type CreateWineRequest = Pick<ApiWine, 'name' | 'region' | 'image' | 'price' | 'type'>;
-
 export type UpdateWineRequest = Partial<
   Pick<ApiWine, 'name' | 'region' | 'image' | 'price' | 'type' | 'avgRating'>
 >;
 
 export type CreateWineResponse = ApiWine;
 export type UpdateWineResponse = ApiWine;
-
 export type DeleteWineResponse = Pick<ApiWine, 'id'>;

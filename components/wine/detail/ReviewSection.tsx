@@ -1,13 +1,94 @@
+import { useState } from 'react';
 import Button from '@/components/common/ui/Button';
 import ReviewFeedCard from '@/components/reviewCard/ReviewFeedCard';
 import ReviewStats from '@/components/wine/detail/ReviewStats';
-import { MOCK_WINE_DETAIL } from '@/mock/wineDetail.mock';
+import ReviewEmpty from '@/components/wine/detail/ReviewEmpty';
 import { useReviewStats } from '@/hooks/useReviewStats';
+import { GetWineDetailResponse, ApiWineReview } from '@/lib/api/wine/wine.types';
+import { deleteReview, likeReview, unlikeReview } from '@/lib/api/review/review';
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogTitle,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+  useAlertDialogState,
+} from '@/components/common/ui/AlertDialog';
+import { toast } from '@/components/common/ui/Toast';
+import Spinner from '@/components/common/ui/Spinner';
 
-export default function ReviewSection() {
-  const currentUserId = 10;
-  const reviewsFromDetail = MOCK_WINE_DETAIL.reviews;
-  const { totalReviews, averageRating, distribution } = useReviewStats(reviewsFromDetail);
+interface ReviewSectionProps {
+  wine: GetWineDetailResponse;
+  myId: number;
+}
+
+export default function ReviewSection({ wine, myId }: ReviewSectionProps) {
+  const [reviews, setReviews] = useState<ApiWineReview[]>(wine.reviews);
+  const { open, onOpen, onClose } = useAlertDialogState();
+  const [selectedReviewId, setSelectedReviewId] = useState<number | null>(null);
+  const { totalReviews, averageRating, distribution } = useReviewStats(reviews);
+
+  const handleDeleteClick = (reviewId: number) => {
+    setSelectedReviewId(reviewId);
+    onOpen();
+  };
+  const [isDeleting, setIsDeleting] = useState(false);
+  const handleConfirmDelete = async () => {
+    if (selectedReviewId === null) return;
+    setIsDeleting(true);
+    try {
+      await deleteReview(selectedReviewId);
+      setReviews(prev => prev.filter(r => r.id !== selectedReviewId));
+      toast.success('리뷰가 삭제되었습니다.', {
+        duration: 3000,
+      });
+    } catch (error) {
+      console.error('삭제 에러:', error);
+      toast.error('리뷰 삭제 중 오류가 발생했습니다.');
+    } finally {
+      setIsDeleting(false);
+      onClose();
+      setSelectedReviewId(null);
+    }
+  };
+
+  const handleLike = async (reviewId: number, isCurrentlyLiked: boolean) => {
+    const previousReviews = [...reviews];
+
+    // 좋아요 버튼 작업필요
+    setReviews(prev =>
+      prev.map(r =>
+        r.id === reviewId
+          ? {
+              ...r,
+              isLiked: !isCurrentlyLiked,
+            }
+          : r
+      )
+    );
+
+    try {
+      if (isCurrentlyLiked) {
+        await unlikeReview(reviewId);
+      } else {
+        await likeReview(reviewId);
+      }
+    } catch (error) {
+      setReviews(previousReviews);
+      console.error('좋아요 적용 에러:', error);
+    }
+  };
+
+  if (!reviews || reviews.length === 0) {
+    return (
+      <ReviewEmpty
+        onWriteClick={() => {
+          console.log('리뷰 작성 모달 오픈');
+        }}
+      />
+    );
+  }
 
   return (
     <section className="w-full py-6 md:py-10 lg:py-20 px-0">
@@ -23,11 +104,13 @@ export default function ReviewSection() {
           </div>
 
           <div className="">
-            {reviewsFromDetail.map(review => (
+            {reviews.map(review => (
               <ReviewFeedCard
                 key={review.id}
                 review={review}
-                isOwner={review.user.id === currentUserId}
+                isOwner={review.user.id === myId}
+                onDelete={() => handleDeleteClick(review.id)}
+                onLike={() => handleLike(review.id, review.isLiked)}
               />
             ))}
           </div>
@@ -41,6 +124,24 @@ export default function ReviewSection() {
           </div>
         </div>
       </div>
+      <AlertDialog open={open} onOpenChange={onClose}>
+        <AlertDialogContent className="max-w-[350px] p-8">
+          <AlertDialogTitle className="text-center text-lg font-semibold mb-8">
+            정말 삭제하시겠습니까?
+          </AlertDialogTitle>
+
+          <AlertDialogFooter className="flex gap-2">
+            <AlertDialogCancel>취소</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmDelete}>
+              {isDeleting ? (
+                <Spinner size="sm" className="text-white" label="삭제 중..." />
+              ) : (
+                '삭제하기'
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </section>
   );
 }
