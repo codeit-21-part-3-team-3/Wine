@@ -1,9 +1,9 @@
-import { Wine } from '@/types/domain/wine';
 import { cn } from '@/utils/cn';
 import MyWineCard from '../mywinecard/MyWineCard';
+import { WineListItem } from '@/lib/api/wine/wine.types';
 
 interface MyWinesPanelProps {
-  wines: Wine[];
+  wines: WineListItem[];
   className?: string;
 }
 

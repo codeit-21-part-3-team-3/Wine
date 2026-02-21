@@ -1,9 +1,9 @@
-import { Review } from '@/types/domain/review';
 import { cn } from '@/utils/cn';
 import MyReviewCard from '../reviewCard/MyReviewCard';
+import { ApiReview } from '@/lib/api/review/review.types';
 
 interface MyReviewsPanelProps {
-  reviews: Review[];
+  reviews: ApiReview[];
   className?: string;
 }
 

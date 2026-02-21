@@ -29,6 +29,8 @@ export interface ApiWine {
   recentReview?: ApiRecentReview;
 }
 
+export type ApiWineSummary = Omit<ApiWine, 'reviewCount' | 'userId' | 'recentReview'>;
+
 export type WineListItem = ApiWine;
 
 export interface GetWinesQuery extends QueryParams {
