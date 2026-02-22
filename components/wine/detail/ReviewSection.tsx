@@ -15,12 +15,12 @@ interface ReviewSectionProps {
 export default function ReviewSection({ wine, myId }: ReviewSectionProps) {
   const {
     reviews,
-    // 등록
+    // 등록모달
     isWriteModalOpen,
     setIsWriteModalOpen,
     handleCreateReview,
 
-    // 수정
+    // 수정모달
     isEditModalOpen,
     setIsEditModalOpen,
     editingReview,
