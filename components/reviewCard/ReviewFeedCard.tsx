@@ -17,20 +17,21 @@ interface ReviewFeedCardProps {
   isOwner: boolean;
   onDelete: (id: number) => void;
   onLike: () => void;
+  onEdit: () => void;
 }
 
-export default function ReviewFeedCard({ review, isOwner, onDelete, onLike }: ReviewFeedCardProps) {
+export default function ReviewFeedCard({
+  review,
+  isOwner,
+  onDelete,
+  onLike,
+  onEdit,
+}: ReviewFeedCardProps) {
   const [expanded, setExpanded] = useState(false);
 
   const handleEdit = () => {
-    console.log('수정 모달 오픈:', review.id);
+    onEdit();
   };
-
-  /**
-   * @todo(@jaywai-lee, 26.02.18)
-   * 페이지 레벨 action 연결 전까지 임시 핸들러
-   * merge 후 상위로 lift 예정
-   */
 
   return (
     <ReviewContainer
