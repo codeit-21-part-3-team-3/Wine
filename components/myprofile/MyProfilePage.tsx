@@ -4,13 +4,13 @@ import MyReviewsPanel from './MyReviewsPanel';
 import MyWinesPanel from './MyWinesPanel';
 import MyProfileLayout from './MyProfileLayout';
 import MyProfileTabs from './MyProfileTabs';
-import { ApiReview } from '@/lib/api/review/review.types';
-import { WineListItem } from '@/lib/api/wine/wine.types';
-import { ApiUser } from '@/lib/api/user/user.types';
 import { useProfileEditor } from '@/hooks/myprofile/userProfileEditor';
+import type { ApiReview } from '@/lib/api/review/review.types';
+import type { WineListItem } from '@/lib/api/wine/wine.types';
+import type { ApiUser } from '@/lib/api/user/user.types';
+import type { Wine } from '@/types/domain/wine';
 
 type Tab = 'reviews' | 'wines';
-
 type UserProfile = Pick<ApiUser, 'image' | 'nickname'>;
 
 interface MyProfileErrors {
@@ -30,6 +30,8 @@ interface MyProfilePageProps {
   onUpdateProfile: (nickname: string, imageUrl?: string | null) => void;
   isUpdating: boolean;
   error?: MyProfileErrors;
+  onDeleteWine: (id: number) => void;
+  onUpdateWineLocal: (id: number, wine: Wine) => void;
 }
 
 export default function MyProfilePage({
@@ -43,6 +45,8 @@ export default function MyProfilePage({
   onUpdateProfile,
   isUpdating,
   error,
+  onDeleteWine,
+  onUpdateWineLocal,
 }: MyProfilePageProps) {
   const [tab, setTab] = useState<Tab>('reviews');
   const editor = useProfileEditor(user);
@@ -78,7 +82,14 @@ export default function MyProfilePage({
         <>
           <MyProfileTabs value={tab} onChange={setTab} />
           {tab === 'reviews' && <MyReviewsPanel reviews={reviews} loading={loadingReviews} />}
-          {tab === 'wines' && <MyWinesPanel wines={wines} loading={loadingWines} />}
+          {tab === 'wines' && (
+            <MyWinesPanel
+              wines={wines}
+              loading={loadingWines}
+              onDeleteWine={onDeleteWine}
+              onUpdateWineLocal={onUpdateWineLocal}
+            />
+          )}
         </>
       }
     />

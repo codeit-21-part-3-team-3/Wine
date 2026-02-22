@@ -1,6 +1,6 @@
 import { getMyWines } from '@/lib/api/user/user';
-import { WineListItem } from '@/lib/api/wine/wine.types';
 import { useCallback, useState } from 'react';
+import type { WineListItem } from '@/lib/api/wine/wine.types';
 
 export function useMyWines(limit = 10) {
   const [wines, setWines] = useState<WineListItem[]>([]);
@@ -9,8 +9,7 @@ export function useMyWines(limit = 10) {
   const [hasFetched, setHasFetched] = useState(false);
 
   const fetch = useCallback(async () => {
-    if (loading) return;
-    if (hasFetched) return;
+    if (loading || hasFetched) return;
 
     try {
       setError(null);
@@ -25,5 +24,13 @@ export function useMyWines(limit = 10) {
     }
   }, [loading, hasFetched, limit]);
 
-  return { wines, loading, error, fetch };
+  const removeLocalWine = useCallback((id: number) => {
+    setWines(prev => prev.filter(w => w.id !== id));
+  }, []);
+
+  const updateLocalWine = useCallback((id: number, patch: Partial<WineListItem>) => {
+    setWines(prev => prev.map(w => (w.id === id ? { ...w, ...patch } : w)));
+  }, []);
+
+  return { wines, loading, error, fetch, removeLocalWine, updateLocalWine };
 }

@@ -3,16 +3,16 @@ import Button from '../common/ui/Button';
 import Chip from '../common/ui/chip';
 import Input from '../common/ui/Input';
 import WineImageUpload from './WineImageUpload';
-import { Wine, WineType } from '@/types/domain/wine';
 import { useState } from 'react';
 import { useForm } from '@/hooks/useForm';
-import Spinner from '../common/ui/Spinner';
 import { WINE_PRICE_MAX } from '@/constants/wine';
+import type { Wine, WineType } from '@/types/domain/wine';
 
 type Mode = 'create' | 'edit';
 
 interface WineFormProps {
   mode: Mode;
+  initialWine?: Wine;
   onSuccess?: (wine: Wine) => void;
 }
 
@@ -27,10 +27,10 @@ interface WineFormFields {
 
 const WINE_TYPES = ['RED', 'WHITE', 'SPARKLING'] as const;
 
-export default function WineForm({ mode, onSuccess }: WineFormProps) {
-  const form = useWineForm({ mode, onSuccess });
-  const [type, setType] = useState<WineType | ''>('');
-  const [image, setImage] = useState('');
+export default function WineForm({ mode, initialWine, onSuccess }: WineFormProps) {
+  const form = useWineForm({ mode, wineId: initialWine?.id, onSuccess });
+  const [type, setType] = useState<WineType | ''>(initialWine?.type ?? '');
+  const [image, setImage] = useState(initialWine?.image ?? '');
   const { register, handleSubmit, errors } = useForm<WineFormFields>({ mode: 'onSubmit' });
 
   const onSubmit = handleSubmit(async values => {
@@ -38,8 +38,8 @@ export default function WineForm({ mode, onSuccess }: WineFormProps) {
       ...values,
       price: Number(values.price),
       type: values.type as WineType,
+      image,
     });
-    console.log('values:', values);
   });
 
   return (
@@ -47,6 +47,7 @@ export default function WineForm({ mode, onSuccess }: WineFormProps) {
       <WineImageUpload value={image} onChange={setImage} error={errors.image} />
       <input
         type="hidden"
+        defaultValue={initialWine?.image}
         {...register('image', {
           required: '와인 사진은 필수 입력이에요',
         })}
@@ -56,6 +57,7 @@ export default function WineForm({ mode, onSuccess }: WineFormProps) {
       <div className="flex flex-col gap-2">
         <span>와인 이름</span>
         <Input
+          defaultValue={initialWine?.name}
           {...register('name', {
             required: '와인 이름은 필수 입력이에요',
           })}
@@ -68,6 +70,7 @@ export default function WineForm({ mode, onSuccess }: WineFormProps) {
       <div className="flex flex-col gap-2">
         <span>가격</span>
         <Input
+          defaultValue={initialWine ? String(initialWine.price) : ''}
           {...register('price', {
             required: '가격은 필수 입력이에요',
             validate: value => {
@@ -96,10 +99,11 @@ export default function WineForm({ mode, onSuccess }: WineFormProps) {
         </div>
         <input
           type="hidden"
+          defaultValue={initialWine?.type}
           {...register('type', {
             required: '와인 타입은 필수 입력이에요',
           })}
-          value={type ?? ''}
+          value={type}
         />
         {errors.type && <p className="text-red-500 text-[12px]">{errors.type}</p>}
       </div>
@@ -107,6 +111,7 @@ export default function WineForm({ mode, onSuccess }: WineFormProps) {
       <div className="flex flex-col gap-2">
         <span>원산지</span>
         <Input
+          defaultValue={initialWine?.region}
           {...register('region', {
             required: '원산지는 필수 입력이에요',
           })}
@@ -119,7 +124,7 @@ export default function WineForm({ mode, onSuccess }: WineFormProps) {
       {form.formError && <p className="text-red-500 text-[12px] font-medium">{form.formError}</p>}
 
       <Button type="submit" disabled={form.isSubmitting}>
-        {form.isSubmitting ? <Spinner /> : form.isEdit ? '와인 수정하기' : '와인 등록하기'}
+        {form.isEdit ? '와인 수정하기' : '와인 등록하기'}
       </Button>
     </form>
   );
