@@ -3,6 +3,7 @@ import { createWine } from '@/lib/api/wine/wine';
 import type { CreateWineRequest } from '@/lib/api/wine/wine.types';
 import type { Wine, WineType } from '@/types/domain/wine';
 import { toast } from '@/components/common/ui/Toast';
+import { WINE_PRICE_MAX, WINE_PRICE_MIN } from '@/constants/wine';
 
 interface useWineFormParams {
   mode: 'create' | 'edit';
@@ -33,6 +34,11 @@ export function useWineForm({ mode, onSuccess }: useWineFormParams) {
     try {
       setIsSubmitting(true);
       setFormError(null);
+
+      if (values.price < WINE_PRICE_MIN || values.price > WINE_PRICE_MAX) {
+        toast.error(`가격은 ${WINE_PRICE_MAX.toLocaleString()}원 이하만 가능합니다.`);
+        return;
+      }
 
       const payload: CreateWineRequest = {
         name: values.name,
