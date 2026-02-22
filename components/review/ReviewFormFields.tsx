@@ -64,7 +64,7 @@ export function AromaSelectField({
   return (
     <div className="flex flex-col gap-2 mb-7.5">
       <span className="mb-3 text-xl font-semibold">기억에 남는 향이 있나요?</span>
-      <div className="flex flex-wrap py-2.5">
+      <div className="flex flex-wrap py-2.5 gap-2.5">
         {aromaKeys.map(key => (
           <Chip
             key={key}
