@@ -77,22 +77,8 @@ export default function MyProfilePage({
       content={
         <>
           <MyProfileTabs value={tab} onChange={setTab} />
-          {tab === 'reviews' &&
-            (loadingReviews ? (
-              <div>리뷰 불러오는 중...</div>
-            ) : reviews.length === 0 ? (
-              <div>작성한 리뷰가 없습니다.</div>
-            ) : (
-              <MyReviewsPanel reviews={reviews} />
-            ))}
-          {tab === 'wines' &&
-            (loadingWines ? (
-              <div>와인 불러오는 중...</div>
-            ) : wines.length === 0 ? (
-              <div>등록한 와인이 없습니다.</div>
-            ) : (
-              <MyWinesPanel wines={wines} />
-            ))}
+          {tab === 'reviews' && <MyReviewsPanel reviews={reviews} loading={loadingReviews} />}
+          {tab === 'wines' && <MyWinesPanel wines={wines} loading={loadingWines} />}
         </>
       }
     />
