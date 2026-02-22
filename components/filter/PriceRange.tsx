@@ -1,9 +1,14 @@
 import { WINE_PRICE_MAX, WINE_PRICE_MIN } from '@/constants/wine';
 import { cn } from '@/utils/cn';
 
+type MinPriceValue = number;
+type MaxPriceValue = number;
+
+type PriceRange = [MinPriceValue, MaxPriceValue];
+
 interface PriceRangeProps {
-  value: [number, number];
-  onChange: (next: [number, number]) => void;
+  value: PriceRange;
+  onChange: (next: PriceRange) => void;
   className?: string;
 }
 const STEP = 1000;
