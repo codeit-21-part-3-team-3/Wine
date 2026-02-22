@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import Button from '../common/ui/Button';
-import { ApiWineReview, GetWineDetailResponse } from '@/lib/api/wine/wine.types';
-import {} from '@/lib/api/wine/wine.types';
+import { ApiWineReview } from '@/lib/api/wine/wine.types';
 import { CreateReviewRequest, UpdateReviewRequest } from '@/lib/api/review/review.types';
 import { useReviewFormLogic } from '@/hooks/review/useReviewForm';
 import {
@@ -9,10 +8,11 @@ import {
   TasteSection,
   AromaSelectField,
 } from '@/components/review/ReviewFormFields';
+import type { WineInReview } from '@/types/domain/review';
 
 interface ReviewFormProps {
   mode: 'create' | 'edit';
-  wine: GetWineDetailResponse;
+  wine: WineInReview;
   onSubmit: (data: CreateReviewRequest | UpdateReviewRequest) => Promise<void>;
   initialData?: ApiWineReview;
 }

@@ -1,15 +1,28 @@
 import { cn } from '@/utils/cn';
 import MyReviewCard from '../reviewCard/MyReviewCard';
-import { ApiReview } from '@/lib/api/review/review.types';
 import EmptyState from '../common/ui/EmptyState';
+import type { ApiReview, UpdateReviewRequest } from '@/lib/api/review/review.types';
+import { useMyReviewsPanelState } from '@/hooks/myprofile/useMyReviewsPanelState';
+import { DeleteReviewDialog } from '../review/DeleteReviewDialog';
+import ReviewFormModal from '../review/ReviewFormModal';
 
 interface MyReviewsPanelProps {
   reviews: ApiReview[];
   loading: boolean;
+  onUpdateReview: (id: number, data: UpdateReviewRequest) => Promise<void>;
+  onDeleteReview: (id: number) => Promise<void> | void;
   className?: string;
 }
 
-export default function MyReviewsPanel({ reviews, loading, className }: MyReviewsPanelProps) {
+export default function MyReviewsPanel({
+  reviews,
+  loading,
+  onUpdateReview,
+  onDeleteReview,
+  className,
+}: MyReviewsPanelProps) {
+  const state = useMyReviewsPanelState({ onUpdateReview, onDeleteReview });
+
   if (loading) return null;
 
   if (!reviews.length) {
@@ -29,18 +42,43 @@ export default function MyReviewsPanel({ reviews, loading, className }: MyReview
   }
 
   return (
-    <section
-      role="tabpanel"
-      id="panel-reviews"
-      aria-labelledby="tab-reviews"
-      className={cn(
-        'relative lg:pl-5 lg:border-l border-t border-gray-300 flex flex-col',
-        className
+    <>
+      <section
+        role="tabpanel"
+        id="panel-reviews"
+        aria-labelledby="tab-reviews"
+        className={cn(
+          'relative lg:pl-5 lg:border-l border-t border-gray-300 flex flex-col',
+          className
+        )}
+      >
+        {reviews.map(review => (
+          <MyReviewCard
+            key={review.id}
+            review={review}
+            onEdit={state.openEdit}
+            onDelete={state.openDelete}
+          />
+        ))}
+      </section>
+
+      {state.editingReview?.wine && (
+        <ReviewFormModal
+          open={state.editOpen}
+          onOpenChange={state.setEditOpen}
+          mode="edit"
+          wine={state.editingReview.wine}
+          initialData={state.editingReview}
+          onSubmit={state.handleSubmitEdit}
+        />
       )}
-    >
-      {reviews.map(review => (
-        <MyReviewCard key={review.id} review={review} />
-      ))}
-    </section>
+
+      <DeleteReviewDialog
+        open={state.deleteOpen}
+        onClose={() => state.setDeleteOpen(false)}
+        onConfirm={state.handleConfirmDelete}
+        isDeleting={state.isDeleting}
+      />
+    </>
   );
 }
