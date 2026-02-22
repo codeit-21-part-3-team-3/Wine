@@ -1,7 +1,16 @@
 import Container from '@/components/common/layout/Container';
 import Gnb from '@/components/common/layout/Gnb';
-import { GetWineDetailResponse } from '@/lib/api/wine/wine.types';
 import Image from 'next/image';
+import wineRed from '@/assets/detailwine/wine-red.png';
+import wineWhite from '@/assets/detailwine/wine-white.png';
+import wineSparkling from '@/assets/detailwine/wine-sparkling.png';
+import { GetWineDetailResponse } from '@/lib/api/wine/wine.types';
+
+const BACKGROUND_IMAGES = {
+  RED: wineRed,
+  WHITE: wineWhite,
+  SPARKLING: wineSparkling,
+};
 
 interface HeroSectionProps {
   wine: GetWineDetailResponse;
@@ -9,32 +18,61 @@ interface HeroSectionProps {
 
 export default function HeroSection({ wine }: HeroSectionProps) {
   return (
-    <div className="pt-px text-white overflow-hidden">
+    <div className="bg-gray-100 pt-px lg:rounded-b-[88px] overflow-hidden">
       <Gnb />
-
-      <Container>
-        {/* 데이터연동을 위해 임시로 넣은 것 지현님 작업중 */}
-        <section className="bg-gray-900 lg:py-12 flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
-          <div className="relative w-full max-w-[300px] h-[400px]">
-            {wine.image && !wine.image.includes('placeholder') ? (
-              <Image src={wine.image} alt={wine.name} fill className="object-contain" priority />
-            ) : (
-              <div className="w-full h-full bg-gray-800 flex flex-col items-center justify-center text-gray-400">
-                <span>이미지 준비 중</span>
-              </div>
-            )}
+      <Container className="flex-1 flex items-center justify-center">
+        <section className="py-8 lg:py-0 flex flex-col lg:flex-row items-center gap-6 lg:gap-12 w-full">
+          <div className="relative w-full lg:w-[460px] h-[300px] lg:h-[450px] flex items-center justify-center overflow-hidden">
+            <div
+              className={`absolute inset-0 flex items-center justify-center transition-transform ${
+                wine.type === 'RED' ? '-translate-x-20' : ''
+              }`}
+            >
+              <Image
+                src={BACKGROUND_IMAGES[wine.type as keyof typeof BACKGROUND_IMAGES] || wineRed}
+                alt=""
+                fill
+                className="object-contain"
+              />
+            </div>
+            <div className="relative w-full h-full">
+              <Image
+                src={wine.image}
+                alt={wine.name}
+                fill
+                className="object-contain z-10"
+                priority
+              />
+            </div>
           </div>
 
-          <div className="flex flex-col gap-4 text-center lg:text-left">
-            <div className="flex flex-col gap-2">
-              <span className="text-purple-400 font-medium tracking-wider uppercase text-sm">
-                {wine.region}
+          <div className="flex flex-col w-full lg:flex-1 items-start lg:h-[300px]">
+            <div className="flex items-center gap-4 mb-[14px]">
+              <div className="flex text-[16px] md:text-[20px] lg:text-[28px]">
+                {[1, 2, 3, 4, 5].map(num => (
+                  <span
+                    key={num}
+                    className={num <= Math.floor(wine.avgRating) ? 'text-primary' : 'text-gray-300'}
+                  >
+                    ★
+                  </span>
+                ))}
+              </div>
+              <span className="text-base font-normal text-gray-400">
+                {wine.reviewCount.toLocaleString()}개의 후기
               </span>
-              <h1 className="text-4xl lg:text-5xl font-bold leading-tight">{wine.name}</h1>
             </div>
 
-            <div className="mt-4">
-              <span className="text-3xl font-bold">₩ {wine.price.toLocaleString()}</span>
+            <h1 className="text-2xl lg:text-[40px] font-bold text-gray-900 leading-tight mb-[14px]">
+              {wine.name}
+            </h1>
+            <p className="text-base lg:text-lg font-normal text-gray-400 mb-6 lg:mb-8">
+              {wine.region}
+            </p>
+            <div className="mt-auto w-full flex justify-end pr-4 lg:pr-10">
+              <span className="text-2xl lg:text-[32px] font-bold text-gray-900">
+                {wine.price.toLocaleString()}원
+              </span>
             </div>
           </div>
         </section>
