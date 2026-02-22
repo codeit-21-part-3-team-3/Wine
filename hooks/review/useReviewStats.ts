@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
-import { Review } from '@/types/domain/review';
+import { ApiWineReview } from '@/lib/api/wine/wine.types';
 import { calculateAverage, calculateDistribution } from '@/utils/reviewStats';
 
-export const useReviewStats = (reviews: Review[] = []) => {
+export const useReviewStats = (reviews: ApiWineReview[] = []) => {
   return useMemo(() => {
     return {
       totalReviews: reviews.length,

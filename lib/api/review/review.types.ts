@@ -1,4 +1,5 @@
 import { ApiUser } from '../user/user.types';
+import { ApiWineSummary } from '../wine/wine.types';
 
 export type ReviewUser = ApiUser;
 
@@ -17,6 +18,7 @@ export interface ApiReview {
   isLiked: boolean;
   wineId: number;
   teamId: string;
+  wine?: ApiWineSummary;
 }
 
 export interface CreateReviewRequest {

@@ -3,7 +3,10 @@ import FormField from '@/components/common/form/FormField';
 import Button from '@/components/common/ui/Button';
 import Link from 'next/link';
 import { useForm } from '@/hooks/useForm/useForm';
-import type { FieldErrors } from '@/hooks/useForm/types';
+import { useRouter } from 'next/router';
+import { useAuth } from '@/providers/Auth/AuthProvider';
+import { toast } from '@/components/common/ui/Toast';
+import type { FieldErrors } from '@/hooks/useForm';
 
 type SignUpValues = {
   email: string;
@@ -13,19 +16,33 @@ type SignUpValues = {
 };
 
 export default function SignUp() {
-  const { register, handleSubmit, errors } = useForm<SignUpValues>({ mode: 'onBlur' });
+  const router = useRouter();
+  const { signup } = useAuth();
+  const { register, handleSubmit, errors } = useForm<SignUpValues>({ mode: 'onTouched' });
 
   const valid = async (data: SignUpValues) => {
-    console.log('회원가입 시도', data);
+    try {
+      await signup(data);
+      router.push('/');
+    } catch (error) {
+      const apiError = error as { data: { message: string } };
+      toast.error(apiError.data.message, {
+        title: '회원가입 실패',
+      });
+    }
   };
 
-  const inValid = (formErrors: FieldErrors<SignUpValues>) => {
-    console.log('실패했을때.', formErrors);
+  const Invalid = (errors: FieldErrors<SignUpValues>) => {
+    const firstError = Object.values(errors)[0];
+    if (!firstError) return;
+    toast.error(firstError, {
+      title: '회원가입 실패',
+    });
   };
 
   return (
     <AuthLayout>
-      <form className="flex flex-col" onSubmit={handleSubmit(valid, inValid)}>
+      <form className="flex flex-col" onSubmit={handleSubmit(valid, Invalid)}>
         <div className="flex flex-col gap-6 mb-10">
           <FormField
             id="email"
@@ -71,6 +88,10 @@ export default function SignUp() {
               minLength: {
                 value: 8,
                 message: '비밀번호는 8자 이상이어야 합니다',
+              },
+              pattern: {
+                value: /^([a-z]|[A-Z]|[0-9]|[!@#$%^&*])+$/,
+                message: '비밀번호는 영문, 숫자, 특수문자(!@#$%^&*)만 사용 가능합니다',
               },
               deps: ['passwordConfirmation'],
             })}

@@ -20,14 +20,22 @@ export function updateMe(body: UpdateMeRequest) {
   });
 }
 
-export function getMyReviews() {
+export function getMyReviews(limit: number = 10, cursor?: number) {
   return fetcher<GetMyReviewsResponse>('/users/me/reviews', {
     method: 'GET',
+    query: {
+      limit,
+      cursor,
+    },
   });
 }
 
-export function getMyWines() {
+export function getMyWines(limit: number = 10, cursor?: number) {
   return fetcher<GetMyWinesResponse>('/users/me/wines', {
     method: 'GET',
+    query: {
+      limit,
+      cursor,
+    },
   });
 }

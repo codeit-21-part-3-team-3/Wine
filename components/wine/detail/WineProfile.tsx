@@ -1,24 +1,17 @@
-import TasteItem, { TASTES, Taste } from '@/components/common/ui/TasteItem';
-import { MOCK_WINE_DETAIL } from '@/mock/wineDetail.mock';
+import TasteItem, { TASTES } from '@/components/common/ui/TasteItem';
+import { GetWineDetailResponse } from '@/lib/api/wine/wine.types';
+import { getTasteValueByLabel } from '@/utils/tasteValue';
+import { calculateAveragePalate } from '@/utils/winePalate';
 
-// 임시! 데이터 연결시 따로 파일분리 예정
-const getTasteValue = (tasteName: Taste, data: typeof MOCK_WINE_DETAIL.tastes) => {
-  switch (tasteName) {
-    case '바디감':
-      return data.body;
-    case '탄닌':
-      return data.tannin;
-    case '당도':
-      return data.sweetness;
-    case '산미':
-      return data.acidity;
-    default:
-      return 0;
-  }
-};
+interface WineProfileProps {
+  wine: GetWineDetailResponse;
+}
+export default function WineProfile({ wine }: WineProfileProps) {
+  const { reviewCount } = wine;
+  const averagePalate = calculateAveragePalate(wine.reviews);
 
-export default function WineProfile() {
-  const { tastes: wineTastes, reviewCount } = MOCK_WINE_DETAIL;
+  // 임시로 보여줄 향기 리스트
+  const TEMP_AROMAS = ['과일', '오크', '바닐라'];
   return (
     <section className="flex flex-col lg:flex-row gap-y-12 lg:gap-y-0 lg:gap-x-20 py-6 md:py-10 lg:py-20 border-b border-border">
       <div className="flex-1">
@@ -32,7 +25,7 @@ export default function WineProfile() {
               <TasteItem
                 key={`detail-${name}`}
                 taste={name}
-                value={getTasteValue(name, wineTastes)}
+                value={getTasteValueByLabel(averagePalate, name)}
                 showDivider
               />
             ))}
@@ -45,6 +38,18 @@ export default function WineProfile() {
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-end w-full mb-4 md:mb-0 lg:mb-6">
             <h3 className="text-2xl font-bold">어떤 향이 나나요?</h3>
             <span className="text-sm text-muted-foreground mt-1">({reviewCount}명 참여)</span>
+          </div>
+
+          <div className="flex flex-wrap gap-2 mt-4">
+            {TEMP_AROMAS.map(item => (
+              <span
+                key={item}
+                className="inline-flex items-center px-4 py-2 rounded-full bg-gray-100 text-gray-700 text-sm border border-gray-200"
+              >
+                {item}
+              </span>
+            ))}
+            {/* ui작업중  */}
           </div>
         </div>
       </div>

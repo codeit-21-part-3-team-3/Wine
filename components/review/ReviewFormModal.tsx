@@ -8,15 +8,27 @@ import {
 } from '@/components/common/ui/Dialog';
 import ReviewForm from './ReviewForm';
 import { Dispatch, SetStateAction } from 'react';
-import IconButton from '../common/ui/IconButton';
+import Icon from '@/components/common/ui/Icon';
+import { ApiWineReview, GetWineDetailResponse } from '@/lib/api/wine/wine.types';
+import { CreateReviewRequest, UpdateReviewRequest } from '@/lib/api/review/review.types';
 
 interface Props {
   open: boolean;
   onOpenChange: Dispatch<SetStateAction<boolean>>;
   mode: 'create' | 'edit';
+  wine: GetWineDetailResponse;
+  onSubmit: (data: CreateReviewRequest | UpdateReviewRequest) => Promise<void>;
+  initialData?: ApiWineReview;
 }
 
-export default function ReviewFormModal({ open, onOpenChange, mode }: Props) {
+export default function ReviewFormModal({
+  open,
+  onOpenChange,
+  mode,
+  wine,
+  onSubmit,
+  initialData,
+}: Props) {
   const isEdit = mode === 'edit';
 
   return (
@@ -26,12 +38,12 @@ export default function ReviewFormModal({ open, onOpenChange, mode }: Props) {
           <DialogTitle className="text-2xl">{isEdit ? '리뷰 수정' : '리뷰 등록'}</DialogTitle>
 
           <DialogClose className="bg-transparent w-auto px-0">
-            <IconButton icon="cancel" size={16} />
+            <Icon name="cancel" size={16} />
           </DialogClose>
         </DialogHeader>
 
         <DialogBody>
-          <ReviewForm mode={mode} />
+          <ReviewForm mode={mode} wine={wine} onSubmit={onSubmit} initialData={initialData} />
         </DialogBody>
       </DialogContent>
     </Dialog>

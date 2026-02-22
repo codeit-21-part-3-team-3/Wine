@@ -4,7 +4,7 @@ import Image from 'next/image';
 import wineRed from '@/assets/detailwine/wine-red.png';
 import wineWhite from '@/assets/detailwine/wine-white.png';
 import wineSparkling from '@/assets/detailwine/wine-sparkling.png';
-import { mockWineData } from '@/mock/wine.mock';
+import { GetWineDetailResponse } from '@/lib/api/wine/wine.types';
 
 const BACKGROUND_IMAGES = {
   RED: wineRed,
@@ -12,18 +12,20 @@ const BACKGROUND_IMAGES = {
   SPARKLING: wineSparkling,
 };
 
-export default function HeroSection() {
-  const wine = mockWineData.list[0];
+interface HeroSectionProps {
+  wine: GetWineDetailResponse;
+}
 
+export default function HeroSection({ wine }: HeroSectionProps) {
   return (
-    <div className="bg-gray-50 pt-px lg:rounded-b-[88px]">
+    <div className="bg-gray-100 pt-px lg:rounded-b-[88px] overflow-hidden">
       <Gnb />
       <Container className="flex-1 flex items-center justify-center">
         <section className="py-8 lg:py-0 flex flex-col lg:flex-row items-center gap-6 lg:gap-12 w-full">
           <div className="relative w-full lg:w-[460px] h-[300px] lg:h-[450px] flex items-center justify-center overflow-hidden">
             <div className="absolute inset-0 flex items-center justify-center">
               <Image
-                src={BACKGROUND_IMAGES[wine.type] || wineRed}
+                src={BACKGROUND_IMAGES[wine.type as keyof typeof BACKGROUND_IMAGES] || wineRed}
                 alt=""
                 fill
                 className="object-contain"

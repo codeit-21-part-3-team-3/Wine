@@ -5,10 +5,16 @@ import { QueryParams } from '@/lib/fetcher';
 
 export type WineUser = ApiUser;
 
-export type ApiRecentReview = Pick<
-  ApiReview,
-  'id' | 'content' | 'aroma' | 'rating' | 'createdAt' | 'updatedAt' | 'user'
->;
+export interface TasteData {
+  lightBold: number;
+  smoothTannic: number;
+  drySweet: number;
+  softAcidic: number;
+}
+
+export type ApiWineReview = Omit<ApiReview, 'wineId' | 'teamId'> & TasteData;
+
+export type ApiRecentReview = ApiWineReview;
 
 export interface ApiWine {
   id: number;
@@ -23,11 +29,13 @@ export interface ApiWine {
   recentReview?: ApiRecentReview;
 }
 
+export type ApiWineSummary = Omit<ApiWine, 'reviewCount' | 'userId' | 'recentReview'>;
+
 export type WineListItem = ApiWine;
 
 export interface GetWinesQuery extends QueryParams {
   limit: number;
-  cursor?: number | null;
+  cursor?: number;
   type?: WineType;
   minPrice?: number;
   maxPrice?: number;
@@ -37,13 +45,11 @@ export interface GetWinesQuery extends QueryParams {
 
 export interface GetWinesResponse {
   totalCount: number;
-  nextCursor?: number;
+  nextCursor: number | null;
   list: WineListItem[];
 }
 
 export type GetRecommendedWinesResponse = WineListItem[];
-
-export type ApiWineReview = Omit<ApiReview, 'wineId' | 'teamId'>;
 
 export interface GetWineDetailResponse extends ApiWine {
   reviews: ApiWineReview[];
@@ -51,12 +57,10 @@ export interface GetWineDetailResponse extends ApiWine {
 }
 
 export type CreateWineRequest = Pick<ApiWine, 'name' | 'region' | 'image' | 'price' | 'type'>;
-
 export type UpdateWineRequest = Partial<
   Pick<ApiWine, 'name' | 'region' | 'image' | 'price' | 'type' | 'avgRating'>
 >;
 
 export type CreateWineResponse = ApiWine;
 export type UpdateWineResponse = ApiWine;
-
 export type DeleteWineResponse = Pick<ApiWine, 'id'>;

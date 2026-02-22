@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { AuthResponse, SignUpCredentials, User } from '@/types/auth/auth';
+import { AUTH_COOKIES } from '@/lib/auth/cookie';
 
 const BASE_URL = process.env.API_URL;
 const ALLOWED_METHODS = ['POST'];
@@ -33,7 +34,16 @@ export default async function handler(
       });
     }
 
-    const data: AuthResponse = await response.json();
+    const data: AuthResponse = await response.json().catch(() => null);
+
+    if (!data) {
+      return res.status(500).json({ message: '가입 응답 파싱 실패' });
+    }
+
+    res.setHeader('Set-Cookie', [
+      AUTH_COOKIES.accessToken(data.accessToken),
+      AUTH_COOKIES.refreshToken(data.refreshToken),
+    ]);
 
     return res.status(201).json({
       id: data.user.id,
@@ -43,7 +53,7 @@ export default async function handler(
       updatedAt: data.user.updatedAt,
     });
   } catch (error) {
-    console.error('Error signing in:', error);
-    return res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+    console.error('Error signing up:', error);
+    return res.status(500).json({ message: '서버 내부 오류가 발생했습니다.' });
   }
 }

@@ -18,8 +18,13 @@ export function getWines(query: GetWinesQuery) {
   });
 }
 
-export function getWine(id: number) {
-  return fetcher<GetWineDetailResponse>(`/wines/${id}`, { method: 'GET' });
+export function getWine(id: number, accessToken: string) {
+  return fetcher<GetWineDetailResponse>(`/wines/${id}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
 }
 
 export function getRecommendedWines(limit: number) {

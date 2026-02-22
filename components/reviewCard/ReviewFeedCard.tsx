@@ -1,4 +1,3 @@
-import { Review } from '@/types/domain/review';
 import IconButton from '@/components/common/ui/IconButton';
 import ReviewUser from '../review/ReviewUser';
 import ReviewRating from '../review/ReviewRating';
@@ -8,44 +7,31 @@ import ReviewContainer from '../review/ReviewContainer';
 import ChevronToggleButton from '../review/ChevronToggleButton';
 import { useState } from 'react';
 import ReviewMenu from '../review/ReviewMenu';
-import TasteItem, { TASTES, Taste as TasteLabel } from '@/components/common/ui/TasteItem';
+import TasteItem, { TASTES } from '@/components/common/ui/TasteItem';
+import { ApiWineReview } from '@/lib/api/wine/wine.types';
+import { getTasteValueByLabel } from '@/utils/tasteValue';
+import { AromaType } from '@/constants/aromaMap';
 
 interface ReviewFeedCardProps {
-  review: Review;
+  review: ApiWineReview;
   isOwner: boolean;
+  onDelete: (id: number) => void;
+  onLike: () => void;
+  onEdit: () => void;
 }
 
-export default function ReviewFeedCard({ review, isOwner }: ReviewFeedCardProps) {
+export default function ReviewFeedCard({
+  review,
+  isOwner,
+  onDelete,
+  onLike,
+  onEdit,
+}: ReviewFeedCardProps) {
   const [expanded, setExpanded] = useState(false);
 
-  const handleEdit = (reviewId: number) => {
-    console.log('모달');
+  const handleEdit = () => {
+    onEdit();
   };
-
-  const handleDelete = (reviewId: number) => {
-    console.log('모달');
-  };
-  // 임시! 데이터 연결시 따로 파일분리 예정
-  const getTasteValue = (tasteName: TasteLabel) => {
-    switch (tasteName) {
-      case '바디감':
-        return review.tastes.body;
-      case '탄닌':
-        return review.tastes.tannin;
-      case '당도':
-        return review.tastes.sweetness;
-      case '산미':
-        return review.tastes.acidity;
-      default:
-        return 0;
-    }
-  };
-
-  /**
-   * @todo(@jaywai-lee, 26.02.18)
-   * 페이지 레벨 action 연결 전까지 임시 핸들러
-   * merge 후 상위로 lift 예정
-   */
 
   return (
     <ReviewContainer
@@ -56,16 +42,21 @@ export default function ReviewFeedCard({ review, isOwner }: ReviewFeedCardProps)
             <div className="flex flex-col justify-center">
               <ReviewUser user={review.user} createdAt={review.createdAt} />
             </div>
+
             {isOwner ? (
-              <ReviewMenu reviewId={review.id} onEdit={handleEdit} onDelete={handleDelete} />
+              <ReviewMenu
+                reviewId={review.id}
+                onEdit={handleEdit}
+                onDelete={() => onDelete(review.id)}
+              />
             ) : (
-              <IconButton icon="heart" size={28} />
+              <IconButton icon="heart" size={28} onClick={onLike} />
             )}
           </div>
         </div>
       }
     >
-      <AromaList aromas={review.aroma} />
+      <AromaList aromas={review.aroma as AromaType[]} />
       <ReviewContent content={review.content} />
       {expanded && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4 mt-6">
@@ -73,7 +64,7 @@ export default function ReviewFeedCard({ review, isOwner }: ReviewFeedCardProps)
             <TasteItem
               key={`${review.id}-${name}`}
               taste={name}
-              value={getTasteValue(name)}
+              value={getTasteValueByLabel(review, name)}
               variant="review"
             />
           ))}

@@ -7,17 +7,26 @@ import {
   DialogClose,
 } from '@/components/common/ui/Dialog';
 import WineForm from './WineForm';
-import { Dispatch, SetStateAction } from 'react';
 import IconButton from '../common/ui/IconButton';
+import type { Dispatch, SetStateAction } from 'react';
+import type { Wine } from '@/types/domain/wine';
+import type { WineListItem } from '@/lib/api/wine/wine.types';
 
 interface Props {
   open: boolean;
   onOpenChange: Dispatch<SetStateAction<boolean>>;
   mode: 'create' | 'edit';
+  wine?: WineListItem;
+  onSuccess?: (wine: Wine) => void;
 }
 
-export default function WineFormModal({ open, onOpenChange, mode }: Props) {
+export default function WineFormModal({ open, onOpenChange, mode, wine, onSuccess }: Props) {
   const isEdit = mode === 'edit';
+
+  const handleSuccess = (wine: Wine) => {
+    onSuccess?.(wine);
+    onOpenChange(false);
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -31,7 +40,12 @@ export default function WineFormModal({ open, onOpenChange, mode }: Props) {
           </DialogClose>
         </DialogHeader>
         <DialogBody>
-          <WineForm mode={mode} />
+          <WineForm
+            key={wine?.id ?? 'create'}
+            mode={mode}
+            initialWine={wine}
+            onSuccess={handleSuccess}
+          />
         </DialogBody>
       </DialogContent>
     </Dialog>

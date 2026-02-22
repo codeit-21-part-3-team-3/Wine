@@ -8,3 +8,7 @@ services:
       - '2133:3000'
     environment:
       - API_URL=${API_URL}
+      - NODE_ENV=production
+    volumes:
+      - ./next-cache:/app/.next/cache
+    restart: always

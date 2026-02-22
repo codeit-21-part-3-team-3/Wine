@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { refreshAuthSession } from '@/lib/auth/refreshAuthSession';
 
 const BASE_URL = process.env.API_URL;
 const ALLOWED_METHODS = ['GET', 'POST', 'PATCH', 'DELETE'];
@@ -25,31 +26,46 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const qs = params.toString();
     const url = `${BASE_URL}/${pathString}${qs ? `?${qs}` : ''}`;
 
-    const { accessToken } = req.cookies;
+    const { accessToken, refreshToken } = req.cookies;
 
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
+    const forwardRequest = (token?: string) => {
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      return fetch(url, {
+        method: req.method,
+        headers,
+        body:
+          req.method === 'POST' || req.method === 'PATCH'
+            ? JSON.stringify(req.body ?? {})
+            : undefined,
+      });
     };
 
-    if (accessToken) {
-      headers['Authorization'] = `Bearer ${accessToken}`;
+    const response = await forwardRequest(accessToken);
+
+    if (response.status === 401 && refreshToken) {
+      const newAccessToken = await refreshAuthSession({ refreshToken, res });
+
+      if (newAccessToken) {
+        const retryResponse = await forwardRequest(newAccessToken);
+        const retryData = await retryResponse.json().catch(() => null);
+        return res
+          .status(retryResponse.status)
+          .json(retryData ?? { message: '백엔드 재시도 응답 파싱 실패' });
+      }
     }
 
-    const options = {
-      method: req.method,
-      headers,
-      body:
-        req.method === 'POST' || req.method === 'PATCH'
-          ? JSON.stringify(req.body ?? {})
-          : undefined,
-    };
+    const data = await response.json().catch(() => null);
 
-    const response = await fetch(url, options);
-
-    const data = await response.json();
-
-    return res.status(response.status).json(data);
+    return res.status(response.status).json(data ?? { message: '백엔드 응답 파싱 실패' });
   } catch (error) {
-    return res.status(500).json({ message: '서버 오류가 발생했습니다.', error });
+    console.error('[Proxy Error]', error);
+    return res.status(500).json({ message: '서버 내부 오류가 발생했습니다.' });
   }
 }

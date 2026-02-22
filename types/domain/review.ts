@@ -9,10 +9,9 @@ export interface Taste {
 
 export interface UserInReview {
   id: number;
-  name: string;
-  image: string;
+  nickname: string;
+  image: string | null;
 }
-
 export interface WineInReview {
   id: number;
   name: string;
@@ -24,10 +23,15 @@ export interface Review {
   id: number;
   rating: number;
   content: string;
-  createdAt: Date;
+  createdAt: string;
+  updatedAt: string;
   aroma: AromaType[];
-  tastes: Taste;
-  wine?: WineInReview;
+  lightBold: number;
+  smoothTannic: number;
+  drySweet: number;
+  softAcidic: number;
   user: UserInReview;
-  isLiked?: boolean;
+  wineId: number;
+  isLiked: boolean;
+  teamId: string;
 }
