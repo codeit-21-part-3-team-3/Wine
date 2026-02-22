@@ -56,7 +56,7 @@ export function useReviewFormLogic<T extends CreateReviewRequest | UpdateReviewR
       }
     } catch (error) {
       console.error(error);
-      toast.error('리뷰 등록에 실패했습니다. 다시 시도해 주세요.');
+      toast.error(initialData ? '리뷰 수정에 실패했습니다.' : '리뷰 등록에 실패했습니다.');
     } finally {
       setIsSubmitting(false);
     }
