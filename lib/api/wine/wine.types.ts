@@ -35,7 +35,7 @@ export type WineListItem = ApiWine;
 
 export interface GetWinesQuery extends QueryParams {
   limit: number;
-  cursor?: number | null;
+  cursor?: number;
   type?: WineType;
   minPrice?: number;
   maxPrice?: number;
@@ -45,7 +45,7 @@ export interface GetWinesQuery extends QueryParams {
 
 export interface GetWinesResponse {
   totalCount: number;
-  nextCursor?: number;
+  nextCursor: number | null;
   list: WineListItem[];
 }
 
