@@ -33,11 +33,21 @@ export function useUpdateProfile() {
       updateUser(updatedUser);
       toast.success('프로필이 수정되었습니다.');
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        toast.error(err.message);
-      } else {
-        toast.error('프로필 수정에 실패했습니다.');
+      let message = '프로필 수정에 실패했습니다.';
+
+      if (
+        typeof err === 'object' &&
+        err !== null &&
+        'data' in err &&
+        typeof err.data === 'object' &&
+        err.data !== null &&
+        'message' in err.data &&
+        typeof err.data.message === 'string'
+      ) {
+        message = err.data.message;
       }
+
+      toast.error(message);
     } finally {
       setIsUpdating(false);
     }

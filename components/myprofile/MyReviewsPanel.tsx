@@ -1,10 +1,10 @@
 import { cn } from '@/utils/cn';
 import MyReviewCard from '../reviewCard/MyReviewCard';
 import EmptyState from '../common/ui/EmptyState';
-import type { ApiReview, UpdateReviewRequest } from '@/lib/api/review/review.types';
-import { useMyReviewsPanelState } from '@/hooks/myprofile/useMyReviewsPanelState';
 import { DeleteReviewDialog } from '../review/DeleteReviewDialog';
 import ReviewFormModal from '../review/ReviewFormModal';
+import { useMyReviewsPanelState } from '@/hooks/myprofile';
+import type { ApiReview, UpdateReviewRequest } from '@/lib/api/review/review.types';
 
 interface MyReviewsPanelProps {
   reviews: ApiReview[];
@@ -32,7 +32,7 @@ export default function MyReviewsPanel({
         id="panel-reviews"
         aria-labelledby="tab-reviews"
         className={cn(
-          'relative lg:pl-5 lg:border-l border-t border-gray-300 flex flex-col',
+          'relative lg:pl-5 lg:border-l border-t border-gray-300 flex flex-col h-full',
           className
         )}
       >

@@ -15,7 +15,6 @@ export default function WineImageUpload({ value, onChange, error }: WineImageUpl
   const {
     preview,
     error: imagePickerError,
-    uploading,
     handleFile,
   } = useImagePicker({
     rules: RULES,
@@ -27,7 +26,6 @@ export default function WineImageUpload({ value, onChange, error }: WineImageUpl
       <ImagePicker
         preview={preview || value || null}
         error={imagePickerError ?? error}
-        uploading={uploading}
         onSelect={handleFile}
         placeholder={<IconButton icon="camera" size={24} className="pointer-events-none" />}
       />

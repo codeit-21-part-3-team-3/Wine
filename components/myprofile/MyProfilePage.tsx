@@ -4,7 +4,7 @@ import MyReviewsPanel from './MyReviewsPanel';
 import MyWinesPanel from './MyWinesPanel';
 import MyProfileLayout from './MyProfileLayout';
 import MyProfileTabs from './MyProfileTabs';
-import { useProfileEditor } from '@/hooks/myprofile/userProfileEditor';
+import { useProfileEditor } from '@/hooks/myprofile/useProfileEditor';
 import type { ApiReview, UpdateReviewRequest } from '@/lib/api/review/review.types';
 import type { WineListItem } from '@/lib/api/wine/wine.types';
 import type { ApiUser } from '@/lib/api/user/user.types';
@@ -61,15 +61,15 @@ export default function MyProfilePage({
   }, [tab, onFetchReviews, onFetchWines]);
 
   const handleSubmit = () => {
-    onUpdateProfile(editor.derived.nextNickname, editor.derived.nextImage);
-    editor.resetUploadedImage();
+    onUpdateProfile(editor.derived.nextNickname);
   };
 
   return (
-    <>
+    <div className="min-h-screen">
       <MyProfileLayout
         sidebar={
           <ProfileSidebar
+            key={user.image + user.nickname}
             user={user}
             nickname={editor.nickname}
             onNicknameChange={editor.setNickname}
@@ -105,6 +105,6 @@ export default function MyProfilePage({
           </>
         }
       />
-    </>
+    </div>
   );
 }

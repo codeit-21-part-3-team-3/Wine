@@ -1,4 +1,3 @@
-import { toast } from '@/components/common/ui/Toast';
 import { uploadImage } from '@/lib/api/infra/image';
 import { ImageValidation, ValidationRule } from '@/utils/imagePicker/ImageValidation';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -41,6 +40,8 @@ export function useImagePicker({ rules, onUploaded }: useImagePickerOptions) {
       try {
         setUploading(true);
         const res = await uploadImage(safeFile);
+        if (urlRef.current) URL.revokeObjectURL(urlRef.current);
+        setPreview(res.url);
         onUploaded(res.url);
       } catch (err) {
         console.error('이미지 업로드 실패', err);
@@ -49,7 +50,7 @@ export function useImagePicker({ rules, onUploaded }: useImagePickerOptions) {
         setUploading(false);
       }
     },
-    [rules, onUploaded]
+    [rules, onUploaded, uploading]
   );
 
   useEffect(() => {

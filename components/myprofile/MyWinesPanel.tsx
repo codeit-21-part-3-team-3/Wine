@@ -42,7 +42,7 @@ export default function MyWinesPanel({
         id="panel-reviews"
         aria-labelledby="tab-reviews"
         className={cn(
-          'relative lg:pl-5 lg:border-l border-t border-gray-300 flex flex-col',
+          'relative lg:pl-5 lg:border-l border-t border-gray-300 flex flex-col h-full',
           className
         )}
       >
