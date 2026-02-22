@@ -6,9 +6,9 @@ services:
     restart: unless-stopped
     ports:
       - '2133:3000'
-    env_file:
-      - .env
     environment:
+      - API_URL=${API_URL}
       - NODE_ENV=production
     volumes:
       - ./next-cache:/app/.next/cache
+    restart: always

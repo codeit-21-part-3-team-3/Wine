@@ -8,14 +8,14 @@ RUN npm ci
 FROM node:22-alpine AS builder
 WORKDIR /app
 
-ENV NEXT_TELEMETRY_DISABLED=1
+ARG API_URL
+ENV API_URL=$API_URL \
+    NEXT_TELEMETRY_DISABLED=1
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-RUN --mount=type=secret,id=API_URL \
-    API_URL=$(cat /run/secrets/API_URL) \
-    npm run build
+RUN npm run build
 
 FROM node:22-alpine AS runner
 WORKDIR /app

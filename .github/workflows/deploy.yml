@@ -33,7 +33,7 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/codeit-21-part-3-team-3/wine:latest
-          secrets: |
+          build-args: |
             API_URL=${{ secrets.API_URL }}
 
       # 성공 시 n8n을 통해 서버 배포 명령 전달
@@ -42,13 +42,13 @@ jobs:
         run: |
           curl -X POST ${{ secrets.N8N_WEBHOOK_URL }} \
           -H "Content-Type: application/json" \
-          -H "X-Webhook-Secret: ${{ secrets.N8N_WEBHOOK_SECRET_TOKEN }}" \
           -d '{
             "status": "success",
             "project": "Wine",
             "branch": "${{ github.ref_name }}",
             "author": "${{ github.actor }}",
             "image": "ghcr.io/codeit-21-part-3-team-3/wine:latest",
+            "API_URL": "${{ secrets.API_URL }}"
           }'
 
       # 실패 시 n8n을 통해 디스코드 알림 전달
@@ -57,11 +57,9 @@ jobs:
         run: |
           curl -X POST ${{ secrets.N8N_WEBHOOK_URL }} \
           -H "Content-Type: application/json" \
-          -H "X-Webhook-Secret: ${{ secrets.N8N_WEBHOOK_SECRET_TOKEN }}" \
           -d '{
             "status": "failure",
             "project": "Wine",
             "branch": "${{ github.ref_name }}",
-            "author": "${{ github.actor }}",
             "error_log": "GitHub Actions Docker Build Failed"
           }'
