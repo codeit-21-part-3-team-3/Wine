@@ -34,7 +34,7 @@ export default function ReviewFormModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="py-4 px-2">
+      <DialogContent className="py-4 px-2 max-h-[90vh] flex flex-col overflow-hidden">
         <DialogHeader className="flex-row items-center justify-between">
           <DialogTitle className="text-2xl">{isEdit ? '리뷰 수정' : '리뷰 등록'}</DialogTitle>
 
@@ -43,7 +43,7 @@ export default function ReviewFormModal({
           </DialogClose>
         </DialogHeader>
 
-        <DialogBody>
+        <DialogBody className="overflow-y-auto flex-1 pr-2 custom-scrollbar">
           <ReviewForm mode={mode} wine={wine} onSubmit={onSubmit} initialData={initialData} />
         </DialogBody>
       </DialogContent>
