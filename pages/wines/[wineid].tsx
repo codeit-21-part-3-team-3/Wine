@@ -30,7 +30,7 @@ export const getServerSideProps: GetServerSideProps<WineDetailPageProps> = async
   const rawToken = cookies['accessToken'];
   const accessToken = rawToken && rawToken !== 'undefined' ? rawToken.replace(/"/g, '') : null;
   if (!accessToken) {
-    return { redirect: { destination: '/login', permanent: false } };
+    return { redirect: { destination: '/auth/signin', permanent: false } };
   }
 
   try {
@@ -54,7 +54,7 @@ export const getServerSideProps: GetServerSideProps<WineDetailPageProps> = async
     }
 
     if (status === 401) {
-      return { redirect: { destination: '/login', permanent: false } };
+      return { redirect: { destination: '/auth/signin', permanent: false } };
     }
 
     console.error(`상세 페이지 로드 실패: ${status}`);
