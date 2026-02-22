@@ -14,7 +14,7 @@ import EmptyState from '@/components/common/ui/EmptyState';
 
 interface WineListLayoutProps {
   initialWines: Wine[];
-  initialCursor?: number;
+  initialCursor: number | null;
 }
 
 export default function WineListLayout({ initialWines, initialCursor }: WineListLayoutProps) {
