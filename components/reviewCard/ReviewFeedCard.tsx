@@ -50,7 +50,11 @@ export default function ReviewFeedCard({
                 onDelete={() => onDelete(review.id)}
               />
             ) : (
-              <IconButton icon="heart" size={28} onClick={onLike} />
+              <IconButton
+                icon={review.isLiked ? 'heartActive' : 'heart'}
+                size={28}
+                onClick={onLike}
+              />
             )}
           </div>
         </div>
