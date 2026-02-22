@@ -1,7 +1,7 @@
 import { getFilledStars } from '@/utils/rating';
 import { AROMA_META, AromaType } from '@/constants/aromaMap';
 import TasteItem, { TASTES, Taste } from '../common/ui/TasteItem';
-import Chip from '../common/ui/Chip';
+import Chip from '@/components/common/ui/Chip';
 
 export function StarRatingField({
   rating,
