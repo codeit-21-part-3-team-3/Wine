@@ -171,6 +171,10 @@ body {
   letter-spacing: var(--tracking-normal);
 }
 
+.range-thumb {
+  pointer-events: none;
+}
+
 .range-thumb::-webkit-slider-thumb {
   appearance: none;
   height: 16px;
@@ -180,7 +184,6 @@ body {
   border: 2px solid #6366f1;
   cursor: pointer;
   pointer-events: auto;
-  position: relative;
 }
 
 .range-thumb::-moz-range-thumb {
@@ -191,4 +194,5 @@ body {
   border: 2px solid #6366f1;
   cursor: pointer;
   pointer-events: auto;
+  border: none;
 }

@@ -1,16 +1,9 @@
-import { WineType } from '@/types/domain/wine';
 import { ReactNode } from 'react';
 import TypeFilter from './TypeFilter';
 import PriceRange from './PriceRange';
 import RatingFilter from './RatingFilter';
 import { cn } from '@/utils/cn';
-
-interface FilterState {
-  type: WineType | null;
-  minPrice: number;
-  maxPrice: number;
-  rating: number | null;
-}
+import { FilterState } from '@/types/domain/filter';
 
 interface FilterContentProps {
   value: FilterState;

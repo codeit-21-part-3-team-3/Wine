@@ -1,3 +1,4 @@
+import { toast } from '@/components/common/ui/Toast';
 import { mapFilterToUrlQuery, parseWineFilterQuery } from '@/lib/query';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
@@ -18,6 +19,7 @@ export function useWineFilterUrlSync() {
       shallow: true,
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    toast.success('필터가 적용되었습니다.');
   };
 
   const reset = () => {

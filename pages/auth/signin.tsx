@@ -3,9 +3,11 @@ import FormField from '@/components/common/form/FormField';
 import Button from '@/components/common/ui/Button';
 import Link from 'next/link';
 import { useForm } from '@/hooks/useForm/useForm';
-import type { FieldErrors } from '@/hooks/useForm/types';
+import type { FieldErrors } from '@/hooks/useForm';
 
+import { useRouter } from 'next/router';
 import { useAuth } from '@/providers/Auth/AuthProvider';
+import { toast } from '@/components/common/ui/Toast';
 
 type SignInValues = {
   email: string;
@@ -13,25 +15,40 @@ type SignInValues = {
 };
 
 export default function SignIn() {
+  const router = useRouter();
   const { login } = useAuth();
-  const { register, handleSubmit, errors } = useForm<SignInValues>({ mode: 'onSubmit' });
+  const { register, handleSubmit, errors, getValues } = useForm<SignInValues>({ mode: 'onSubmit' });
 
   const valid = async (data: SignInValues) => {
-    const response = await login(data);
-    if (response.success) {
-      console.log('로그인 성공 테스트.');
-    } else {
-      console.log('로그인 실패!');
+    try {
+      await login(data);
+
+      const referrer = document.referrer;
+      const host = window.location.host;
+
+      if (referrer && referrer.includes(host) && !referrer.includes('/auth/')) {
+        router.push(referrer);
+      } else {
+        router.push('/');
+      }
+    } catch {
+      toast.error('이메일 또는 비밀번호를 확인해주세요.', {
+        title: '로그인 실패',
+      });
     }
   };
 
-  const inValid = (formErrors: FieldErrors<SignInValues>) => {
-    console.log('실패했을때.', formErrors);
+  const Invalid = (errors: FieldErrors<SignInValues>) => {
+    const firstError = Object.values(errors)[0];
+    if (!firstError) return;
+    toast.error(firstError, {
+      title: '로그인 실패',
+    });
   };
 
   return (
     <AuthLayout>
-      <form className="flex flex-col" onSubmit={handleSubmit(valid, inValid)}>
+      <form className="flex flex-col" onSubmit={handleSubmit(valid, Invalid)}>
         <div className="flex flex-col gap-6 mb-10">
           <FormField
             id="email"

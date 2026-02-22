@@ -30,11 +30,15 @@ function getSingle(value: string | string[] | undefined): string | undefined {
   return Array.isArray(value) ? value[0] : value;
 }
 
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max);
+}
+
 export function parseWineFilterQuery(query: ParsedUrlQuery): FilterState {
   return {
     type: parseWineType(getSingle(query.type)),
-    minPrice: parseInputNumber(getSingle(query.minPrice), 0),
-    maxPrice: parseInputNumber(getSingle(query.maxPrice), 100000),
+    minPrice: clamp(parseInputNumber(getSingle(query.minPrice), 0), 0, 500000),
+    maxPrice: clamp(parseInputNumber(getSingle(query.maxPrice), 500000), 0, 500000),
     rating: parseInputNullableNumber(getSingle(query.rating)),
     name: getSingle(query.name) ?? '',
   };

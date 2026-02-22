@@ -1,22 +1,23 @@
-import { AROMA_META } from '@/constants/aromaMap';
-import { getFilledStars } from '@/utils/rating';
-import TasteItem, { TASTES } from '../common/ui/TasteItem';
-import Chip from '../common/ui/chip';
-import Button from '../common/ui/Button';
-import { mockWineData } from '@/mock/wine.mock';
 import Image from 'next/image';
-
-type Mode = 'create' | 'edit';
+import Button from '../common/ui/Button';
+import { GetWineDetailResponse } from '@/lib/api/wine/wine.types';
+import { CreateReviewRequest } from '@/lib/api/review/review.types';
+import { useReviewFormLogic } from '@/hooks/review/useReviewForm';
+import {
+  StarRatingField,
+  TasteSection,
+  AromaSelectField,
+} from '@/components/review/ReviewFormFields';
 
 interface ReviewFormProps {
-  mode: Mode;
+  mode: 'create' | 'edit';
+  wine: GetWineDetailResponse;
+  onSubmit: (data: CreateReviewRequest) => Promise<void>;
 }
 
-export default function RevieewForm({ mode }: ReviewFormProps) {
+export default function ReviewForm({ mode, wine, onSubmit }: ReviewFormProps) {
+  const { formState, actions } = useReviewFormLogic(wine.id, onSubmit);
   const isEdit = mode === 'edit';
-  const wine = mockWineData.list[0];
-  const stars = getFilledStars(3);
-  const aromaLabels = Object.values(AROMA_META).map(v => v.label);
 
   return (
     <div className="flex flex-col gap-2 mt-3">
@@ -30,40 +31,29 @@ export default function RevieewForm({ mode }: ReviewFormProps) {
         </div>
       </div>
       <div className="border-b border-border mb-3" />
-      <div className="flex items-center gap-4 mb-3">
-        <span className="text-muted-foreground text-sm">별점 선택</span>
-        <div className="flex gap-1 text-xl">
-          {stars.map((filled, i) => (
-            <span key={`star-${i}`}>{filled ? '★' : '☆'}</span>
-          ))}
-        </div>
-      </div>
+
+      <StarRatingField rating={formState.rating} onRatingChange={actions.setRating} />
 
       <div className="flex flex-col mb-10">
         <textarea
+          value={formState.content}
+          onChange={e => actions.setContent(e.target.value)}
           className="border border-input px-4 py-3 min-h-30 outline-none"
           placeholder="후기를 작성해주세요"
         />
       </div>
 
-      <div className="flex flex-col gap-4 mb-10">
-        <span className="mb-3 text-xl font-semibold">와인의 맛은 어땠나요?</span>
-        {TASTES.map(taste => (
-          <TasteItem variant="default" key={taste} taste={taste} value={3} />
-        ))}
-      </div>
+      <TasteSection tasteForm={formState.tasteForm} onUpdate={actions.updateTaste} />
 
-      <div className="flex flex-col gap-2 mb-7.5">
-        <span className="mb-3 text-xl font-semibold">기억에 남는 향이 있나요?</span>
-        <div className="flex flex-wrap py-2.5">
-          {aromaLabels.map(label => (
-            <Chip key={label} label={label} />
-          ))}
-        </div>
-      </div>
+      <AromaSelectField
+        selectedAromas={formState.selectedAromas}
+        onToggle={actions.handleAromaToggle}
+      />
+
       <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-16 bg-linear-to-t from-white to-transparent" />
-
-      <Button>{isEdit ? '리뷰 수정하기' : '리뷰 남기기'}</Button>
+      <Button onClick={actions.handleSubmit} disabled={formState.isSubmitting}>
+        {isEdit ? '리뷰 수정하기' : '리뷰 남기기'}
+      </Button>
     </div>
   );
 }

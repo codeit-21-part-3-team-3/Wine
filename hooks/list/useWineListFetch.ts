@@ -1,3 +1,4 @@
+import { toast } from '@/components/common/ui/Toast';
 import { getWines } from '@/lib/api/wine/wine';
 import { mapFilterToQuery, parseWineFilterQuery } from '@/lib/query';
 import { Wine } from '@/types/domain/wine';
@@ -32,7 +33,8 @@ export function useWineListFetch(initialWines: Wine[], router: NextRouter, initi
         setCursor(res.nextCursor ?? undefined);
         setHasNextPage(!!res.nextCursor);
       } catch {
-        setError('와인을 불러오지 못했습니다.');
+        setError(null);
+        toast.error('추가 와인을 불러오지 못했습니다.');
       } finally {
         setIsLoading(false);
       }
@@ -66,5 +68,12 @@ export function useWineListFetch(initialWines: Wine[], router: NextRouter, initi
     }
   };
 
-  return { wines, isLoading, error, hasNextPage, fetchNextPage };
+  const prependWine = (wine: Wine) => {
+    setWines(prev => {
+      if (prev.some(w => w.id === wine.id)) return prev;
+      return [wine, ...prev];
+    });
+  };
+
+  return { wines, isLoading, error, hasNextPage, fetchNextPage, prependWine };
 }
