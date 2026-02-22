@@ -1,5 +1,5 @@
 import { WineType } from '@/types/domain/wine';
-import Chip from '../common/ui/chip';
+import Chip from '../common/ui/Chip';
 import { cn } from '@/utils/cn';
 
 interface TypeFilterProps {

@@ -1,17 +1,27 @@
+import Image from 'next/image';
+import { AROMA_META } from '@/constants/aromaMap';
 import TasteItem, { TASTES } from '@/components/common/ui/TasteItem';
 import { GetWineDetailResponse } from '@/lib/api/wine/wine.types';
 import { getTasteValueByLabel } from '@/utils/tasteValue';
 import { calculateAveragePalate } from '@/utils/winePalate';
+import { AromaType } from '@/constants/aromaMap';
 
 interface WineProfileProps {
-  wine: GetWineDetailResponse;
+  wine: GetWineDetailResponse & { aromas: string[] };
 }
-export default function WineProfile({ wine }: WineProfileProps) {
-  const { reviewCount } = wine;
-  const averagePalate = calculateAveragePalate(wine.reviews);
 
-  // 임시로 보여줄 향기 리스트
-  const TEMP_AROMAS = ['과일', '오크', '바닐라'];
+export default function WineProfile({ wine }: WineProfileProps) {
+  const { reviewCount, reviews = [] } = wine;
+  const averagePalate = calculateAveragePalate(reviews);
+  const allAromas = reviews.flatMap(review => review.aroma || []);
+  const uniqueAromas = Array.from(new Set(allAromas));
+  const displayAromas = uniqueAromas
+    .map(name => {
+      const key = name.toUpperCase() as AromaType;
+      return AROMA_META[key];
+    })
+    .filter((aroma): aroma is (typeof AROMA_META)[AromaType] => !!aroma);
+
   return (
     <section className="flex flex-col lg:flex-row gap-y-12 lg:gap-y-0 lg:gap-x-20 py-6 md:py-10 lg:py-20 border-b border-border">
       <div className="flex-1">
@@ -39,17 +49,18 @@ export default function WineProfile({ wine }: WineProfileProps) {
             <h3 className="text-2xl font-bold">어떤 향이 나나요?</h3>
             <span className="text-sm text-muted-foreground mt-1">({reviewCount}명 참여)</span>
           </div>
-
-          <div className="flex flex-wrap gap-2 mt-4">
-            {TEMP_AROMAS.map(item => (
-              <span
-                key={item}
-                className="inline-flex items-center px-4 py-2 rounded-full bg-gray-100 text-gray-700 text-sm border border-gray-200"
+          <div className="grid grid-cols-3 md:grid-cols-4 gap-x-4 lg:gap-x-6">
+            {displayAromas.slice(0, 4).map((aroma, index) => (
+              <div
+                key={aroma.label}
+                className={`flex flex-col items-center gap-3 ${index === 3 ? 'hidden md:flex' : 'flex'}`}
               >
-                {item}
-              </span>
+                <div className="relative aspect-square w-full rounded-[20px] overflow-hidden">
+                  <Image src={aroma.image} alt="" fill className="object-cover" />
+                </div>
+                <span className="text-base font-medium text-[#31302F]">{aroma.label}</span>
+              </div>
             ))}
-            {/* ui작업중  */}
           </div>
         </div>
       </div>

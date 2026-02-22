@@ -14,22 +14,38 @@ import orange from '@/assets/aroma/orange.png';
 import peach from '@/assets/aroma/peach.png';
 import sea from '@/assets/aroma/sea.png';
 
+import cherryImg from '@/assets/aroma-notes/cherry.png';
+import orangeImg from '@/assets/aroma-notes/orange.png';
+import chocolateImg from '@/assets/aroma-notes/chocolate.png';
+import oakbarrelImg from '@/assets/aroma-notes/oakbarrel.png';
+import peachImg from '@/assets/aroma-notes/peach.png';
+import grassImg from '@/assets/aroma-notes/grass.png';
+import appleImg from '@/assets/aroma-notes/apple.png';
+import mineralImg from '@/assets/aroma-notes/mineral.png';
+import seaImg from '@/assets/aroma-notes/sea.png';
+import coconutImg from '@/assets/aroma-notes/coconut.png';
+import breadImg from '@/assets/aroma-notes/bread.png';
+import flowerImg from '@/assets/aroma-notes/flower.png';
+import grapeImg from '@/assets/aroma-notes/grape.png';
+import mintImg from '@/assets/aroma-notes/mint.png';
+import leafImg from '@/assets/aroma-notes/leaf.png';
+
 export const AROMA_META = {
-  APPLE: { label: '사과', icon: apple },
-  BAKING: { label: '식빵', icon: baking },
-  BERRY: { label: '청포도', icon: grape },
-  CHERRY: { label: '체리', icon: cherry },
-  CHOCOLATE: { label: '초콜릿', icon: chocolate },
-  CITRUS: { label: '오렌지', icon: orange },
-  EARTH: { label: '낙엽', icon: leaf },
-  FLOWER: { label: '꽃', icon: flower },
-  GRASS: { label: '풀', icon: grass },
-  MINERAL: { label: '소금결정', icon: mineral },
-  OAK: { label: '오크배럴', icon: oak },
-  PEACH: { label: '복숭아', icon: peach },
-  PEPPER: { label: '민트', icon: mint }, //
-  TROPICAL: { label: '해변', icon: sea },
-  VANILLA: { label: '코코넛', icon: coconut },
+  APPLE: { label: '사과', icon: apple, image: appleImg },
+  BAKING: { label: '식빵', icon: baking, image: breadImg },
+  BERRY: { label: '청포도', icon: grape, image: grapeImg },
+  CHERRY: { label: '체리', icon: cherry, image: cherryImg },
+  CHOCOLATE: { label: '초콜릿', icon: chocolate, image: chocolateImg },
+  CITRUS: { label: '오렌지', icon: orange, image: orangeImg },
+  EARTH: { label: '낙엽', icon: leaf, image: leafImg },
+  FLOWER: { label: '꽃', icon: flower, image: flowerImg },
+  GRASS: { label: '풀', icon: grass, image: grassImg },
+  MINERAL: { label: '소금결정', icon: mineral, image: mineralImg },
+  OAK: { label: '오크배럴', icon: oak, image: oakbarrelImg },
+  PEACH: { label: '복숭아', icon: peach, image: peachImg },
+  PEPPER: { label: '민트', icon: mint, image: mintImg },
+  TROPICAL: { label: '해변', icon: sea, image: seaImg },
+  VANILLA: { label: '코코넛', icon: coconut, image: coconutImg },
 } as const;
 
 export type AromaType = keyof typeof AROMA_META;
