@@ -1,5 +1,5 @@
 import { getFilledStars } from '@/utils/rating';
-import { AROMA_META } from '@/constants/aromaMap';
+import { AROMA_META, AromaType } from '@/constants/aromaMap';
 import TasteItem, { TASTES, Taste } from '../common/ui/TasteItem';
 import Chip from '../common/ui/chip';
 
@@ -56,20 +56,21 @@ export function AromaSelectField({
   selectedAromas,
   onToggle,
 }: {
-  selectedAromas: string[];
-  onToggle: (label: string) => void;
+  selectedAromas: AromaType[];
+  onToggle: (key: AromaType) => void;
 }) {
-  const aromaLabels = Object.values(AROMA_META).map(v => v.label);
+  const aromaKeys = Object.keys(AROMA_META) as AromaType[];
+
   return (
     <div className="flex flex-col gap-2 mb-7.5">
       <span className="mb-3 text-xl font-semibold">기억에 남는 향이 있나요?</span>
       <div className="flex flex-wrap py-2.5">
-        {aromaLabels.map(label => (
+        {aromaKeys.map(key => (
           <Chip
-            key={label}
-            label={label}
-            selected={selectedAromas.includes(label)}
-            onClick={() => onToggle(label)}
+            key={key}
+            label={AROMA_META[key].label}
+            selected={selectedAromas.includes(key)}
+            onClick={() => onToggle(key)}
           />
         ))}
       </div>
