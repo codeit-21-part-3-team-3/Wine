@@ -34,7 +34,11 @@ jobs:
           push: true
           tags: ghcr.io/codeit-21-part-3-team-3/wine:latest
           secrets: |
-            API_URL=${{ secrets.API_URL }}
+            "API_URL=${{ secrets.API_URL }}"
+            "NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}"
+            "NEXT_PUBLIC_KAKAO_CLIENT_ID=${{ secrets.NEXT_PUBLIC_KAKAO_CLIENT_ID }}"
+            "NEXT_PUBLIC_NAVER_CLIENT_ID=${{ secrets.NEXT_PUBLIC_NAVER_CLIENT_ID }}"
+            "NEXT_PUBLIC_REDIRECT_PATH=${{ secrets.NEXT_PUBLIC_REDIRECT_PATH }}"
 
       # 성공 시 n8n을 통해 서버 배포 명령 전달
       - name: 배포 자동화 호출 (Success)

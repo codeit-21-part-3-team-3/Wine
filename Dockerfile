@@ -14,7 +14,15 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 RUN --mount=type=secret,id=API_URL \
-    API_URL=$(cat /run/secrets/API_URL) \
+    --mount=type=secret,id=NEXT_PUBLIC_GOOGLE_CLIENT_ID \
+    --mount=type=secret,id=NEXT_PUBLIC_KAKAO_CLIENT_ID \
+    --mount=type=secret,id=NEXT_PUBLIC_NAVER_CLIENT_ID \
+    --mount=type=secret,id=NEXT_PUBLIC_REDIRECT_PATH \
+    export API_URL=$(cat /run/secrets/API_URL) && \
+    export NEXT_PUBLIC_GOOGLE_CLIENT_ID=$(cat /run/secrets/NEXT_PUBLIC_GOOGLE_CLIENT_ID) && \
+    export NEXT_PUBLIC_KAKAO_CLIENT_ID=$(cat /run/secrets/NEXT_PUBLIC_KAKAO_CLIENT_ID) && \
+    export NEXT_PUBLIC_NAVER_CLIENT_ID=$(cat /run/secrets/NEXT_PUBLIC_NAVER_CLIENT_ID) && \
+    export NEXT_PUBLIC_REDIRECT_PATH=$(cat /run/secrets/NEXT_PUBLIC_REDIRECT_PATH) && \
     npm run build
 
 FROM node:22-alpine AS runner

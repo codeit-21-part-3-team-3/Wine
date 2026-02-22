@@ -14,10 +14,12 @@ type SignInValues = {
   password: string;
 };
 
+import { getAuthUrl } from '@/utils/auth';
+
 export default function SignIn() {
   const router = useRouter();
   const { login } = useAuth();
-  const { register, handleSubmit, errors, getValues } = useForm<SignInValues>({ mode: 'onSubmit' });
+  const { register, handleSubmit, errors } = useForm<SignInValues>({ mode: 'onSubmit' });
 
   const valid = async (data: SignInValues) => {
     try {
@@ -36,6 +38,10 @@ export default function SignIn() {
         title: '로그인 실패',
       });
     }
+  };
+
+  const handleLogin = (provider: 'google' | 'kakao' | 'naver') => {
+    window.location.href = getAuthUrl(provider);
   };
 
   const Invalid = (errors: FieldErrors<SignInValues>) => {
@@ -77,9 +83,31 @@ export default function SignIn() {
           />
         </div>
 
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-2">
           <Button type="submit" className="h-[50px]">
             로그인
+          </Button>
+
+          <Button
+            type="button"
+            className="flex items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white py-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 active:bg-gray-100"
+            onClick={() => handleLogin('google')}
+          >
+            구글 로그인
+          </Button>
+          <Button
+            type="button"
+            className="flex items-center justify-center gap-3 rounded-lg bg-[#FEE500] py-3 text-sm font-semibold text-[#191919] transition-opacity hover:opacity-90 active:opacity-100"
+            onClick={() => handleLogin('kakao')}
+          >
+            카카오 로그인
+          </Button>
+          <Button
+            type="button"
+            className="flex items-center justify-center gap-3 rounded-lg bg-[#03C75A] py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 active:opacity-100"
+            onClick={() => handleLogin('naver')}
+          >
+            네이버 로그인
           </Button>
 
           <div className="flex justify-center items-center gap-2 text-sm">
