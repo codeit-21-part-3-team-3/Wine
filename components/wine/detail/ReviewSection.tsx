@@ -4,7 +4,6 @@ import ReviewStats from '@/components/wine/detail/ReviewStats';
 import EmptyState from '@/components/common/ui/EmptyState';
 import ReviewFormModal from '@/components/review/ReviewFormModal';
 import { GetWineDetailResponse } from '@/lib/api/wine/wine.types';
-import { CreateReviewRequest, UpdateReviewRequest } from '@/lib/api/review/review.types';
 import { useReviewHandlers } from '@/hooks/review/useReviewHandlers';
 import { DeleteReviewDialog } from '@/components/review/DeleteReviewDialog';
 
@@ -16,12 +15,12 @@ interface ReviewSectionProps {
 export default function ReviewSection({ wine, myId }: ReviewSectionProps) {
   const {
     reviews,
-    // 등록
+    // 등록모달
     isWriteModalOpen,
     setIsWriteModalOpen,
     handleCreateReview,
 
-    // 수정
+    // 수정모달
     isEditModalOpen,
     setIsEditModalOpen,
     editingReview,
@@ -61,7 +60,7 @@ export default function ReviewSection({ wine, myId }: ReviewSectionProps) {
           onOpenChange={setIsWriteModalOpen}
           mode="create"
           wine={wine}
-          onSubmit={handleUpdateReview}
+          onSubmit={handleCreateReview}
         />
       </div>
     );

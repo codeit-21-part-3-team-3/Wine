@@ -10,10 +10,10 @@ interface WineDetailLayoutProps {
 }
 
 export default function WineDetailLayout({ wine, user }: WineDetailLayoutProps) {
-  const hasReviews = wine.reviewCount > 0;
+  // wine.reviewCount 조건과 상관없이 프로필은 항상 렌더링해야 합니다.
   return (
     <Container className="pb-16 lg:pb-20">
-      {hasReviews && <WineProfile wine={wine} />}
+      <WineProfile wine={wine} />
       <ReviewSection wine={wine} myId={user?.id ?? 0} />
     </Container>
   );

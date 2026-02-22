@@ -7,7 +7,7 @@ import { calculateAveragePalate } from '@/utils/winePalate';
 import { AromaType } from '@/constants/aromaMap';
 
 interface WineProfileProps {
-  wine: GetWineDetailResponse & { aromas: string[] };
+  wine: GetWineDetailResponse;
 }
 
 export default function WineProfile({ wine }: WineProfileProps) {
