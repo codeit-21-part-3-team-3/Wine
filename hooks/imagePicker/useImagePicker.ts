@@ -1,3 +1,4 @@
+import { toast } from '@/components/common/ui/Toast';
 import { uploadImage } from '@/lib/api/infra/image';
 import { ImageValidation, ValidationRule } from '@/utils/imagePicker/ImageValidation';
 import { useCallback, useEffect, useRef, useState } from 'react';
