@@ -7,7 +7,7 @@ interface PriceRangeProps {
 }
 
 const MIN = 0;
-const MAX = 100000;
+const MAX = 500000;
 const STEP = 1000;
 
 export default function PriceRange({ value, onChange, className }: PriceRangeProps) {
@@ -25,6 +25,7 @@ export default function PriceRange({ value, onChange, className }: PriceRangePro
 
   const percentMin = ((min - MIN) / (MAX - MIN)) * 100;
   const percentMax = ((max - MIN) / (MAX - MIN)) * 100;
+  const isMinAtMax = min > MAX - STEP * 10;
   return (
     <section className={cn('space-y-5 mt-16 lg:mt-12', className)}>
       <h3 className="text-lg font-semibold">가격</h3>
@@ -45,7 +46,8 @@ export default function PriceRange({ value, onChange, className }: PriceRangePro
           step={STEP}
           value={min}
           onChange={e => handleMin(Number(e.target.value))}
-          className="absolute top-1/2 -translate-y-1/2 left-0 right-0 w-full h-0 appearance-none bg-transparent range-thumb"
+          className="absolute top-1/2 -translate-y-1/2 w-full h-6 appearance-none bg-transparent range-thumb"
+          style={{ zIndex: isMinAtMax ? 10 : undefined }}
         />
         <input
           type="range"
@@ -54,7 +56,8 @@ export default function PriceRange({ value, onChange, className }: PriceRangePro
           step={STEP}
           value={max}
           onChange={e => handleMax(Number(e.target.value))}
-          className="absolute top-1/2 -translate-y-1/2 w-full h-0 appearance-none bg-transparent range-thumb"
+          className="absolute top-1/2 -translate-y-1/2 w-full h-6 appearance-none bg-transparent range-thumb"
+          style={{ zIndex: isMinAtMax ? 10 : undefined }}
         />
       </div>
     </section>

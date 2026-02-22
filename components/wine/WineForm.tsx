@@ -6,6 +6,7 @@ import WineImageUpload from './WineImageUpload';
 import { Wine, WineType } from '@/types/domain/wine';
 import { useState } from 'react';
 import { useForm } from '@/hooks/useForm';
+import Spinner from '../common/ui/Spinner';
 
 type Mode = 'create' | 'edit';
 
@@ -111,7 +112,7 @@ export default function WineForm({ mode, onSuccess }: WineFormProps) {
       {form.formError && <p className="text-red-500 text-[12px] font-medium">{form.formError}</p>}
 
       <Button type="submit" disabled={form.isSubmitting}>
-        {form.isSubmitting ? '등록 중...' : form.isEdit ? '와인 수정하기' : '와인 등록하기'}
+        {form.isSubmitting ? <Spinner /> : form.isEdit ? '와인 수정하기' : '와인 등록하기'}
       </Button>
     </form>
   );

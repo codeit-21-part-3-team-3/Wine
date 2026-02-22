@@ -10,7 +10,7 @@ export function mapFilterToUrlQuery(filter: FilterState): ParsedUrlQueryInput {
   return {
     type: clean(filter.type),
     minPrice: filter.minPrice !== 0 ? String(filter.minPrice) : undefined,
-    maxPrice: filter.maxPrice !== 100000 ? String(filter.maxPrice) : undefined,
+    maxPrice: filter.maxPrice !== 500000 ? String(filter.maxPrice) : undefined,
     rating: filter.rating !== null ? String(filter.rating) : undefined,
     name: filter.name || undefined,
   };

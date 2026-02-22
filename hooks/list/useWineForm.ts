@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { createWine } from '@/lib/api/wine/wine';
 import type { CreateWineRequest } from '@/lib/api/wine/wine.types';
 import type { Wine, WineType } from '@/types/domain/wine';
+import { toast } from '@/components/common/ui/Toast';
 
 interface useWineFormParams {
   mode: 'create' | 'edit';
@@ -42,9 +43,12 @@ export function useWineForm({ mode, onSuccess }: useWineFormParams) {
       };
 
       const createdWine = await createWine(payload);
+      toast.success('와인이 등록되었습니다.');
       onSuccess?.(createdWine);
     } catch (err) {
-      setFormError(extractErrorMessage(err));
+      const message = extractErrorMessage(err);
+      toast.error(message);
+      setFormError(null);
     } finally {
       setIsSubmitting(false);
     }
