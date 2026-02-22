@@ -35,11 +35,15 @@ export function useReviewFormLogic<T extends CreateReviewRequest | UpdateReviewR
 
   const handleSubmit = async () => {
     if (isSubmitting) return;
+    if (!content || content.trim().length === 0) {
+      toast.error('리뷰 내용을 입력해 주세요.');
+      return;
+    }
     setIsSubmitting(true);
     try {
       const commonFields = {
         rating,
-        content,
+        content: content.trim(),
         aroma: selectedAromas,
         lightBold: tasteForm['바디감'],
         smoothTannic: tasteForm['탄닌'],
