@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { createWine } from '@/lib/api/wine/wine';
 import type { CreateWineRequest } from '@/lib/api/wine/wine.types';
 import type { Wine, WineType } from '@/types/domain/wine';
+import { toast } from '@/components/common/ui/Toast';
+import { WINE_PRICE_MAX, WINE_PRICE_MIN } from '@/constants/wine';
 
 interface useWineFormParams {
   mode: 'create' | 'edit';
@@ -33,6 +35,11 @@ export function useWineForm({ mode, onSuccess }: useWineFormParams) {
       setIsSubmitting(true);
       setFormError(null);
 
+      if (values.price < WINE_PRICE_MIN || values.price > WINE_PRICE_MAX) {
+        toast.error(`가격은 ${WINE_PRICE_MAX.toLocaleString()}원 이하만 가능합니다.`);
+        return;
+      }
+
       const payload: CreateWineRequest = {
         name: values.name,
         price: values.price,
@@ -42,9 +49,12 @@ export function useWineForm({ mode, onSuccess }: useWineFormParams) {
       };
 
       const createdWine = await createWine(payload);
+      toast.success('와인이 등록되었습니다.');
       onSuccess?.(createdWine);
     } catch (err) {
-      setFormError(extractErrorMessage(err));
+      const message = extractErrorMessage(err);
+      toast.error(message);
+      setFormError(null);
     } finally {
       setIsSubmitting(false);
     }

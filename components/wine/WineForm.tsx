@@ -6,6 +6,8 @@ import WineImageUpload from './WineImageUpload';
 import { Wine, WineType } from '@/types/domain/wine';
 import { useState } from 'react';
 import { useForm } from '@/hooks/useForm';
+import Spinner from '../common/ui/Spinner';
+import { WINE_PRICE_MAX } from '@/constants/wine';
 
 type Mode = 'create' | 'edit';
 
@@ -68,9 +70,15 @@ export default function WineForm({ mode, onSuccess }: WineFormProps) {
         <Input
           {...register('price', {
             required: '가격은 필수 입력이에요',
-            validate: v => {
-              if (Number(v) > 0) return;
-              return '가격은 0보다 커야 합니다';
+            validate: value => {
+              const price = Number(value);
+              if (!Number.isFinite(price)) {
+                return '가격은 숫자만 입력 가능해요';
+              }
+              if (price < 0) return '가격은 0 이상이어야 해요';
+              if (price > WINE_PRICE_MAX) {
+                return `가격은 ${WINE_PRICE_MAX.toLocaleString()}원 이하만 가능해요`;
+              }
             },
           })}
           status={errors.price ? 'error' : 'default'}
@@ -111,7 +119,7 @@ export default function WineForm({ mode, onSuccess }: WineFormProps) {
       {form.formError && <p className="text-red-500 text-[12px] font-medium">{form.formError}</p>}
 
       <Button type="submit" disabled={form.isSubmitting}>
-        {form.isSubmitting ? '등록 중...' : form.isEdit ? '와인 수정하기' : '와인 등록하기'}
+        {form.isSubmitting ? <Spinner /> : form.isEdit ? '와인 수정하기' : '와인 등록하기'}
       </Button>
     </form>
   );
