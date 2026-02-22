@@ -5,7 +5,6 @@ import { useId } from 'react';
 interface ImagePickerProps {
   preview: string | null;
   error?: string | null;
-  uploading?: boolean;
   onSelect: (file: File) => void;
   className?: string;
   placeholder?: React.ReactNode;
@@ -14,7 +13,6 @@ interface ImagePickerProps {
 export function ImagePicker({
   preview,
   error,
-  uploading,
   onSelect,
   className,
   placeholder,
@@ -41,11 +39,6 @@ export function ImagePicker({
           <Image src={preview} fill className="object-cover" alt="미리보기 이미지" />
         ) : (
           (placeholder ?? <span className="text-sm text-muted-foreground">이미지 선택</span>)
-        )}
-        {uploading && (
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-sm">
-            업로드 중..
-          </div>
         )}
       </label>
       <input id={id} type="file" hidden accept="image/*" onChange={handleChange} />

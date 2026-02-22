@@ -31,7 +31,6 @@ export default function AvatarPicker({
       <ImagePicker
         preview={null}
         error={error}
-        uploading={uploading}
         onSelect={onSelect}
         className="border-0 p-0 w-auto h-auto"
         placeholder={

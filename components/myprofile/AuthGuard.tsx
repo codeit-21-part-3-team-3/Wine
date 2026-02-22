@@ -17,7 +17,7 @@ export default function AuthGuard({ children }: AuthGuardProps) {
   }, [isLoading, user, router]);
 
   if (isLoading) {
-    return <div>인증 확인 중...</div>;
+    return null;
   }
 
   if (!user) {
