@@ -36,7 +36,11 @@ export default async function handler(
       return res.status(response.status).json(errorData);
     }
 
-    const data: AuthResponse = await response.json();
+    const data: AuthResponse = await response.json().catch(() => null);
+
+    if (!data) {
+      return res.status(500).json({ message: '인증 응답 파싱 실패' });
+    }
 
     res.setHeader('Set-Cookie', [
       AUTH_COOKIES.accessToken(data.accessToken),
@@ -52,6 +56,6 @@ export default async function handler(
     });
   } catch (error) {
     console.error('Error signing in:', error);
-    return res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+    return res.status(500).json({ message: '서버 내부 오류가 발생했습니다.' });
   }
 }
