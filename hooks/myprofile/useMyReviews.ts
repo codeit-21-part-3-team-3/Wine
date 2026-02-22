@@ -25,5 +25,17 @@ export function useMyReviews(limit = 10) {
     }
   }, [loading, hasFetched, limit]);
 
-  return { reviews, loading, error, fetch };
+  const removeLocalReview = useCallback((id: number) => {
+    setReviews(prev => prev.filter(r => r.id !== id));
+  }, []);
+
+  const updateLocalReview = useCallback((id: number, updated: ApiReview) => {
+    setReviews(prev => prev.map(r => (r.id === id ? updated : r)));
+  }, []);
+
+  const patchLocalReview = useCallback((id: number, patch: Partial<ApiReview>) => {
+    setReviews(prev => prev.map(r => (r.id === id ? { ...r, ...patch } : r)));
+  }, []);
+
+  return { reviews, loading, error, fetch, removeLocalReview, updateLocalReview, patchLocalReview };
 }

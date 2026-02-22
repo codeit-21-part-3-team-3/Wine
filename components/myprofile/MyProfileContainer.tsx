@@ -2,9 +2,11 @@ import { useAuth } from '@/providers/Auth/AuthProvider';
 import MyProfilePage from './MyProfilePage';
 import { useMyReviews, useMyWines, useUpdateProfile } from '@/hooks/myprofile';
 import { deleteWine } from '@/lib/api/wine/wine';
+import { deleteReview, updateReview } from '@/lib/api/review/review';
 import { toast } from '../common/ui/Toast';
 import type { Wine } from '@/types/domain/wine';
 import type { WineListItem } from '@/lib/api/wine/wine.types';
+import type { UpdateReviewRequest } from '@/lib/api/review/review.types';
 
 interface MyProfileErrors {
   profile?: string | null;
@@ -53,6 +55,26 @@ export default function MyProfileContainer() {
     winesState.updateLocalWine(id, patch);
   };
 
+  const handleDeleteReview = async (id: number) => {
+    try {
+      await deleteReview(id);
+      reviewsState.removeLocalReview(id);
+      toast.success('리뷰가 삭제되었습니다.');
+    } catch {
+      toast.error('리뷰 삭제에 실패했습니다.');
+    }
+  };
+
+  const handleUpdateReview = async (id: number, data: UpdateReviewRequest) => {
+    try {
+      const updated = await updateReview(id, data);
+      reviewsState.updateLocalReview(id, updated);
+      toast.success('리뷰가 수정되었습니다.');
+    } catch {
+      toast.error('리뷰 수정에 실패했습니다.');
+    }
+  };
+
   return (
     <MyProfilePage
       key={`${user.nickname}-${user.image}`}
@@ -65,6 +87,8 @@ export default function MyProfileContainer() {
       onFetchWines={winesState.fetch}
       onDeleteWine={handleDeleteWine}
       onUpdateWineLocal={handleUpdateWineLocal}
+      onDeleteReview={handleDeleteReview}
+      onUpdateReview={handleUpdateReview}
       onUpdateProfile={profileState.updateProfile}
       isUpdating={profileState.isUpdating}
       error={errors}

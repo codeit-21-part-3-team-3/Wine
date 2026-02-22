@@ -8,17 +8,11 @@ import { ApiReview } from '@/lib/api/review/review.types';
 
 interface MyReviewCardProps {
   review: ApiReview;
+  onEdit: (review: ApiReview) => void;
+  onDelete: (reviewId: number) => void;
 }
 
-export default function MyReviewCard({ review }: MyReviewCardProps) {
-  const handleEdit = (reviewId: number) => {
-    console.log('모달', reviewId);
-  };
-
-  const handleDelete = (reviewId: number) => {
-    console.log('모달', reviewId);
-  };
-
+export default function MyReviewCard({ review, onEdit, onDelete }: MyReviewCardProps) {
   const getTasteValue = (tasteName: TasteLabel) => {
     switch (tasteName) {
       case '바디감':
@@ -44,7 +38,11 @@ export default function MyReviewCard({ review }: MyReviewCardProps) {
               <p className="mr-2">{review.rating}</p>
               <span className="text-gray-400">{formatTimeAgo(new Date(review.createdAt))}</span>
             </div>
-            <ReviewMenu reviewId={review.id} onEdit={handleEdit} onDelete={handleDelete} />
+            <ReviewMenu
+              reviewId={review.id}
+              onEdit={() => onEdit(review)}
+              onDelete={() => onDelete(review.id)}
+            />
           </div>
           {review.wine && <ReviewWineInfo wine={review.wine} />}
         </div>
