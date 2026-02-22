@@ -1,7 +1,8 @@
 import Image from 'next/image';
 import Button from '../common/ui/Button';
-import { GetWineDetailResponse } from '@/lib/api/wine/wine.types';
-import { CreateReviewRequest } from '@/lib/api/review/review.types';
+import { ApiWineReview, GetWineDetailResponse } from '@/lib/api/wine/wine.types';
+import {} from '@/lib/api/wine/wine.types';
+import { CreateReviewRequest, UpdateReviewRequest } from '@/lib/api/review/review.types';
 import { useReviewFormLogic } from '@/hooks/review/useReviewForm';
 import {
   StarRatingField,
@@ -12,11 +13,12 @@ import {
 interface ReviewFormProps {
   mode: 'create' | 'edit';
   wine: GetWineDetailResponse;
-  onSubmit: (data: CreateReviewRequest) => Promise<void>;
+  onSubmit: (data: CreateReviewRequest | UpdateReviewRequest) => Promise<void>;
+  initialData?: ApiWineReview;
 }
 
-export default function ReviewForm({ mode, wine, onSubmit }: ReviewFormProps) {
-  const { formState, actions } = useReviewFormLogic(wine.id, onSubmit);
+export default function ReviewForm({ mode, wine, onSubmit, initialData }: ReviewFormProps) {
+  const { formState, actions } = useReviewFormLogic(wine.id, onSubmit, initialData);
   const isEdit = mode === 'edit';
 
   return (

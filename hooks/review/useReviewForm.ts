@@ -1,18 +1,31 @@
 import { useState } from 'react';
 import { AromaType } from '@/constants/aromaMap';
 import { useWineTasteForm } from '@/hooks/useWineTasteForm';
-import { CreateReviewRequest } from '@/lib/api/review/review.types';
+import { CreateReviewRequest, UpdateReviewRequest } from '@/lib/api/review/review.types';
+import { ApiWineReview } from '@/lib/api/wine/wine.types';
 import { toast } from '@/components/common/ui/Toast';
 
-export function useReviewFormLogic(
+export function useReviewFormLogic<T extends CreateReviewRequest | UpdateReviewRequest>(
   wineId: number,
-  onSubmit: (data: CreateReviewRequest) => Promise<void>
+  onSubmit: (data: T) => Promise<void>,
+  initialData?: ApiWineReview
 ) {
-  const [content, setContent] = useState('');
-  const [rating, setRating] = useState(3);
-  const [selectedAromas, setSelectedAromas] = useState<AromaType[]>([]);
+  const [content, setContent] = useState(initialData?.content || '');
+  const [rating, setRating] = useState(initialData?.rating || 3);
+  const [selectedAromas, setSelectedAromas] = useState<AromaType[]>(
+    (initialData?.aroma as AromaType[]) || []
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { tasteForm, updateTaste } = useWineTasteForm(undefined);
+  const { tasteForm, updateTaste } = useWineTasteForm(
+    initialData
+      ? {
+          바디감: initialData.lightBold,
+          탄닌: initialData.smoothTannic,
+          당도: initialData.drySweet,
+          산미: initialData.softAcidic,
+        }
+      : undefined
+  );
 
   const handleAromaToggle = (aromaKey: AromaType) => {
     setSelectedAromas(prev =>
@@ -24,8 +37,7 @@ export function useReviewFormLogic(
     if (isSubmitting) return;
     setIsSubmitting(true);
     try {
-      await onSubmit({
-        wineId,
+      const commonFields = {
         rating,
         content,
         aroma: selectedAromas,
@@ -33,7 +45,15 @@ export function useReviewFormLogic(
         smoothTannic: tasteForm['탄닌'],
         drySweet: tasteForm['당도'],
         softAcidic: tasteForm['산미'],
-      });
+      };
+      if (initialData) {
+        await onSubmit(commonFields as T);
+      } else {
+        await onSubmit({
+          ...commonFields,
+          wineId,
+        } as T);
+      }
     } catch (error) {
       console.error(error);
       toast.error('리뷰 등록에 실패했습니다. 다시 시도해 주세요.');
