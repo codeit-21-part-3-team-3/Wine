@@ -23,7 +23,11 @@ export default function HeroSection({ wine }: HeroSectionProps) {
       <Container className="flex-1 flex items-center justify-center">
         <section className="py-8 lg:py-0 flex flex-col lg:flex-row items-center gap-6 lg:gap-12 w-full">
           <div className="relative w-full lg:w-[460px] h-[300px] lg:h-[450px] flex items-center justify-center overflow-hidden">
-            <div className="absolute inset-0 flex items-center justify-center">
+            <div
+              className={`absolute inset-0 flex items-center justify-center transition-transform ${
+                wine.type === 'RED' ? '-translate-x-20' : ''
+              }`}
+            >
               <Image
                 src={BACKGROUND_IMAGES[wine.type as keyof typeof BACKGROUND_IMAGES] || wineRed}
                 alt=""
@@ -42,7 +46,7 @@ export default function HeroSection({ wine }: HeroSectionProps) {
             </div>
           </div>
 
-          <div className="flex flex-col w-full lg:w-auto items-start">
+          <div className="flex flex-col w-full lg:flex-1 items-start lg:h-[300px]">
             <div className="flex items-center gap-4 mb-[14px]">
               <div className="flex text-[16px] md:text-[20px] lg:text-[28px]">
                 {[1, 2, 3, 4, 5].map(num => (
@@ -65,8 +69,10 @@ export default function HeroSection({ wine }: HeroSectionProps) {
             <p className="text-base lg:text-lg font-normal text-gray-400 mb-6 lg:mb-8">
               {wine.region}
             </p>
-            <div className="text-2xl lg:text-[32px] font-bold text-gray-900 w-full lg:text-right lg:pr-10">
-              {wine.price.toLocaleString()}원
+            <div className="mt-auto w-full flex justify-end pr-4 lg:pr-10">
+              <span className="text-2xl lg:text-[32px] font-bold text-gray-900">
+                {wine.price.toLocaleString()}원
+              </span>
             </div>
           </div>
         </section>
