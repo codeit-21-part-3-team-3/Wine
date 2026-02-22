@@ -15,14 +15,13 @@ export function useReviewFormLogic(
   const { tasteForm, updateTaste } = useWineTasteForm(undefined);
 
   const handleAromaToggle = (aromaKey: AromaType) => {
-    setSelectedAromas(prev => {
-      const next = prev.includes(aromaKey) ? prev.filter(a => a !== aromaKey) : [...prev, aromaKey];
-
-      return next as AromaType[];
-    });
+    setSelectedAromas(prev =>
+      prev.includes(aromaKey) ? prev.filter(a => a !== aromaKey) : [...prev, aromaKey]
+    );
   };
 
   const handleSubmit = async () => {
+    if (isSubmitting) return;
     setIsSubmitting(true);
     try {
       await onSubmit({

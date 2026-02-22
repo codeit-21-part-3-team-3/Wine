@@ -33,7 +33,7 @@ export function TasteSection({
   tasteForm,
   onUpdate,
 }: {
-  tasteForm: Record<string, number>;
+  tasteForm: Record<Taste, number>;
   onUpdate: (taste: Taste, val: number) => void;
 }) {
   return (
