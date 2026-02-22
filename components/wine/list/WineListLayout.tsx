@@ -3,7 +3,6 @@ import type { Wine } from '@/types/domain/wine';
 import Container from '@/components/common/layout/Container';
 import WineListSection from './WineListSection';
 import SidebarFilter from '@/components/filter/SidebarFilter';
-import WineListEmpty from './WineListEmpty';
 import WineListSkeleton from './WineListSkeleton';
 import SearchControls from './SearchControls';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';
@@ -11,6 +10,7 @@ import { useState } from 'react';
 import Button from '@/components/common/ui/Button';
 import WineFormModal from '../WineFormModal';
 import { useAuth } from '@/providers/Auth/AuthProvider';
+import EmptyState from '@/components/common/ui/EmptyState';
 
 interface WineListLayoutProps {
   initialWines: Wine[];
@@ -65,7 +65,15 @@ export default function WineListLayout({ initialWines, initialCursor }: WineList
 
           {showEmpty && (
             <div className="flex items-center justify-center md:h-full">
-              <WineListEmpty />
+              <EmptyState
+                title="아직 아무도 모르는 와인이네요!"
+                description={
+                  <>
+                    <span className="block md:inline">지금 등록해서 다른 사람들에게</span>
+                    <span className="block md:lnline md:ml-1">첫 번째로 소개해보세요</span>
+                  </>
+                }
+              />
             </div>
           )}
 
