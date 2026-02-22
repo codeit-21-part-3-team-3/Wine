@@ -42,6 +42,7 @@ jobs:
         run: |
           curl -X POST ${{ secrets.N8N_WEBHOOK_URL }} \
           -H "Content-Type: application/json" \
+          -H "X-Webhook-Secret: ${{ secrets.N8N_WEBHOOK_SECRET_TOKEN }}" \
           -d '{
             "status": "success",
             "project": "Wine",
@@ -56,6 +57,7 @@ jobs:
         run: |
           curl -X POST ${{ secrets.N8N_WEBHOOK_URL }} \
           -H "Content-Type: application/json" \
+          -H "X-Webhook-Secret: ${{ secrets.N8N_WEBHOOK_SECRET_TOKEN }}" \
           -d '{
             "status": "failure",
             "project": "Wine",
