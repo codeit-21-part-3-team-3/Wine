@@ -6,7 +6,7 @@ import { GetStaticProps } from 'next';
 
 interface WineListPageProps {
   initialWines: Wine[];
-  initialCursor?: number;
+  initialCursor: number | null;
   recommendedWines: Wine[];
 }
 
@@ -24,7 +24,7 @@ export const getStaticProps: GetStaticProps<WineListPageProps> = async () => {
     };
   } catch (e) {
     return {
-      props: { initialWines: [], initialCursor: undefined, recommendedWines: [] },
+      props: { initialWines: [], initialCursor: null, recommendedWines: [] },
       revalidate: 60,
     };
   }
