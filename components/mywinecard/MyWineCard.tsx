@@ -1,13 +1,12 @@
-import { Wine } from '@/types/domain/wine';
 import Image from 'next/image';
-import MyWineCardMenu from './MyWineCardMenu';
 import MyWineCardInfo from './MyWineCardInfo';
 import { cn } from '@/utils/cn';
+import { WineListItem } from '@/lib/api/wine/wine.types';
 
 interface MyWineCardProps {
-  wine: Wine;
-  onEdit?: (wine: Wine) => void;
-  onDelete?: (wine: Wine) => void;
+  wine: WineListItem;
+  onEdit?: (wine: WineListItem) => void;
+  onDelete?: (wine: WineListItem) => void;
   className?: string;
 }
 

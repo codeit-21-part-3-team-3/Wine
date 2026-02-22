@@ -1,7 +1,7 @@
-import { Wine } from '@/types/domain/wine';
 import MyWineCardMenu from './MyWineCardMenu';
+import { WineListItem } from '@/lib/api/wine/wine.types';
 
-type MyWineCardInfoProps = Pick<Wine, 'name' | 'region' | 'price'> & {
+type MyWineCardInfoProps = Pick<WineListItem, 'name' | 'region' | 'price'> & {
   onEdit?: () => void;
   onDelete?: () => void;
 };
