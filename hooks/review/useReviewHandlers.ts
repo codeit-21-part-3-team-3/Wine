@@ -62,6 +62,7 @@ export function useReviewHandlers(initialReviews: ApiWineReview[]) {
     } catch (error) {
       setReviews(previousReviews);
       console.error('좋아요 적용 에러:', error);
+      toast.error('좋아요 처리에 실패했습니다');
     }
   };
 

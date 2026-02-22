@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import type { ImgHTMLAttributes } from 'react';
 import heart from '@/assets/icons/heart.png';
+import heartActive from '@/assets/icons/heart-active.png';
 import kebab from '@/assets/icons/kebab-menu.png';
 import chevronUp from '@/assets/icons/chevron-up.png';
 import chevronDown from '@/assets/icons/chevron-down.png';
@@ -10,6 +11,7 @@ import cancel from '@/assets/icons/cancel.png';
 
 const ICON_MAP = {
   heart,
+  heartActive,
   kebab,
   filter,
   camera,
