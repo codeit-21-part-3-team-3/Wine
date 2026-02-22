@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Button from '@/components/common/ui/Button';
 import ReviewFeedCard from '@/components/reviewCard/ReviewFeedCard';
 import ReviewStats from '@/components/wine/detail/ReviewStats';
-import ReviewEmpty from '@/components/wine/detail/ReviewEmpty';
+import EmptyState from '@/components/common/ui/EmptyState';
 import { useReviewStats } from '@/hooks/useReviewStats';
 import { GetWineDetailResponse, ApiWineReview } from '@/lib/api/wine/wine.types';
 import { createReview, deleteReview, likeReview, unlikeReview } from '@/lib/api/review/review';
@@ -95,7 +95,29 @@ export default function ReviewSection({ wine, myId }: ReviewSectionProps) {
   };
 
   if (!reviews || reviews.length === 0) {
-    return <ReviewEmpty onWriteClick={() => setIsWriteModalOpen(true)} />;
+    return (
+      <div className="w-full">
+        <EmptyState
+          title="작성된 리뷰가 없습니다."
+          action={
+            <Button
+              variant="primary"
+              className="w-52 mx-auto py-3 rounded-full text-lg font-bold shadow-md"
+              onClick={() => setIsWriteModalOpen(true)}
+            >
+              리뷰 작성하기
+            </Button>
+          }
+        />
+        <ReviewFormModal
+          open={isWriteModalOpen}
+          onOpenChange={setIsWriteModalOpen}
+          mode="create"
+          wine={wine}
+          onSubmit={handleCreateReview}
+        />
+      </div>
+    );
   }
 
   return (
