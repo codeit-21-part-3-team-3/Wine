@@ -1,6 +1,6 @@
 import { useWineForm } from '@/hooks/list';
 import Button from '../common/ui/Button';
-import Chip from '../common/ui/chip';
+import Chip from '../common/ui/Chip';
 import Input from '../common/ui/Input';
 import WineImageUpload from './WineImageUpload';
 import { Wine, WineType } from '@/types/domain/wine';
