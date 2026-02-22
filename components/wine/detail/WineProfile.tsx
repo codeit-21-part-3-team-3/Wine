@@ -4,6 +4,7 @@ import TasteItem, { TASTES } from '@/components/common/ui/TasteItem';
 import { GetWineDetailResponse } from '@/lib/api/wine/wine.types';
 import { getTasteValueByLabel } from '@/utils/tasteValue';
 import { calculateAveragePalate } from '@/utils/winePalate';
+import { AromaType } from '@/constants/aromaMap';
 
 interface WineProfileProps {
   wine: GetWineDetailResponse & { aromas: string[] };
@@ -15,11 +16,11 @@ export default function WineProfile({ wine }: WineProfileProps) {
   const allAromas = reviews.flatMap(review => review.aroma || []);
   const uniqueAromas = Array.from(new Set(allAromas));
   const displayAromas = uniqueAromas
-    .map((aromaName: string) => {
-      const key = aromaName.toUpperCase() as keyof typeof AROMA_META;
+    .map(name => {
+      const key = name.toUpperCase() as AromaType;
       return AROMA_META[key];
     })
-    .filter((aroma): aroma is (typeof AROMA_META)[keyof typeof AROMA_META] => !!aroma);
+    .filter((aroma): aroma is (typeof AROMA_META)[AromaType] => !!aroma);
 
   return (
     <section className="flex flex-col lg:flex-row gap-y-12 lg:gap-y-0 lg:gap-x-20 py-6 md:py-10 lg:py-20 border-b border-border">
