@@ -21,6 +21,21 @@ const nextConfig: NextConfig = {
         hostname: 'sprint-fe-project.s3.ap-northeast-2.amazonaws.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'phinf.pstatic.net',
+        pathname: '/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'img1.kakaocdn.net',
+        pathname: '/**',
+      },
     ],
   },
 };
