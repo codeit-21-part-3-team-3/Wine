@@ -33,10 +33,8 @@ export default function FilterModal({ onApply, onReset, ...props }: FilterModalP
               <Button className="w-30 md:w-30" onClick={onReset} variant="ghost">
                 초기화
               </Button>
-              <DialogClose>
-                <Button className="md:w-70" onClick={onApply}>
-                  필터 적용하기
-                </Button>
+              <DialogClose className="md:w-70" onClick={onApply}>
+                필터 적용하기
               </DialogClose>
             </>
           }

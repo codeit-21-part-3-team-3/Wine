@@ -19,4 +19,5 @@ export interface DialogTriggerProps {
 export interface DialogContentProps {
   children: ReactNode;
   className?: string;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
 }

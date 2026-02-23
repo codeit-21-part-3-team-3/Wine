@@ -77,10 +77,16 @@ function DialogPortal({ children }: PropsWithChildren): ReactPortal | null {
   return createPortal(children, document.body);
 }
 
-function DialogClose({ children, className }: DialogContentProps) {
+function DialogClose({ children, className, onClick }: DialogContentProps) {
   const { setOpen } = useDialog();
   return (
-    <Button className={cn('', className)} onClick={() => setOpen(false)}>
+    <Button
+      className={cn('', className)}
+      onClick={e => {
+        onClick?.(e);
+        setOpen(false);
+      }}
+    >
       {children}
     </Button>
   );
@@ -150,22 +156,26 @@ function DialogContent({ children, className }: DialogContentProps) {
       <DialogOverlay />
       <div
         ref={contentRef}
-        onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
         className={cn(
-          'fixed z-50 bg-white shadow-lg transition-all flex flex-col overflow-hidden',
+          'fixed z-50 bg-white shadow-lg transition-all flex flex-col',
           'bottom-0 left-0 right-0 w-full rounded-t-[20px] max-h-[90vh]',
-          'md:bottom-0 md:left-0 md:right-0 md:top-auto md:translate-x-0 md:translate-y-0 md:mx-auto md:max-w-md',
+          'md:top-1/2 md:left-1/2 md:bottom-auto md:w-full md:max-w-md md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[12px] md:max-h-[85vh]',
           className
         )}
         style={{
-          touchAction: 'none',
           userSelect: 'none',
         }}
       >
-        <div className="mx-auto my-3 h-1.5 w-20 rounded-full bg-gray-300 md:hidden" />
+        <div
+          onPointerDown={handlePointerDown}
+          className="flex w-full items-center justify-center py-3 md:hidden cursor-grab active:cursor-grabbing shrink-0"
+          style={{ touchAction: 'none' }}
+        >
+          <div className="h-1.5 w-20 rounded-full bg-gray-300" />
+        </div>
         {children}
       </div>
     </DialogPortal>
