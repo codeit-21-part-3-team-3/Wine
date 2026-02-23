@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
 import Button from '../Button';
@@ -92,19 +92,78 @@ function DialogOverlay() {
 }
 
 function DialogContent({ children, className }: DialogContentProps) {
-  const { open } = useDialog();
+  const { open, setOpen } = useDialog();
+
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const startY = useRef(0);
+  const currentY = useRef(0);
+  const isDragging = useRef(false);
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    if (e.button !== 0) return;
+
+    startY.current = e.clientY;
+    isDragging.current = true;
+
+    if (contentRef.current) {
+      contentRef.current.style.transition = 'none';
+      contentRef.current.setPointerCapture(e.pointerId);
+    }
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!isDragging.current || !contentRef.current) return;
+
+    const deltaY = e.clientY - startY.current;
+
+    if (deltaY > 0) {
+      currentY.current = deltaY;
+      contentRef.current.style.transform = `translateY(${deltaY}px)`;
+    }
+  };
+
+  const handlePointerUp = (e: React.PointerEvent) => {
+    if (!isDragging.current || !contentRef.current) return;
+    isDragging.current = false;
+    contentRef.current.releasePointerCapture(e.pointerId);
+
+    contentRef.current.style.transition = 'transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1)';
+
+    const threshold = Math.min(contentRef.current.offsetHeight * 0.25, 150);
+
+    if (currentY.current > threshold) {
+      setOpen(false);
+      setTimeout(() => {
+        if (contentRef.current) contentRef.current.style.transform = '';
+      }, 300);
+    } else {
+      contentRef.current.style.transform = `translateY(0)`;
+    }
+    currentY.current = 0;
+  };
+
   if (!open) return null;
 
   return (
     <DialogPortal>
       <DialogOverlay />
       <div
+        ref={contentRef}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
         className={cn(
-          'fixed z-50 bg-white shadow-lg transition-all flex flex-col',
+          'fixed z-50 bg-white shadow-lg transition-all flex flex-col overflow-hidden',
           'bottom-0 left-0 right-0 w-full rounded-t-[20px] max-h-[90vh]',
-          'md:top-1/2 md:left-1/2 md:bottom-auto md:w-full md:max-w-md md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-[12px] md:max-h-[85vh]',
+          'md:bottom-0 md:left-0 md:right-0 md:top-auto md:translate-x-0 md:translate-y-0 md:mx-auto md:max-w-md',
           className
         )}
+        style={{
+          touchAction: 'none',
+          userSelect: 'none',
+        }}
       >
         <div className="mx-auto my-3 h-1.5 w-20 rounded-full bg-gray-300 md:hidden" />
         {children}
