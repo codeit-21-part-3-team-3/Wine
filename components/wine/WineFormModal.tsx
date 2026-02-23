@@ -35,9 +35,12 @@ export default function WineFormModal({ open, onOpenChange, mode, wine, onSucces
           <DialogTitle className="font-semibold text-2xl">
             {isEdit ? '와인 수정' : '와인 등록'}
           </DialogTitle>
-          <DialogClose className="w-auto px-0 bg-transparent">
-            <IconButton icon="cancel" size={16} />
-          </DialogClose>
+          <IconButton
+            className="w-auto px-0 bg-transparent"
+            icon="cancel"
+            size={16}
+            onClick={() => onOpenChange(false)}
+          />
         </DialogHeader>
         <DialogBody>
           <WineForm
