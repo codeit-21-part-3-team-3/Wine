@@ -1,17 +1,17 @@
 import Image from 'next/image';
 import { AROMA_META } from '@/constants/aromaMap';
 import TasteItem, { TASTES } from '@/components/common/ui/TasteItem';
-import { GetWineDetailResponse } from '@/lib/api/wine/wine.types';
+import { ApiWineReview, GetWineDetailResponse } from '@/lib/api/wine/wine.types';
 import { getTasteValueByLabel } from '@/utils/tasteValue';
 import { calculateAveragePalate } from '@/utils/winePalate';
 import { AromaType } from '@/constants/aromaMap';
 
 interface WineProfileProps {
-  wine: GetWineDetailResponse;
+  reviews: ApiWineReview[];
 }
 
-export default function WineProfile({ wine }: WineProfileProps) {
-  const { reviewCount, reviews = [] } = wine;
+export default function WineProfile({ reviews }: WineProfileProps) {
+  const reviewCount = reviews.length;
   const averagePalate = calculateAveragePalate(reviews);
   const allAromas = reviews.flatMap(review => review.aroma || []);
   const uniqueAromas = Array.from(new Set(allAromas));

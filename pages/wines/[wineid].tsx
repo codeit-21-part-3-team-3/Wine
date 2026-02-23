@@ -7,6 +7,7 @@ import { parseCookie } from '@/lib/auth/cookie';
 import { getWine } from '@/lib/api/wine/wine';
 import { fetcher } from '@/lib/fetcher';
 import { ApiPath } from '@/lib/fetcher.types';
+import { useReviewHandlers } from '@/hooks/review/useReviewHandlers';
 
 interface WineDetailPageProps {
   wine: GetWineDetailResponse;
@@ -14,12 +15,13 @@ interface WineDetailPageProps {
 }
 
 export default function WineDetailPage({ wine, user }: WineDetailPageProps) {
+  const reviewState = useReviewHandlers(wine.reviews ?? []);
   if (!wine) return <div>와인 정보를 불러올 수 없습니다.</div>;
 
   return (
     <main>
-      <HeroSection wine={wine} />
-      <WineDetailLayout wine={wine} user={user} />
+      <HeroSection wine={wine} reviewCount={reviewState.reviews.length} />
+      <WineDetailLayout wine={wine} user={user} reviewState={reviewState} />
     </main>
   );
 }
