@@ -93,7 +93,7 @@ export default function ReviewSection({ wine, myId }: ReviewSectionProps) {
           </div>
         </div>
 
-        <div className="w-full lg:w-[350px]">
+        <div className="w-full lg:w-[350px] shrink-0">
           <div className="flex flex-col gap-10">
             <ReviewStats rating={averageRating} distribution={distribution} />
             <Button

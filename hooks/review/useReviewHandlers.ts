@@ -68,12 +68,31 @@ export function useReviewHandlers(initialReviews: ApiWineReview[]) {
 
   // 리뷰등록
   const handleCreateReview = async (formData: CreateReviewRequest | UpdateReviewRequest) => {
+    const optimisticReview: ApiWineReview = {
+      ...(formData as CreateReviewRequest),
+      id: Date.now(),
+      isLiked: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      user: {
+        id: 0,
+        nickname: '',
+        image: null,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
+    };
+
+    setReviews(prev => [optimisticReview, ...prev]);
+    setIsWriteModalOpen(false);
+
     try {
       const newReview = await createReview(formData as CreateReviewRequest);
-      setReviews(prev => [newReview, ...prev]);
+      setReviews(prev => prev.map(r => (r.id === optimisticReview.id ? newReview : r)));
       toast.success('리뷰가 성공적으로 등록되었습니다.');
-      setIsWriteModalOpen(false);
     } catch (error) {
+      setReviews(prev => prev.filter(r => r.id !== optimisticReview.id));
+      setIsWriteModalOpen(true);
       console.error('리뷰 등록 실패:', error);
       toast.error('리뷰 등록 중 오류가 발생했습니다.');
     }
