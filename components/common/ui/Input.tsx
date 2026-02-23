@@ -1,7 +1,7 @@
 import { ComponentPropsWithRef, ReactNode } from 'react';
 import { cn } from '@/utils/cn';
 import Image from 'next/image';
-import iconInputError from '@/assets/icon/icon-input-error.svg';
+import iconInputError from '@/assets/icons/icon-input-error.svg';
 
 interface InputProps extends Omit<ComponentPropsWithRef<'input'>, 'type' | 'prefix'> {
   type?: 'text' | 'password';

@@ -14,9 +14,10 @@ const BACKGROUND_IMAGES = {
 
 interface HeroSectionProps {
   wine: GetWineDetailResponse;
+  reviewCount: number;
 }
 
-export default function HeroSection({ wine }: HeroSectionProps) {
+export default function HeroSection({ wine, reviewCount }: HeroSectionProps) {
   return (
     <div className="bg-gray-100 pt-px lg:rounded-b-[88px] overflow-hidden">
       <Gnb />
@@ -59,7 +60,7 @@ export default function HeroSection({ wine }: HeroSectionProps) {
                 ))}
               </div>
               <span className="text-base font-normal text-gray-400">
-                {wine.reviewCount.toLocaleString()}개의 후기
+                {reviewCount.toLocaleString()}개의 후기
               </span>
             </div>
 

@@ -10,9 +10,10 @@ import { DeleteReviewDialog } from '@/components/review/DeleteReviewDialog';
 interface ReviewSectionProps {
   wine: GetWineDetailResponse;
   myId: number;
+  reviewState: ReturnType<typeof useReviewHandlers>;
 }
 
-export default function ReviewSection({ wine, myId }: ReviewSectionProps) {
+export default function ReviewSection({ wine, myId, reviewState }: ReviewSectionProps) {
   const {
     reviews,
     // 등록모달
@@ -38,7 +39,7 @@ export default function ReviewSection({ wine, myId }: ReviewSectionProps) {
     averageRating,
     distribution,
     handleLike,
-  } = useReviewHandlers(wine.reviews);
+  } = reviewState;
 
   if (!reviews || reviews.length === 0) {
     return (
