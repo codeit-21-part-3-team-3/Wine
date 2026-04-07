@@ -8,7 +8,7 @@
 <br><br>
 
 ## 🔗 프로젝트 개요
-- **배포 URL:** [🚀 서비스 접속하기](https://your-service-url.com)
+- **배포 URL:** [🚀 서비스 접속하기]([https://your-service-url.com](https://wine-rose-phi.vercel.app/))
 - **프로젝트 기간:** 2025.02.03 ~ 2026.02.24
 - **팀명:** FE 21기 Part3 3팀
 
