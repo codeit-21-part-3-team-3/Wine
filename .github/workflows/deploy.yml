@@ -1,79 +1,31 @@
-name: Wine Service CI/CD
+name: Wine Service CI
 
 on:
   push:
     branches: ['develop']
 
-# GHCR에 이미지를 올리기 위한 권한 설정
-permissions:
-  contents: read
-  packages: write
-
 jobs:
-  build-and-push:
+  ci:
     runs-on: ubuntu-latest
 
     steps:
       - name: 소스 코드 체크아웃
         uses: actions/checkout@v4
 
-      - name: Set Short SHA
-        id: vars
-        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-
-      - name: Docker Buildx 세팅
-        uses: docker/setup-buildx-action@v3
-
-      - name: GHCR 로그인
-        uses: docker/login-action@v3
+      - name: Node.js 세팅
+        uses: actions/setup-node@v4
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          node-version: 24
+          cache: 'npm'
 
-      - name: 이미지 빌드 및 GHCR 푸시
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          no-cache: true
-          tags: |
-            ghcr.io/codeit-21-part-3-team-3/wine:latest
-            ghcr.io/codeit-21-part-3-team-3/wine:sha-${{ steps.vars.outputs.sha_short }}
-          secrets: |
-            "API_URL=${{ secrets.API_URL }}"
-            "NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}"
-            "NEXT_PUBLIC_KAKAO_CLIENT_ID=${{ secrets.NEXT_PUBLIC_KAKAO_CLIENT_ID }}"
-            "NEXT_PUBLIC_NAVER_CLIENT_ID=${{ secrets.NEXT_PUBLIC_NAVER_CLIENT_ID }}"
-            "NEXT_PUBLIC_REDIRECT_PATH=${{ secrets.NEXT_PUBLIC_REDIRECT_PATH }}"
+      - name: 의존성 설치
+        run: npm ci
 
-      # 성공 시 n8n을 통해 서버 배포 명령 전달
-      - name: 배포 자동화 호출 (Success)
-        if: success()
-        run: |
-          curl -X POST ${{ secrets.N8N_WEBHOOK_URL }} \
-          -H "Content-Type: application/json" \
-          -H "X-Webhook-Secret: ${{ secrets.N8N_WEBHOOK_SECRET_TOKEN }}" \
-          -d '{
-            "status": "success",
-            "project": "Wine",
-            "image_tag": "sha-${{ steps.vars.outputs.sha_short }}",
-            "branch": "${{ github.ref_name }}",
-            "author": "${{ github.actor }}",
-            "image": "ghcr.io/codeit-21-part-3-team-3/wine:latest"
-          }'
+      - name: 타입 체크
+        run: npm run type-check
 
-      # 실패 시 n8n을 통해 디스코드 알림 전달
-      - name: 빌드 실패 알림 (Failure)
-        if: failure()
-        run: |
-          curl -X POST ${{ secrets.N8N_WEBHOOK_URL }} \
-          -H "Content-Type: application/json" \
-          -H "X-Webhook-Secret: ${{ secrets.N8N_WEBHOOK_SECRET_TOKEN }}" \
-          -d '{
-            "status": "failure",
-            "project": "Wine",
-            "branch": "${{ github.ref_name }}",
-            "author": "${{ github.actor }}",
-            "error_log": "GitHub Actions Docker Build Failed"
-          }'
+      - name: 린트 검사
+        run: npm run lint
+
+      - name: 빌드 확인
+        run: npm run build
